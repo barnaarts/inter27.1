@@ -252,6 +252,8 @@
   .vchip small{color:var(--muted);margin-right:3px}
   .vchip.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
   .vchip.on small{color:rgba(255,255,255,.85)}
+  .vchip[data-md=all]{position:sticky;left:0;z-index:2;box-shadow:0 0 0 5px var(--bg),14px 0 10px 2px var(--bg)}
+  .venue.off{display:none}
   .vnote{font-size:12px;color:var(--muted);margin-top:6px}
   .vpin{width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--pc);border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center}
   .vpin span{transform:rotate(45deg);font-size:14px;line-height:1}
@@ -570,6 +572,29 @@ function confetti(){
     if(t<170) requestAnimationFrame(f); else c.remove(); })();
 }
 
+// Tears falling from the departure card
+function tears(){
+  if(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const card=[...document.querySelectorAll(".ev")].find(e=>/Departure/.test(e.textContent));
+  const dpr=devicePixelRatio||1, c=document.createElement("canvas"); c.className="confetti"; document.body.appendChild(c);
+  const x=c.getContext("2d"), W=c.width=innerWidth*dpr, H=c.height=innerHeight*dpr;
+  const r=card?card.getBoundingClientRect():null;
+  const top = r && r.bottom>0 && r.bottom<innerHeight ? r.bottom-6 : 0, L0 = r?r.left+16:0, Lw = r?r.width-32:innerWidth;
+  const P=Array.from({length:34},(_,i)=>({x:(L0+Math.random()*Lw)*dpr, y:(top-Math.random()*8)*dpr, d:i*55+Math.random()*400,
+    v:0, s:(5+Math.random()*5)*dpr, w:Math.random()*6.28, grow:0}));
+  function drop(p){ const s=p.s*Math.min(1,p.grow);
+    x.save(); x.translate(p.x+Math.sin(p.w)*2*dpr,p.y);
+    const g=x.createLinearGradient(-s,-s,s,s); g.addColorStop(0,"rgba(190,225,255,.95)"); g.addColorStop(1,"rgba(60,140,230,.85)");
+    x.fillStyle=g; x.beginPath(); x.moveTo(0,-s*1.6); x.bezierCurveTo(s*.9,-s*.3,s,s,0,s); x.bezierCurveTo(-s,s,-s*.9,-s*.3,0,-s*1.6); x.fill();
+    x.fillStyle="rgba(255,255,255,.8)"; x.beginPath(); x.ellipse(-s*.35,s*.1,s*.18,s*.32,-.4,0,6.28); x.fill(); x.restore(); }
+  const t0=performance.now();
+  (function f(t){ const el=t-t0; x.clearRect(0,0,W,H); let alive=false;
+    P.forEach(p=>{ if(el<p.d){ alive=true; return; }
+      if(p.grow<1){ p.grow+=.04; } else { p.v+=.12*dpr; p.y+=p.v; p.w+=.08; }
+      if(p.y<H+20*dpr){ alive=true; drop(p); } });
+    if(alive && el<6000) requestAnimationFrame(f); else c.remove(); })(t0);
+}
+
 let navInit=false;
 function renderDays(){
   const nav = document.getElementById("days");
@@ -854,7 +879,7 @@ function initVenueMap(){
     const tiles=L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",
       {maxZoom:19,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'});
     tiles.on("tileload",()=>loaded++);
-    tiles.on("tileerror",()=>{ if(!loaded && vmap && vmap.hasLayer(tiles)){ vmap.removeLayer(tiles); vmap.attributionControl.setPrefix(false); const n=document.getElementById("vnote"); if(n) n.textContent="Simplified map: the full street map needs an internet connection."; } });
+    tiles.on("tileerror",()=>{ if(!loaded && vmap && vmap.hasLayer(tiles)){ vmap.removeLayer(tiles); vmap.attributionControl.setPrefix(false); const n=document.getElementById("vnote"); if(n){ n.dataset.simple=1; n.textContent="Simplified map: the full street map needs an internet connection."; } } });
     tiles.addTo(vmap);
     vlayer=L.layerGroup().addTo(vmap);
     drawVenuePins(true);
@@ -870,6 +895,17 @@ function venuePopup(k,days){
     <div class="links"><a href="${dir}" target="_blank" rel="noopener">${k==="yugo"?"Maps":"Directions"} ↗</a>${v.w?`<a href="${v.w}" target="_blank" rel="noopener">Web ↗</a>`:""}</div></div>`;
 }
 let vmarkers={};
+function filterVenueCards(){
+  document.querySelectorAll(".venue[data-days]").forEach(v=>v.classList.toggle("off", mapDay!=="all" && !v.dataset.days.split(" ").includes(mapDay)));
+  const n=document.getElementById("vnote");
+  if(n && !n.dataset.simple) n.textContent = mapDay==="all" ? "Pick a day to see its stops in order, starting from Yugo." : `${fmt(mapDay,{weekday:"long",month:"long",day:"numeric"})}: stops in order, from Yugo and back. Only that day's venues are listed below.`;
+}
+function centerChip(smooth){
+  const row=document.querySelector(".vchips"), c=row&&row.querySelector(".vchip.on"); if(!c) return;
+  const rr=row.getBoundingClientRect(), cr=c.getBoundingClientRect();
+  const left = c.dataset.md==="all" ? 0 : row.scrollLeft + (cr.left-rr.left) - (rr.width-cr.width)/2;
+  row.scrollTo({left:Math.max(0,left), behavior:smooth?"smooth":"auto"});
+}
 function drawVenuePins(fit){
   if(!vmap||!vlayer) return;
   const {days, first} = venueDays();
@@ -897,7 +933,7 @@ function drawVenuePins(fit){
   if(fit){ const b=L.latLngBounds(keys.map(k=>VC[k])); vmap.fitBounds(b,{padding:[30,30],maxZoom:15}); }
 }
 document.addEventListener("click",e=>{
-  const c=e.target.closest(".vchip"); if(c){ mapDay=c.dataset.md; document.querySelectorAll(".vchip").forEach(b=>b.classList.toggle("on",b===c)); drawVenuePins(true); return; }
+  const c=e.target.closest(".vchip"); if(c){ mapDay=c.dataset.md; document.querySelectorAll(".vchip").forEach(b=>b.classList.toggle("on",b===c)); drawVenuePins(true); filterVenueCards(); centerChip(true); return; }
   const o=e.target.closest(".onmap"); if(o){ e.preventDefault();
     const k=o.dataset.k, wrap=document.getElementById("vmapwrap"); if(!wrap||!vmap) return;
     if(mapDay!=="all" && !vmarkers[k]){ mapDay="all"; document.querySelectorAll(".vchip").forEach(b=>b.classList.toggle("on",b.dataset.md==="all")); drawVenuePins(true); }
@@ -920,7 +956,7 @@ function renderVenues(){
   if(!VPHOTOS.upf) VPHOTOS.upf = "img/sala-reflexio.jpg";
   return `<h1>Venues</h1><p class="sub">Everywhere we go, in order of first visit. Tap a pin or a date to see what's on.</p>
   <div class="vmapwrap" id="vmapwrap"><div class="vchips">${mapChips(venueDays().days)}</div><div class="vmap" id="vmap"></div><div class="vnote" id="vnote">Pick a day to see its stops in order, starting from Yugo.</div></div>` +
-  keys.map((k,vi)=>{const v=V[k]; const tdy=days[k].has(now.date); return `<div class="venue reveal${tdy?" now":""}">${tdy?'<span class="tag now todaytag">Today</span>':''}
+  keys.map((k,vi)=>{const v=V[k]; const tdy=days[k].has(now.date); return `<div class="venue reveal${tdy?" now":""}${mapDay!=="all"&&!days[k].has(mapDay)?" off":""}" data-days="${[...days[k]].join(" ")}">${tdy?'<span class="tag now todaytag">Today</span>':''}
     ${VPHOTOS[k]?`<img class="vpic" src="${VPHOTOS[k]}" alt="${v.n}">`:""}
     <h3>${v.n.split(" — ")[0]}${v.home?' <span class="tag opt">Where you stay</span>':''}</h3>
     ${v.d?`<p>${v.d}</p>`:""}
@@ -1126,9 +1162,10 @@ function render(){
   main.innerHTML = (view==="today"?renderToday():view==="overview"?renderOverview():view==="info"?renderInfo():view==="artists"?renderArtists():view==="venues"?renderVenues():view==="nearby"?renderNearby():renderSchedule()) + (view==="today" ? "" : `<div class="foot">${countdownText()}Last updated ${UPDATED}</div>`);
   // Keep the logo hidden if it was already scrolled away
   setupReveal();
-  if(view==="venues") initVenueMap(); else if(vmap){ try{vmap.remove();}catch(_){} vmap=null; }
+  if(view==="venues"){ initVenueMap(); filterVenueCards(); centerChip(false); } else if(vmap){ try{vmap.remove();}catch(_){} vmap=null; }
   window.scrollTo(0, logoHidden ? lbh : 0);
   if(view==="schedule" && (current==="2027-01-16" || (current===dates[1] && now.date===dates[1])) && lastConfettiDay!==current){ setTimeout(confetti,300); }
+  if(view==="schedule" && S[current] && S[current].some(x=>/^Departure/.test(x.title)) && lastConfettiDay!==current){ setTimeout(tears,500); }
   lastConfettiDay = view==="schedule" ? current : null;
   const em = location.hash.match(/^#jan-(\d{1,2})-(\d+)$/);
   if(em){ const el=document.getElementById(`ev-${em[1]}-${em[2]}`); if(el){ el.classList.add("hit"); const hh=document.querySelector("header").offsetHeight; window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - hh - 10); } }
@@ -1204,7 +1241,7 @@ window.addEventListener("hashchange",()=>setTimeout(updateTop,50));
 let swipeDir = 0;
 (function(){
   const main = document.getElementById("main"); let x0=null, y0=null;
-  main.addEventListener("touchstart",e=>{ if(e.touches.length>1||e.target.closest(".mapbox")){x0=null;return;} x0=e.touches[0].clientX; y0=e.touches[0].clientY; },{passive:true});
+  main.addEventListener("touchstart",e=>{ if(e.touches.length>1||e.target.closest(".mapbox,.vmapwrap,.leaflet-container")){x0=null;return;} x0=e.touches[0].clientX; y0=e.touches[0].clientY; },{passive:true});
   main.addEventListener("touchend",e=>{
     if(x0===null) return;
     const dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0; x0=null;
