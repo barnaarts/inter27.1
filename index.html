@@ -95,12 +95,6 @@
   .ovt{flex:0 0 72px;white-space:nowrap;color:var(--muted);font-variant-numeric:tabular-nums}
   .cdbox{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:6px 0 14px;text-align:center}
   .cdbox{cursor:pointer;-webkit-tap-highlight-color:transparent}
-  .callsheet{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;padding:16px}
-  .cs-box{background:var(--card);border-radius:18px;padding:20px;width:100%;max-width:420px;text-align:center;animation:rise .25s ease}
-  .cs-t{font-weight:700;font-size:16px}
-  .cs-n{font-size:56px;font-weight:800;color:#d4442a;letter-spacing:.04em;margin:6px 0}
-  .cs-d{font-size:14px;color:var(--muted);margin-bottom:14px}
-  .cs-x{font:inherit;font-weight:700;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:10px 22px}
   .flicker{position:fixed;inset:0;z-index:40;pointer-events:none;background:rgba(10,8,6,.86);animation:dimIn .35s ease both}
   @keyframes dimIn{from{opacity:0}to{opacity:1}}
   .cdbox.lit{box-shadow:0 0 40px 6px rgba(212,175,55,.45);transition:box-shadow .35s ease}
@@ -268,7 +262,7 @@ s.classList.add("out");setTimeout(function(){s.remove()},750)},1000);</script>
   <a href="https://wa.me/34689130137" target="_blank" rel="noopener">Albert<small>+34 689 130 137</small></a>
   <a href="https://wa.me/34696504487" target="_blank" rel="noopener">Katie<small>+34 696 504 487</small></a>
   <a href="https://wa.me/19542243117" target="_blank" rel="noopener">Ale<small>WhatsApp only</small></a>
-  <a class="sos" href="tel:112" data-tel="112">🚨 Emergency 112</a></div></details>
+  <a class="sos" href="tel:112">🚨 Emergency 112</a></div></details>
 <button id="totop" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Top</button>
 
 <script>
@@ -503,7 +497,7 @@ document.addEventListener("click",e=>{
       if(box){ box.style.transition=`box-shadow ${fadeMs}ms ease`; box.classList.remove("lit"); }
       setTimeout(()=>{ fx.remove(); if(box) box.style.transition=""; },fadeMs+50); }, 900);
   }
-  if(navigator.vibrate){ try{ navigator.vibrate([10,40,10,40,10]); }catch(_){} }
+  haptic([10,40,10,40,10]); if(!navigator.vibrate) [130,260].forEach(t=>setTimeout(()=>haptic(),t));
   const tiles=[...document.querySelectorAll(".cdbox .flap")];
   const STEP=110, FIRST=900, GAP=230;
   const real=t=>{ const box=t.closest(".flaps"), p=cdParts(), s=String(p[box.dataset.k]).padStart(2,"0"); return s[[...box.querySelectorAll(".flap")].indexOf(t)]; };
@@ -893,7 +887,7 @@ function renderInfo(){
     </div>
     ${renderGroup()}
     <h2>🚨 Emergency</h2>
-    <a class="card sosc" href="tel:112" data-tel="112"><div class="big">112</div>Police, ambulance and fire anywhere in Spain. Calls work without a SIM card.<span class="callme">📞 Tap to call</span></a>
+    <a class="card sosc" href="tel:112"><div class="big">112</div>Police, ambulance and fire anywhere in Spain. Calls work without a SIM card.<span class="callme">📞 Tap to call</span></a>
     <h2>📞 Contacts</h2>
     <div class="card">
       <div class="phone"><div><b>Albert Quesada</b><br><span class="num">+34 689 130 137</span></div><a href="https://wa.me/34689130137" target="_blank" rel="noopener">WhatsApp</a></div>
@@ -1007,7 +1001,7 @@ if(ON_GH && "serviceWorker" in navigator){ navigator.serviceWorker.register("sw.
 // Water ripple where you tap on empty space
 let lastTap=null, tapLevel=0;
 document.addEventListener("pointerdown",e=>{
-  if(e.target.closest("a,button,summary,details,input,select,textarea,.day,.tab,.cdbox,.mapbox,.callsheet,#splash")) return;
+  if(e.target.closest("a,button,summary,details,input,select,textarea,.day,.tab,.cdbox,.mapbox,#splash")) return;
   if(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   // Keep tapping the same spot and the ripples grow
   const now=Date.now(), near=lastTap && Math.hypot(e.clientX-lastTap.x,e.clientY-lastTap.y)<40 && now-lastTap.t<900;
@@ -1018,29 +1012,19 @@ document.addEventListener("pointerdown",e=>{
     s.style.left=e.clientX+"px"; s.style.top=e.clientY+"px"; s.style.animationDelay=d+"ms"; s.style.animationDuration=dur+"ms"; s.style.setProperty("--rs",scale);
     document.body.appendChild(s); setTimeout(()=>s.remove(),dur+d+100); }
 },{passive:true});
-// Phone links: some phones block calls from inside the page. If nothing happens, show the number big.
-document.addEventListener("click",e=>{
-  const a=e.target.closest("a[data-tel]"); if(!a) return;
-  e.preventDefault();
-  let left=false; const mark=()=>{ left=true; };
-  window.addEventListener("blur",mark,{once:true}); document.addEventListener("visibilitychange",mark,{once:true});
-  try{ window.location.href="tel:"+a.dataset.tel; }catch(_){}
-  setTimeout(()=>{ if(left || document.hidden) return; showCallSheet(a.dataset.tel); },900);
-});
-function showCallSheet(n){
-  const s=document.createElement("div"); s.className="callsheet";
-  s.innerHTML=`<div class="cs-box"><div class="cs-t">Call ${n} from your Phone app</div><div class="cs-n">${n}</div><div class="cs-d">This page can't start the call on your phone. Open the Phone app and dial the number above. It works even without a SIM card.</div><button class="cs-x">Close</button></div>`;
-  s.onclick=ev=>{ if(ev.target===s||ev.target.classList.contains("cs-x")) s.remove(); };
-  document.body.appendChild(s);
-}
 // Warm the cache: fetch every photo quietly after the page has shown, so tabs open with images ready
 window.addEventListener("load",()=>setTimeout(()=>{
   [...Object.values(PHOTOS),...Object.values(VPHOTOS),"img/metro-map.jpg"].forEach(src=>{ const i=new Image(); i.decoding="async"; i.src=src; });
 },400));
-// Haptic tick on taps (Android Chrome; iPhones don't allow web vibration)
-document.addEventListener("pointerdown",e=>{
-  if(e.target.closest(".day,.tab,.alink,.map,.links a,.phone a,.nbi a,.ovr,.ovd,summary") && navigator.vibrate){ try{ navigator.vibrate(8); }catch(_){} }
-},{passive:true});
+// Haptic tick on taps: Android vibrates; on iPhone (iOS 18+) toggling a hidden native switch gives a tick
+const hapticSw=(()=>{ const l=document.createElement("label"); l.setAttribute("aria-hidden","true");
+  l.style.cssText="position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden;left:-10px;top:0";
+  const i=document.createElement("input"); i.type="checkbox"; i.setAttribute("switch",""); i.tabIndex=-1; l.appendChild(i);
+  document.body.appendChild(l); return l; })();
+function haptic(ms){ if(navigator.vibrate){ try{ navigator.vibrate(ms||8); return; }catch(_){} } try{ hapticSw.click(); }catch(_){} }
+document.addEventListener("click",e=>{
+  if(e.target.closest(".day,.tab,.alink,.map,.links a,.phone a,.nbi a,#totop,.ovr,.ovd,summary,a.card,.sos")) haptic(8);
+},true);
 function updateTop(){
   const b=document.getElementById("totop"); if(!b) return;
   const showTop = view!=="schedule" && view!=="today" && window.scrollY>400;
