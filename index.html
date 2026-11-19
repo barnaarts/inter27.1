@@ -237,6 +237,38 @@
   .nbi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;display:flex;justify-content:space-between;gap:10px;align-items:center}
   .nbi b{font-size:15px}.nbi .who{font-size:13px}
   .nbi a{font-size:12px;font-weight:700;color:var(--accent);text-decoration:none;border:1px solid var(--accent);border-radius:999px;padding:4px 10px;white-space:nowrap}
+
+  /* Tap ink inside buttons */
+  .ink{position:absolute;inset:0;border-radius:inherit;overflow:hidden;pointer-events:none;z-index:0}
+  .ink i{position:absolute;border-radius:50%;background:currentColor;opacity:.3;transform:scale(0);animation:ink .6s cubic-bezier(.2,.6,.3,1) forwards}
+  @keyframes ink{to{transform:scale(1);opacity:0}}
+  /* Venues map */
+  .vmapwrap{margin:0 0 16px}
+  .vmap{height:min(62vh,420px);border-radius:14px;border:1px solid var(--line);overflow:hidden;background:#dfe7ec;z-index:0}
+  @media (prefers-color-scheme: dark){ .vmap{background:#1b2226} }
+  .vchips{display:flex;gap:6px;overflow-x:auto;padding:0 0 10px;scrollbar-width:none}
+  .vchips::-webkit-scrollbar{display:none}
+  .vchip{flex:0 0 auto;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:13px;padding:5px 11px;border-radius:999px;cursor:pointer;position:relative}
+  .vchip small{color:var(--muted);margin-right:3px}
+  .vchip.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+  .vchip.on small{color:rgba(255,255,255,.85)}
+  .vnote{font-size:12px;color:var(--muted);margin-top:6px}
+  .vpin{width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--pc);border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center}
+  .vpin span{transform:rotate(45deg);font-size:14px;line-height:1}
+  .vpin.home{width:36px;height:36px}
+  .vpin b{transform:rotate(45deg);color:#fff;font-size:13px}
+  .leaflet-popup-content-wrapper{border-radius:14px;background:var(--card);color:var(--ink)}
+  .leaflet-popup-tip{background:var(--card)}
+  .leaflet-popup-content{margin:12px 14px;font-family:"DM Sans",system-ui,sans-serif;font-size:14px;line-height:1.4;min-width:200px}
+  .vpop img{display:block;width:calc(100% + 28px);margin:-12px -14px 8px;aspect-ratio:9/5;object-fit:cover;border-radius:14px 14px 0 0}
+  .vpop h4{margin:0 0 2px;font-size:16px}
+  .vpop .addr{color:var(--muted);font-size:13px}
+  .vpop .sess{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+  .vpop .sess a{display:inline-block;width:auto}
+  .vpop .links a{display:inline-block}
+  .vpop .sess a{font-size:12px;font-weight:700;color:var(--accent);text-decoration:none;border:1px solid var(--accent);border-radius:999px;padding:2px 8px}
+  .vpop .links{margin-top:10px}
+  .vpop .links a{padding:4px 10px}
 </style>
 </head>
 <body>
@@ -562,6 +594,7 @@ function renderDays(){
   nav.scrollLeft = keepX;
   const tc = nav.querySelector(".day.out"); if(tc) tc.onclick=()=>{ location.hash="today"; };
   nav.querySelectorAll(".day[data-d]").forEach(b=>b.onclick=()=>{location.hash="jan-"+(+b.dataset.d.slice(8));});
+  if(pendingInk && Date.now()-pendingInk.t<500){ const b=nav.querySelector(`.day[data-d="${pendingInk.d}"]`); if(b) inkAt(b,pendingInk.x,pendingInk.y); pendingInk=null; }
   const on = nav.querySelector(".on");
   if(on){ // only scroll if the selected date is off-screen; centre it just on first load
     const nr=nav.getBoundingClientRect(), br=on.getBoundingClientRect();
@@ -770,6 +803,109 @@ function renderArtists(){
 
 const VPHOTOS = {"caldera": "img/v-caldera.jpg", "servei": "img/v-servei.jpg", "filmo": "img/v-filmo.jpg", "joaquin": "img/v-joaquin.jpg", "lliure": "img/v-lliure.jpg", "piconera": "img/v-piconera.jpg", "santam": "img/v-santam.jpg", "macba": "img/v-macba.jpg", "mercat": "img/v-mercat.jpg", "tapies": "img/v-tapies.jpg", "visiva": "img/v-visiva.jpg", "raro": "img/v-raro.jpg", "yugo": "img/v-yugo.jpg", "pedrera": "img/v-pedrera.jpg", "batllo": "img/v-batllo.jpg", "brujas": "img/v-brujas.jpg"};
 
+// ---------- Venues map ----------
+// Approximate coordinates for each venue (lat, lng)
+const VC = {
+  yugo:[41.3773,2.1745], pedrera:[41.3953,2.1619], batllo:[41.3916,2.1649], brujas:[41.3806,2.1801],
+  caldera:[41.3832,2.1322], santam:[41.3767,2.1761], visiva:[41.3783,2.1598], piconera:[41.3721,2.1617],
+  joaquin:[41.3796,2.1693], raro:[41.3864,2.1789], servei:[41.3928,2.1653], lliure:[41.3724,2.1587],
+  mercat:[41.3718,2.1574], filmo:[41.3792,2.1697], tapies:[41.3915,2.1636], upf:[41.3901,2.1912], macba:[41.3833,2.1668]
+};
+const vkey = k => V[k] && V[k].g ? V[k].g : k;
+function venueDays(){
+  const days = {}, first = {};
+  for(const d of dates) for(const x of [...S[d]].sort((a,b)=>(a.s||"").localeCompare(b.s||""))){
+    const ks = [...(x.vs||[]), ...(x.v?[x.v]:[])].map(vkey);
+    for(const k of ks){ (days[k] ||= new Set()).add(d); if(!first[k]) first[k]=x.t; }
+  }
+  return {days, first};
+}
+let vmap=null, vlayer=null, mapDay="all";
+function loadLeaflet(){
+  if(window.L) return Promise.resolve();
+  if(window._lf) return window._lf;
+  return window._lf = new Promise((ok,no)=>{
+    const c=document.createElement("link"); c.rel="stylesheet"; c.href="leaflet.css"; document.head.appendChild(c);
+    const s=document.createElement("script"); s.src="leaflet.js"; s.onload=ok; s.onerror=no; document.head.appendChild(s);
+  });
+}
+function mapChips(days){
+  const ds = dates.filter(d=>Object.keys(days).some(k=>VC[k]&&k!=="yugo"&&days[k].has(d)));
+  return `<button class="vchip${mapDay==="all"?" on":""}" data-md="all">All venues</button>` +
+    ds.map(d=>`<button class="vchip${mapDay===d?" on":""}" data-md="${d}"><small>${fmt(d,{weekday:"short"})}</small>${+d.slice(8)}</button>`).join("");
+}
+function initVenueMap(){
+  const el=document.getElementById("vmap"); if(!el) return;
+  if(vmap){ try{vmap.remove();}catch(_){} vmap=null; }
+  loadLeaflet().then(()=>{
+    if(!document.getElementById("vmap")) return;
+    const dark = window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches;
+    vmap = L.map("vmap",{scrollWheelZoom:false,zoomControl:true,attributionControl:true}).setView([41.383,2.165],13);
+    // Simple drawn base (shows when map tiles can't load, e.g. offline)
+    const sea=dark?"#1d3340":"#bfd9e6", park=dark?"#22362a":"#cfe5c8", road=dark?"#3a3f44":"#ffffff";
+    L.polygon([[41.3772,2.1790],[41.3800,2.1835],[41.3812,2.1862],[41.3790,2.1880],[41.3700,2.1882],[41.3688,2.1905],[41.3760,2.1932],[41.3830,2.1966],[41.3900,2.2016],[41.3960,2.2082],[41.4030,2.2165],[41.3900,2.2400],[41.3400,2.2400],[41.3400,2.1650],[41.3640,2.1700],[41.3720,2.1758]],{stroke:false,fillColor:sea,fillOpacity:1,interactive:false}).addTo(vmap);
+    [[[41.3722,2.1530],[41.3705,2.1650],[41.3665,2.1722],[41.3600,2.1702],[41.3570,2.1600],[41.3600,2.1500],[41.3672,2.1478]],
+     [[41.3912,2.1850],[41.3882,2.1925],[41.3850,2.1893],[41.3880,2.1820]]].forEach(p=>L.polygon(p,{stroke:false,fillColor:park,fillOpacity:1,interactive:false}).addTo(vmap));
+    [[[41.3870,2.1700],[41.3758,2.1778]],[[41.3878,2.1693],[41.3965,2.1595]],[[41.3748,2.1490],[41.3855,2.1640],[41.3960,2.1800],[41.4035,2.1875]],
+     [[41.3750,2.1490],[41.3755,2.1755]],[[41.3850,2.1250],[41.3925,2.1435],[41.3965,2.1595],[41.4035,2.1875]]]
+     .forEach(p=>L.polyline(p,{color:road,weight:4,opacity:.9,interactive:false}).addTo(vmap));
+    // Real map tiles on top when available
+    let loaded=0;
+    const tiles=L.tileLayer(`https://{s}.basemaps.cartocdn.com/rastertiles/${dark?"dark_all":"voyager"}/{z}/{x}/{y}{r}.png`,
+      {maxZoom:19,subdomains:"abcd",attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/attributions">CARTO</a>'});
+    tiles.on("tileload",()=>loaded++);
+    tiles.on("tileerror",()=>{ if(!loaded && vmap && vmap.hasLayer(tiles)){ vmap.removeLayer(tiles); vmap.attributionControl.setPrefix(false); const n=document.getElementById("vnote"); if(n) n.textContent="Simplified map: the full street map needs an internet connection."; } });
+    tiles.addTo(vmap);
+    vlayer=L.layerGroup().addTo(vmap);
+    drawVenuePins(true);
+    setTimeout(()=>vmap&&vmap.invalidateSize(),350);
+  }).catch(()=>{ el.innerHTML='<p class="vnote" style="padding:14px">The map couldn\'t load. Use the Maps links below.</p>'; });
+}
+function venuePopup(k,days){
+  const v=V[k], ds=[...(days[k]||[])].sort();
+  const dir = k!=="yugo" ? `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(V.yugo.a)}&destination=${encodeURIComponent(v.a)}&travelmode=transit` : mapLink(v.a);
+  return `<div class="vpop">${VPHOTOS[k]?`<img src="${VPHOTOS[k]}" alt="">`:""}<h4>${v.n.split(" — ")[0]}</h4>
+    <div class="addr">${k==="yugo"?"Where you stay · ":""}${street(v)}</div>
+    ${ds.length?`<div class="sess">${ds.map(d=>`<a href="${evLink(d,x=>[...(x.vs||[]),...(x.v?[x.v]:[])].map(vkey).includes(k))}">${fmt(d,{weekday:"short",month:"short",day:"numeric"})}</a>`).join("")}</div>`:""}
+    <div class="links"><a href="${dir}" target="_blank" rel="noopener">${k==="yugo"?"Maps":"Directions"} ↗</a>${v.w?`<a href="${v.w}" target="_blank" rel="noopener">Web ↗</a>`:""}</div></div>`;
+}
+let vmarkers={};
+function drawVenuePins(fit){
+  if(!vmap||!vlayer) return;
+  const {days, first} = venueDays();
+  vlayer.clearLayers(); vmarkers={};
+  let keys = Object.keys(VC).filter(k=>k==="yugo"||days[k]||(V[k]&&V[k].show));
+  let route=null;
+  if(mapDay!=="all"){
+    const order=[];
+    for(const x of [...S[mapDay]].sort((a,b)=>(a.s||"").localeCompare(b.s||"")))
+      for(const k of [...(x.vs||[]),...(x.v?[x.v]:[])].map(vkey)) if(VC[k] && order[order.length-1]!==k) order.push(k);
+    keys = ["yugo",...order.filter(k=>k!=="yugo")].filter((k,i,a)=>a.indexOf(k)===i);
+    route = ["yugo",...order.filter(k=>k!=="yugo"),"yugo"].map(k=>VC[k]);
+  }
+  if(route && route.length>2) L.polyline(route,{color:"#d4442a",weight:3,opacity:.75,dashArray:"6 8"}).addTo(vlayer);
+  let n=0;
+  keys.forEach(k=>{
+    const home=k==="yugo", t=first[k]||"free";
+    const num = mapDay!=="all" && !home ? ++n : 0;
+    const icon=L.divIcon({className:"",iconSize:home?[36,36]:[30,30],iconAnchor:home?[18,36]:[15,30],popupAnchor:[0,home?-34:-28],
+      html:`<div class="vpin${home?" home":""}" style="--pc:${home?"#d4442a":`var(${COL[t]})`}">${num?`<b>${num}</b>`:`<span>${home?"🏠":(EMO[t]||"📍")}</span>`}</div>`});
+    const m=L.marker(VC[k],{icon,title:V[k].n,zIndexOffset:home?1000:0}).bindPopup(venuePopup(k,days),{maxWidth:260});
+    m.on("click",()=>haptic(8));
+    m.addTo(vlayer); vmarkers[k]=m;
+  });
+  if(fit){ const b=L.latLngBounds(keys.map(k=>VC[k])); vmap.fitBounds(b,{padding:[30,30],maxZoom:15}); }
+}
+document.addEventListener("click",e=>{
+  const c=e.target.closest(".vchip"); if(c){ mapDay=c.dataset.md; document.querySelectorAll(".vchip").forEach(b=>b.classList.toggle("on",b===c)); drawVenuePins(true); return; }
+  const o=e.target.closest(".onmap"); if(o){ e.preventDefault();
+    const k=o.dataset.k, wrap=document.getElementById("vmapwrap"); if(!wrap||!vmap) return;
+    if(mapDay!=="all" && !vmarkers[k]){ mapDay="all"; document.querySelectorAll(".vchip").forEach(b=>b.classList.toggle("on",b.dataset.md==="all")); drawVenuePins(true); }
+    const hh=document.querySelector("header").offsetHeight; window.scrollTo({top:wrap.getBoundingClientRect().top+window.scrollY-hh-8,behavior:"smooth"});
+    setTimeout(()=>{ const m=vmarkers[k]; if(m){ vmap.setView(VC[k],15); m.openPopup(); } },450);
+  }
+});
+
 function renderVenues(){
   // Collect dates per venue (rooms grouped under their building)
   const days = {};
@@ -782,7 +918,8 @@ function renderVenues(){
   keys.sort((a,b)=>[...days[a]][0].localeCompare([...days[b]][0]));
   Object.keys(V).forEach(k=>{ if(V[k].show && !days[k]){ keys.push(k); days[k]=new Set(); } });
   if(!VPHOTOS.upf) VPHOTOS.upf = "img/sala-reflexio.jpg";
-  return `<h1>Venues</h1><p class="sub">Everywhere we go, in order of first visit. Tap a date to see what's on.</p>` +
+  return `<h1>Venues</h1><p class="sub">Everywhere we go, in order of first visit. Tap a pin or a date to see what's on.</p>
+  <div class="vmapwrap" id="vmapwrap"><div class="vchips">${mapChips(venueDays().days)}</div><div class="vmap" id="vmap"></div><div class="vnote" id="vnote">Pick a day to see its stops in order, starting from Yugo.</div></div>` +
   keys.map((k,vi)=>{const v=V[k]; const tdy=days[k].has(now.date); return `<div class="venue reveal${tdy?" now":""}">${tdy?'<span class="tag now todaytag">Today</span>':''}
     ${VPHOTOS[k]?`<img class="vpic" src="${VPHOTOS[k]}" alt="${v.n}">`:""}
     <h3>${v.n.split(" — ")[0]}${v.home?' <span class="tag opt">Where you stay</span>':''}</h3>
@@ -790,6 +927,7 @@ function renderVenues(){
     ${v.a?`<div class="addr">📍 ${street(v)}</div>`:""}
     <div class="sess">${days[k].size?"":`<span class="tag tbc">Date to be confirmed</span>`}${[...days[k]].sort().map(d=>`<a href="${evLink(d,x=>(x.vs||[]).includes(k)||(x.v&&(x.v===k||V[x.v].g===k)))}">${fmt(d,{weekday:"short",month:"short",day:"numeric"})} →</a>`).join("")}</div>
     <div class="links">
+      ${VC[k]?`<a href="#" class="onmap" data-k="${k}">📍 On the map</a>`:""}
       ${v.a?`<a class="mapl" href="${mapLink(v.a)}" target="_blank" rel="noopener">Maps ↗</a>`:""}
       ${v.w?`<a href="${v.w}" target="_blank" rel="noopener">Web ↗</a>`:""}
     </div>
@@ -988,6 +1126,7 @@ function render(){
   main.innerHTML = (view==="today"?renderToday():view==="overview"?renderOverview():view==="info"?renderInfo():view==="artists"?renderArtists():view==="venues"?renderVenues():view==="nearby"?renderNearby():renderSchedule()) + (view==="today" ? "" : `<div class="foot">${countdownText()}Last updated ${UPDATED}</div>`);
   // Keep the logo hidden if it was already scrolled away
   setupReveal();
+  if(view==="venues") initVenueMap(); else if(vmap){ try{vmap.remove();}catch(_){} vmap=null; }
   window.scrollTo(0, logoHidden ? lbh : 0);
   if(view==="schedule" && (current==="2027-01-16" || (current===dates[1] && now.date===dates[1])) && lastConfettiDay!==current){ setTimeout(confetti,300); }
   lastConfettiDay = view==="schedule" ? current : null;
@@ -1022,6 +1161,23 @@ document.addEventListener("pointerdown",e=>{
     s.style.left=e.clientX+"px"; s.style.top=e.clientY+"px"; s.style.animationDelay=d+"ms"; s.style.animationDuration=dur+"ms"; s.style.setProperty("--rs",scale);
     document.body.appendChild(s); setTimeout(()=>s.remove(),dur+d+100); }
 },{passive:true});
+// Ink ripple inside buttons and pills where you tap
+const INK_SEL=".day,.tab,.alink,.map,.links a,.phone a,.nbi a,#totop,a.card,.sos,.vchip";
+var pendingInk=null;
+function inkAt(el,x,y){
+  if(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if(getComputedStyle(el).position==="static") el.style.position="relative";
+  const r=el.getBoundingClientRect(), size=2*Math.hypot(Math.max(x,r.width-x),Math.max(y,r.height-y));
+  const w=document.createElement("span"); w.className="ink";
+  const i=document.createElement("i"); i.style.width=i.style.height=size+"px"; i.style.left=(x-size/2)+"px"; i.style.top=(y-size/2)+"px";
+  w.appendChild(i); el.appendChild(w); setTimeout(()=>w.remove(),650);
+}
+document.addEventListener("pointerdown",e=>{
+  const el=e.target.closest(INK_SEL); if(!el) return;
+  const r=el.getBoundingClientRect(), x=e.clientX-r.left, y=e.clientY-r.top;
+  inkAt(el,x,y);
+  pendingInk = el.dataset.d ? {d:el.dataset.d,x,y,t:Date.now()} : null; // date buttons get redrawn: carry the ink over
+},{passive:true});
 // Warm the cache: fetch every photo quietly after the page has shown, so tabs open with images ready
 window.addEventListener("load",()=>setTimeout(()=>{
   [...Object.values(PHOTOS),...Object.values(VPHOTOS),"img/metro-map.jpg"].forEach(src=>{ const i=new Image(); i.decoding="async"; i.src=src; });
@@ -1034,7 +1190,7 @@ function iosTick(){ // a fresh hidden native switch, clicked and removed (the pa
 }
 function haptic(ms){ if(navigator.vibrate){ try{ navigator.vibrate(ms||8); return; }catch(_){} } try{ iosTick(); }catch(_){} }
 document.addEventListener("click",e=>{
-  if(e.target.closest(".day,.tab,.alink,.map,.links a,.phone a,.nbi a,#totop,.ovr,.ovd,summary,a.card,.sos")) haptic(8);
+  if(e.target.closest(".day,.tab,.alink,.map,.links a,.phone a,.nbi a,#totop,.ovr,.ovd,summary,a.card,.sos,.vchip")) haptic(8);
 },true);
 function updateTop(){
   const b=document.getElementById("totop"); if(!b) return;
