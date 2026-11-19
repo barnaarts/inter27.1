@@ -166,7 +166,9 @@
   .walk{display:inline-block;margin-left:6px;font-size:12px;font-weight:500;color:var(--muted)}
   a.card.sosc{display:block;color:var(--ink);text-decoration:none;border-color:#d4442a;transition:transform .12s ease}
   a.card.sosc:active{transform:scale(.97)}
-  .callme{display:block;margin-top:8px;font-size:13px;font-weight:700;color:#d4442a}
+  .sosrow{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+  .sosrow .big{margin-bottom:0}
+  .callme{display:inline-block;font-size:13px;font-weight:700;color:#d4442a}
   #splash{position:fixed;inset:0;z-index:100;background:var(--accent);display:flex;align-items:center;justify-content:center;transition:opacity .7s ease .1s}
   #splash .sp-in{text-align:center;animation:splashIn .5s ease both}
   #splash .sp-w{color:#fff;font-size:18px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;opacity:.9;margin-bottom:10px}
@@ -224,9 +226,6 @@
   .venue .addr{font-size:14px;color:var(--muted);margin-top:6px}
   .phone{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
   .phone:first-of-type{border-top:none}
-  .phone.eyes{position:relative;margin:0 -14px;padding:12px 14px;overflow:hidden}
-  .phone.eyes::before{content:"";position:absolute;inset:0;background:var(--eyes) center 45%/cover no-repeat;opacity:.55;-webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.35) 30%,#000 75%);mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.35) 30%,#000 75%)}
-  .phone.eyes>*{position:relative}
   .phone .num{font-size:18px;font-weight:700;letter-spacing:.02em}
   .phone a{font-size:13px;font-weight:700;color:var(--link);background:var(--link-soft);text-decoration:none;border:1px solid var(--link);border-radius:999px;padding:4px 11px;white-space:nowrap}
   .mapbox{overflow:auto;border:1px solid var(--line);border-radius:14px;background:#fff;-webkit-overflow-scrolling:touch}
@@ -893,11 +892,11 @@ function renderInfo(){
     </div>
     ${renderGroup()}
     <h2>🚨 Emergency</h2>
-    <a class="card sosc" href="tel:112"><div class="big">112</div>Police, ambulance and fire anywhere in Spain. Calls work without a SIM card.<span class="callme">📞 Tap to call</span></a>
+    <a class="card sosc" href="tel:112"><div class="sosrow"><div class="big">112</div><span class="callme">📞 Tap to call</span></div>Police, ambulance and fire anywhere in Spain. Calls work without a SIM card.</a>
     <h2>📞 Contacts</h2>
     <div class="card">
-      <div class="phone eyes" style="--eyes:url(img/eyes-albert.jpg)"><div><b>Albert Quesada</b><br><span class="num">+34 689 130 137</span></div><a href="https://wa.me/34689130137" target="_blank" rel="noopener">WhatsApp</a></div>
-      <div class="phone eyes" style="--eyes:url(img/eyes-katie.jpg)"><div><b>Katie Vickers</b><br><span class="num">+34 696 504 487</span></div><a href="https://wa.me/34696504487" target="_blank" rel="noopener">WhatsApp</a></div>
+      <div class="phone"><div><b>Albert Quesada</b><br><span class="num">+34 689 130 137</span></div><a href="https://wa.me/34689130137" target="_blank" rel="noopener">WhatsApp</a></div>
+      <div class="phone"><div><b>Katie Vickers</b><br><span class="num">+34 696 504 487</span></div><a href="https://wa.me/34696504487" target="_blank" rel="noopener">WhatsApp</a></div>
       <div class="phone"><div><b>Ale</b> · Program assistant<br><span class="num">+1 (954) 224-3117</span><br><span class="who">WhatsApp only</span></div><a href="https://wa.me/19542243117" target="_blank" rel="noopener">WhatsApp</a></div>
       <span class="who">Albert and Katie are the program directors. Call or message any time during the program.</span>
     </div>
