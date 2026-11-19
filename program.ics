@@ -1,0 +1,486 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//BARNA ARTS//Interdisciplinary Jan27//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:BARNA ARTS · Interdisciplinary Jan'27
+X-WR-TIMEZONE:Europe/Madrid
+BEGIN:VEVENT
+UID:inter27-2027-01-06-0@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART;VALUE=DATE:20270106
+DTEND;VALUE=DATE:20270107
+SUMMARY:Fly to Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-07-0@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270107T133000Z
+DTEND:20270107T163000Z
+SUMMARY:Arrival · check-in · welcome gathering
+LOCATION:Yugo Barcelona Port\, C/ Portal de Santa Madrona 28\, Barcelona
+DESCRIPTION:Yugo rooms are ready from 3 PM\nLatest times and changes are i
+ n the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-07-1@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270107T170000Z
+DTEND:20270107T200000Z
+SUMMARY:Welcome drink & ice-breaker games
+LOCATION:Yugo Barcelona Port\, C/ Portal de Santa Madrona 28\, Barcelona
+DESCRIPTION:In a private room at Yugo\nLatest times and changes are in the
+  program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-08-0@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270108T090000Z
+DTEND:20270108T120000Z
+SUMMARY:Collaborating Strategies workshop
+LOCATION:La Visiva\, C/ Sepúlveda 85\, Barcelona
+DESCRIPTION:Albert Quesada & Katie Vickers\nLatest times and changes are i
+ n the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-08-1@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270108T130000Z
+DTEND:20270108T170000Z
+SUMMARY:Guided city tour
+LOCATION:Yugo Barcelona Port\, C/ Portal de Santa Madrona 28\, Barcelona
+DESCRIPTION:with Catalina Girona · meet in the Yugo foyer\nLatest times an
+ d changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-09-0@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270109T090000Z
+DTEND:20270109T130000Z
+SUMMARY:Movement & physical theatre workshop
+LOCATION:La Piconera\, C/ Sancho Marraco 6\, Barcelona
+DESCRIPTION:Los Informalls (Luis García & Pere Joseph)\nLatest times and c
+ hanges are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-09-1@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270109T153000Z
+DTEND:20270109T163000Z
+SUMMARY:Taller Estampa exhibition
+LOCATION:Filmoteca de Catalunya\, Pl. de Salvador Seguí 1\, Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-09-2@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270109T180000Z
+DTEND:20270109T191500Z
+SUMMARY:Performance: Dimanche
+LOCATION:Teatre Lliure Montjuïc\, Teatre Lliure Montjuïc\, Pg. de Santa Ma
+ drona 40\, Barcelona
+DESCRIPTION:Focus & Chaliwaté · Visual theatre without words\nLatest times
+  and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-10-0@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270110T083000Z
+DTEND:20270110T100000Z
+SUMMARY:Gaudí: La Pedrera
+LOCATION:La Pedrera (Casa Milà)\, La Pedrera\, Pg. de Gràcia 92\, Barcelon
+ a
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-10-1@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270110T103000Z
+DTEND:20270110T120000Z
+SUMMARY:Gaudí: Casa Batlló
+LOCATION:Casa Batlló\, Pg. de Gràcia 43\, Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-10-2@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270110T130000Z
+DTEND:20270110T160000Z
+SUMMARY:Music session with Núria Andorrà
+DESCRIPTION:Percussion\, improvisation and listening\nLatest times and cha
+ nges are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-10-3@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270110T170000Z
+DTEND:20270110T190000Z
+SUMMARY:Talk with Joaquín Jara
+LOCATION:Joaquín Jara's studio\, Rambla del Raval 49\, Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-11-0@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270111T090000Z
+DTEND:20270111T120000Z
+SUMMARY:Hands-on materials workshop: clay\, mud\, paint
+LOCATION:Joaquín Jara's studio\, Rambla del Raval 49\, Barcelona
+DESCRIPTION:Joaquín Jara\nLatest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-11-1@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270111T130000Z
+DTEND:20270111T160000Z
+SUMMARY:Tour & talk · TBC
+DESCRIPTION:with Darryl Eisden\nLatest times and changes are in the progra
+ m app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-11-2@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270111T190000Z
+DTEND:20270111T210000Z
+SUMMARY:Cinema evening · TBC
+LOCATION:Filmoteca de Catalunya\, Pl. de Salvador Seguí 1\, Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-12-0@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270112T090000Z
+DTEND:20270112T120000Z
+SUMMARY:Visual arts session with a guest artist · TBC
+LOCATION:Casa R.A.R.O.\, C/ Jaume Giralt 49\, Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-12-1@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270112T130000Z
+DTEND:20270112T140000Z
+SUMMARY:Museu Tàpies session: talk
+LOCATION:Sala Reflexió (within Pompeu Fabra University)\, Universitat Pomp
+ eu Fabra\, C/ Ramon Trias Fargas 25-27\, Barcelona
+DESCRIPTION:With Maria Sellarès (Museu Tàpies)\, while the museum is close
+ d for works\nLatest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-12-2@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270112T140000Z
+DTEND:20270112T160000Z
+SUMMARY:Workshop on Tàpies
+LOCATION:Sala Reflexió (within Pompeu Fabra University)\, Universitat Pomp
+ eu Fabra\, C/ Ramon Trias Fargas 25-27\, Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-12-3@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270112T180000Z
+DTEND:20270112T190000Z
+SUMMARY:Video Tuesday (optional)
+LOCATION:Arts Santa Mònica\, Arts Santa Mònica\, La Rambla 7\, Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-12-4@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270112T190000Z
+DTEND:20270112T200000Z
+SUMMARY:Flamenco at Las Brujas
+LOCATION:Las Brujas Flamenco Club\, C/ de la Mercè 31\, Barcelona
+DESCRIPTION:Live flamenco in a 17th-century cellar in the Gothic Quarter\n
+ Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-13-0@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270113T100000Z
+DTEND:20270113T110000Z
+SUMMARY:Guided exhibition visit
+LOCATION:Arts Santa Mònica\, La Rambla 7\, Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-13-1@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270113T120000Z
+DTEND:20270113T150000Z
+SUMMARY:Mixed-media collaboration workshop
+LOCATION:Arts Santa Mònica\, Arts Santa Mònica\, La Rambla 7\, Barcelona
+DESCRIPTION:Núria Guiu\nLatest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-13-2@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270113T153000Z
+DTEND:20270113T163000Z
+SUMMARY:Visit: Servei Estació
+LOCATION:Servei Estació\, C/ Aragó 270\, Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-13-3@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270113T180000Z
+DTEND:20270113T190000Z
+SUMMARY:Sound & body Wednesday (optional)
+LOCATION:Arts Santa Mònica\, Arts Santa Mònica\, La Rambla 7\, Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-13-4@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270113T190000Z
+DTEND:20270113T210000Z
+SUMMARY:Concert · TBC
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-14-0@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270114T090000Z
+DTEND:20270114T120000Z
+SUMMARY:Collaborating sessions
+LOCATION:La Caldera\, C/ Eugeni d'Ors 12\, Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-14-1@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270114T130000Z
+DTEND:20270114T160000Z
+SUMMARY:Collaborating sessions
+LOCATION:La Caldera\, C/ Eugeni d'Ors 12\, Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-14-2@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270114T170000Z
+DTEND:20270114T190000Z
+SUMMARY:MACBA (optional)
+LOCATION:MACBA\, Plaça dels Àngels 1\, Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-14-3@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270114T180000Z
+DTEND:20270114T190000Z
+SUMMARY:Voice & word Thursday (optional)
+LOCATION:Arts Santa Mònica\, Arts Santa Mònica\, La Rambla 7\, Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-15-0@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270115T090000Z
+DTEND:20270115T120000Z
+SUMMARY:Warm-up + collaborating sessions
+LOCATION:La Caldera\, C/ Eugeni d'Ors 12\, Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-15-1@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270115T130000Z
+DTEND:20270115T160000Z
+SUMMARY:Collaborating sessions
+LOCATION:La Caldera\, C/ Eugeni d'Ors 12\, Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-15-2@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270115T170000Z
+DTEND:20270115T181500Z
+SUMMARY:MACBA (optional)
+LOCATION:MACBA\, Plaça dels Àngels 1\, Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-15-3@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270115T190000Z
+DTEND:20270115T203000Z
+SUMMARY:Performance: Mette Ingvartsen — RUSH
+LOCATION:Mercat de les Flors\, C/ Lleida 59\, Barcelona
+DESCRIPTION:Solo performed by Manon Santkin · Ages 16+\nLatest times and c
+ hanges are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-16-0@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270116T090000Z
+DTEND:20270116T120000Z
+SUMMARY:Final presentation
+LOCATION:La Caldera\, C/ Eugeni d'Ors 12\, Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-16-1@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270116T130000Z
+DTEND:20270116T160000Z
+SUMMARY:Final presentation
+LOCATION:La Caldera\, C/ Eugeni d'Ors 12\, Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-16-2@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270116T170000Z
+DTEND:20270116T190000Z
+SUMMARY:MACBA (optional)
+LOCATION:MACBA\, Plaça dels Àngels 1\, Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-17-1@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270117T130000Z
+DTEND:20270117T160000Z
+SUMMARY:Final group practice & reflection
+LOCATION:La Caldera\, C/ Eugeni d'Ors 12\, Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-17-2@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270117T160000Z
+DTEND:20270117T180000Z
+SUMMARY:Goodbye dinner
+LOCATION:La Caldera\, C/ Eugeni d'Ors 12\, Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-18-0@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART;VALUE=DATE:20270118
+DTEND;VALUE=DATE:20270119
+SUMMARY:Departure: core group
+DESCRIPTION:Check out of Yugo by 10 AM. Be at the airport 2 to 3 hours bef
+ ore your flight.\nLatest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-18-1@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270118T083000Z
+DTEND:20270118T123000Z
+SUMMARY:Studio work · Extension group · TBC
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-18-2@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270118T133000Z
+DTEND:20270118T163000Z
+SUMMARY:Mentoring · Extension group
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-19-0@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270119T083000Z
+DTEND:20270119T123000Z
+SUMMARY:Studio work · Extension group · TBC
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-19-1@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270119T133000Z
+DTEND:20270119T163000Z
+SUMMARY:Mentoring · Extension group
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-19-2@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270119T180000Z
+DTEND:20270119T190000Z
+SUMMARY:Video Tuesday (optional) · Extension group
+LOCATION:Arts Santa Mònica\, Arts Santa Mònica\, La Rambla 7\, Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-20-0@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270120T083000Z
+DTEND:20270120T123000Z
+SUMMARY:Studio work · Extension group · TBC
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-20-1@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270120T133000Z
+DTEND:20270120T163000Z
+SUMMARY:Mentoring · Extension group
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-20-2@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270120T180000Z
+DTEND:20270120T190000Z
+SUMMARY:Sound & body Wednesday (optional) · Extension group
+LOCATION:Arts Santa Mònica\, Arts Santa Mònica\, La Rambla 7\, Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-21-0@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270121T083000Z
+DTEND:20270121T123000Z
+SUMMARY:Studio work · Extension group · TBC
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-21-1@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270121T133000Z
+DTEND:20270121T163000Z
+SUMMARY:Mentoring · Extension group
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-21-2@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270121T180000Z
+DTEND:20270121T190000Z
+SUMMARY:Voice & word Thursday (optional) · Extension group
+LOCATION:Arts Santa Mònica\, Arts Santa Mònica\, La Rambla 7\, Barcelona
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-22-0@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270122T083000Z
+DTEND:20270122T123000Z
+SUMMARY:Studio work · Extension group · TBC
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-22-1@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART:20270122T133000Z
+DTEND:20270122T163000Z
+SUMMARY:Mentoring · Extension group
+DESCRIPTION:Latest times and changes are in the program app.
+END:VEVENT
+BEGIN:VEVENT
+UID:inter27-2027-01-23-0@barnaarts.com
+DTSTAMP:20261119T103608Z
+DTSTART;VALUE=DATE:20270123
+DTEND;VALUE=DATE:20270124
+SUMMARY:Departure: extension group · Extension group
+DESCRIPTION:Check out of Yugo by 10 AM. Be at the airport 2 to 3 hours bef
+ ore your flight.\nLatest times and changes are in the program app.
+END:VEVENT
+END:VCALENDAR

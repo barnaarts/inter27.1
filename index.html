@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interdisciplinary January&#39;27</title>
+<meta name="application-name" content="INTER">
+<meta name="apple-mobile-web-app-title" content="INTER">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#d4442a">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Oswald:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f4ef; --card:#ffffff; --ink:#1b1b1b; --muted:#6b6862; --line:#e4e0d8;
+    --accent:#d4442a; --accent-soft:#fbe9e5;
+    --c-studio:#2f6fdb; --c-guest:#c2398a; --c-outing:#e07b1a; --c-perf:#7b4bd1;
+    --c-talk:#b38a00; --c-show:#d4442a; --c-social:#2e8b57; --c-free:#8a8780; --c-creation:#0f8b8d; --c-travel:#4b5563;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#141413; --card:#1f1f1d; --ink:#f2f0ea; --muted:#a19e96; --line:#33322f; --accent-soft:#3a1f19; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"DM Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  header{position:sticky;top:0;z-index:5;background:var(--accent);color:#fff}
+  .top{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 0;max-width:640px;margin:0 auto}
+  .brand{font-weight:700;letter-spacing:.06em;font-size:13px}
+  .brand span{color:#fff;opacity:.75}
+  .tabs{display:flex;gap:6px}
+  .tab{border:1px solid rgba(255,255,255,.6);background:none;color:#fff;font:inherit;font-size:13px;padding:5px 11px;border-radius:999px;cursor:pointer}
+  .tab.on{background:#fff;color:var(--accent);border-color:#fff;font-weight:700}
+  .days{display:flex;gap:8px;overflow-x:auto;padding:12px 16px 14px;max-width:640px;margin:0 auto;scrollbar-width:none}
+  .days::-webkit-scrollbar{display:none}
+  .daysep{flex:0 0 2px;align-self:stretch;margin:4px 2px;background:rgba(255,255,255,.55);border-radius:2px}
+  .day.out{cursor:pointer}
+  header.nodays .top{padding-bottom:12px}
+  .day{flex:0 0 auto;border:1px solid transparent;background:rgba(255,255,255,.18);color:#fff;border-radius:12px;padding:6px 10px;text-align:center;cursor:pointer;font:inherit;min-width:52px}
+  .day small{display:block;font-size:11px;color:rgba(255,255,255,.85);text-transform:uppercase;letter-spacing:.05em}
+  .day b{font-size:17px}
+  .day.on{border:2px solid #fff;padding:5px 9px;box-shadow:inset 0 0 12px 3px rgba(255,255,255,.75)}
+  .day.today{border:2px solid #ffd84a;padding:5px 9px;animation:todayPulse 2.4s ease-in-out infinite}
+  @keyframes todayPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,210,60,0)}50%{box-shadow:0 0 14px 5px rgba(255,210,60,1)}}
+  .day.ext small{color:#fff}
+  main{max-width:640px;margin:0 auto;padding:14px 16px 60px}
+  h1{font-size:22px;margin:4px 0 2px}
+  .sub{color:var(--muted);font-size:14px;margin:0 0 14px}
+  .ev{display:flex;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px;border-left:4px solid var(--c,var(--c-free))}
+  .ev.hit,.artist.hit{animation:hit 6s ease-in-out 1}
+  @keyframes hit{0%,100%{box-shadow:0 0 0 0 rgba(123,75,209,0)}17%{box-shadow:0 0 22px 8px rgba(123,75,209,.7)}}
+  .ev.now{outline:2px solid var(--accent)}
+  .time{flex:0 0 64px;font-weight:700;font-size:15px;line-height:1.25}
+  .time small{display:block;font-weight:400;color:var(--muted);font-size:13px}
+  .body{flex:1;min-width:0}
+  .title{font-weight:700;font-size:16px;line-height:1.3}
+  .who{font-size:14px;color:var(--muted);margin-top:2px}
+  .where{font-size:14px;margin-top:6px}
+  .tags{margin-top:6px;display:flex;flex-wrap:wrap;gap:5px}
+  .tag{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:6px;background:var(--line);color:var(--muted)}
+  .tag.tbc{background:#fff4d6;color:#8a6200}
+  .tag.opt{background:#e6f4ec;color:#1f6b42}
+  .tag.ext{background:#e3ecfb;color:#1f4fa6}
+  .tag.now{background:var(--accent);color:#fff}
+  @media (prefers-color-scheme: dark){ .tag.tbc{background:#3a3016;color:#f0c75e} .tag.opt{background:#17301f;color:#7fd3a1} .tag.ext{background:#192640;color:#8fb3f2} }
+  .map{display:inline-block;margin-top:8px;font-size:13px;font-weight:700;color:var(--accent);text-decoration:none;border:1px solid var(--accent);border-radius:999px;padding:4px 11px}
+  :root{--link:#7b4bd1;--link-soft:#ffffff}
+  @media (prefers-color-scheme: dark){ :root{--link:#b49bf2;--link-soft:var(--card)} }
+  .alink{display:inline-block;margin:8px 6px 0 0;font-size:13px;font-weight:700;color:var(--link);background:var(--link-soft);text-decoration:none;border:1px solid var(--link);border-radius:999px;padding:4px 11px}
+  .fold{margin:22px 0 10px}
+  .fold summary{list-style:none;cursor:pointer;font-size:16px;font-weight:700;display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+  .fold summary::-webkit-details-marker{display:none}
+  .fold summary::after{content:"▾";color:var(--link,#7b4bd1);font-size:18px;transition:transform .25s}
+  .fold[open] summary::after{transform:rotate(180deg)}
+  .fold[open] summary{border-radius:14px 14px 0 0;border-bottom:none;margin-bottom:0}
+  .fold[open] .card{border-radius:0 0 14px 14px;border-top:none;padding-top:4px;animation:unfold .25s ease}
+  @keyframes unfold{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+  .slide-l{animation:slideL .25s ease}
+  .slide-r{animation:slideR .25s ease}
+  @keyframes slideL{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+  @keyframes slideR{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
+  .lunch{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;margin:4px 2px 14px}
+  .lunch::before,.lunch::after{content:"";flex:1;border-top:1px dashed var(--line)}
+  .ov{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px;margin-bottom:10px}
+  .ov.we{border-left:4px solid var(--we-ink)}
+  .note.ovglow{border:1px solid #f5c518;box-shadow:0 0 14px 4px rgba(240,190,30,.85)}
+  .artist.now,.venue.now{border-color:#f5c518;box-shadow:0 0 14px 4px rgba(240,190,30,.85);position:relative}
+  .todaytag{position:absolute;top:10px;right:10px;z-index:2}
+  .ov.today{border-color:#f5c518;box-shadow:0 0 14px 4px rgba(240,190,30,.85)}
+  .ovd{display:block;font-weight:700;font-size:15px;color:var(--ink);text-decoration:none;margin-bottom:4px}
+  .ovr{display:flex;gap:10px;font-size:14px;color:var(--ink);text-decoration:none;padding:3px 0;border-top:1px solid var(--line)}
+  .ovr small{color:var(--muted)}
+  .ovt{flex:0 0 72px;white-space:nowrap;color:var(--muted);font-variant-numeric:tabular-nums}
+  .cdbox{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:6px 0 14px;text-align:center}
+  .cdbox{cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .callsheet{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;padding:16px}
+  .cs-box{background:var(--card);border-radius:18px;padding:20px;width:100%;max-width:420px;text-align:center;animation:rise .25s ease}
+  .cs-t{font-weight:700;font-size:16px}
+  .cs-n{font-size:56px;font-weight:800;color:#d4442a;letter-spacing:.04em;margin:6px 0}
+  .cs-d{font-size:14px;color:var(--muted);margin-bottom:14px}
+  .cs-x{font:inherit;font-weight:700;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:10px 22px}
+  .flicker{position:fixed;inset:0;z-index:40;pointer-events:none;background:rgba(10,8,6,.86);animation:dimIn .35s ease both}
+  @keyframes dimIn{from{opacity:0}to{opacity:1}}
+  .cdbox.lit{box-shadow:0 0 40px 6px rgba(212,175,55,.45);transition:box-shadow .35s ease}
+  .cdhint{margin-top:10px;font-size:11px;color:var(--muted);letter-spacing:.04em}
+  .cdl{font-weight:700;font-size:15px;margin-bottom:12px}
+  .cdg{display:flex;justify-content:center;align-items:flex-start;gap:6px}
+  .cdu.cdays{margin-right:14px}
+  .colon{font-family:"Oswald","Arial Narrow",sans-serif;font-size:30px;font-weight:500;line-height:40px;padding-top:6px;color:#b8922a;animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:.25}}
+  .cdg small{color:var(--muted);font-size:12px}
+  #totop{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:7;display:block;opacity:0;transform:translateY(70px);pointer-events:none;transition:transform .45s cubic-bezier(.3,1.3,.5,1),opacity .3s ease;font:inherit;font-size:13px;font-weight:700;color:#fff;background:rgba(123,75,209,.5);border:1px solid #fff;border-radius:999px;padding:8px 14px;box-shadow:0 2px 10px rgba(0,0,0,.15);cursor:pointer;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+  #totop.show{opacity:1;transform:none;pointer-events:auto}
+  #totop.show:active{transform:scale(.92)}
+  /* fun bits */
+  .cdu{padding:6px 0 0}
+  .flaps{display:flex;justify-content:center;gap:3px;margin-bottom:6px;perspective:300px}
+  .flap{position:relative;display:inline-block;width:26px;height:40px;font-family:"Oswald","Arial Narrow",sans-serif;font-weight:500;font-size:30px;color:#1b1b1b;border-radius:4px;box-shadow:0 2px 3px rgba(0,0,0,.3);perspective:160px;font-variant-numeric:tabular-nums}
+  .flap .h{position:absolute;left:0;right:0;height:50%;overflow:hidden}
+  .flap .h span{position:absolute;left:0;right:0;height:40px;line-height:40px;text-align:center}
+  .flap .t{top:0;border-radius:4px 4px 0 0;background:linear-gradient(#e9cb6b,#dcb94f)}
+  .flap .b{bottom:0;border-radius:0 0 4px 4px;background:linear-gradient(#cfa83a,#c39b2e)}
+  .flap .t span{top:0}
+  .flap .b span{bottom:0}
+  .flap .ft{z-index:2;transform-origin:bottom;animation:foldTop .22s ease-in forwards;backface-visibility:hidden}
+  .flap .fb{z-index:2;transform-origin:top;transform:rotateX(90deg);animation:foldBot .22s .22s ease-out forwards;backface-visibility:hidden}
+  @keyframes foldTop{to{transform:rotateX(-90deg);filter:brightness(.7)}}
+  @keyframes foldBot{from{transform:rotateX(90deg);filter:brightness(1.2)}to{transform:rotateX(0);filter:none}}
+  .flap::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(0,0,0,.45);z-index:3}
+  @media (prefers-color-scheme: dark){ .flap{box-shadow:0 2px 4px rgba(0,0,0,.6)} }
+  .flip{animation:flip .45s ease}
+  @keyframes flip{0%{transform:rotateX(90deg);opacity:.2}100%{transform:rotateX(0);opacity:1}}
+  .confetti{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:50}
+  #main{overflow-x:clip;min-height:100vh}
+  .reveal{opacity:0;transform:translateY(18px)}
+  .reveal.in{animation:rise .5s ease both;animation-delay:var(--d,0ms)}
+  .artist.reveal.in,.venue.reveal.in,.info .reveal.in{animation:riseFade 1s cubic-bezier(.25,.6,.3,1) both;animation-delay:var(--d,0ms)}
+  @keyframes riseFade{0%{opacity:0;transform:translateY(36px) scale(.98)}100%{opacity:1;transform:none}}
+  .reveal-x{opacity:0;transform:translateX(28px)}
+  .reveal-x.in{animation:slideIn .45s ease both;animation-delay:var(--d,0ms)}
+  @keyframes slideIn{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+  .reveal.hit,.reveal.in.hit{opacity:1;transform:none;animation:hit 6s ease-in-out 1}
+  .big.sos{animation:sos 1.4s ease 1}
+  @keyframes sos{0%{text-shadow:none;transform:scale(1)}30%{text-shadow:0 0 18px rgba(212,68,42,.9);transform:scale(1.15)}100%{text-shadow:none;transform:scale(1)}}
+  .info .big{display:block;width:fit-content;margin-bottom:8px;transform-origin:left center}
+  .ev.rise.hit{animation:hit 6s ease-in-out 1}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .tag.now::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#fff;margin-right:5px;vertical-align:1px;animation:live 1.2s ease-in-out infinite}
+  @keyframes live{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.6)}}
+  .day,.tab,.alink,.map,.links a,.phone a,.nbi a,.ovr{transition:transform .12s ease}
+  .day:active,.tab:active,.alink:active,.map:active,.links a:active,.phone a:active,.nbi a:active,.ovr:active{transform:scale(.92)}
+  @media (prefers-reduced-motion: reduce){ .reveal,.reveal-x{opacity:1!important;transform:none!important} .flip,.reveal.in,.reveal-x.in,.big.sos,.tag.now::before{animation:none!important} }
+  .tag.tt{background:color-mix(in srgb, var(--c) 15%, transparent);color:var(--c);text-transform:none;letter-spacing:0;font-size:12px;border-radius:999px;padding:2px 9px}
+  .tag.upd{background:#7b4bd1;color:#fff;text-transform:none;letter-spacing:0;font-size:12px;border-radius:999px;padding:2px 9px}
+  .day{position:relative}
+  .updot{position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #7b4bd1}
+  .nextup{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border:1px solid var(--line);border-left:4px solid #f5c518;border-radius:14px;padding:10px 14px;margin:0 0 14px}
+  .nextup small{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#b38a00}
+  .nextup b{display:block;font-size:15px}
+  .nextup span{font-size:13px;color:var(--muted)}
+  #help{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:6;transition:transform .45s cubic-bezier(.3,1.1,.5,1),opacity .35s ease}
+  #help summary{list-style:none;cursor:pointer;font-size:13px;font-weight:700;color:#fff;background:rgba(37,163,90,.5);border:1px solid #fff;border-radius:999px;padding:8px 14px;box-shadow:0 2px 10px rgba(0,0,0,.18);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+  #help summary::-webkit-details-marker{display:none}
+  #help.gone{transform:translateY(-60px);opacity:0;pointer-events:none}
+  .helpbox{position:absolute;right:0;bottom:46px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.18);padding:6px;min-width:200px;animation:rise .2s ease}
+  .helpbox a{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;color:var(--ink);text-decoration:none;font-weight:700;font-size:14px}
+  .helpbox a small{font-weight:400;color:var(--muted);font-size:12px}
+  .helpbox a:active{background:var(--bg)}
+  .helpbox a.sos{color:#d4442a;border-top:1px solid var(--line);border-radius:0 0 10px 10px}
+  .walk{display:inline-block;margin-left:6px;font-size:12px;font-weight:500;color:var(--muted)}
+  a.card.sosc{display:block;color:var(--ink);text-decoration:none;border-color:#d4442a;transition:transform .12s ease}
+  a.card.sosc:active{transform:scale(.97)}
+  .callme{display:inline-block;margin-top:8px;font-size:13px;font-weight:700;color:#d4442a}
+  #splash{position:fixed;inset:0;z-index:100;background:var(--accent);display:flex;align-items:center;justify-content:center;transition:opacity .7s ease .1s}
+  #splash .sp-in{text-align:center;animation:splashIn .5s ease both}
+  #splash .sp-w{color:#fff;font-size:18px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;opacity:.9;margin-bottom:10px}
+  #splash img{width:min(70vw,320px);height:auto;display:block;transition:transform .7s cubic-bezier(.5,0,.2,1)}
+  #splash .sp-w{transition:opacity .3s ease}
+  #splash.out .sp-w{opacity:0}
+  #splash.out{opacity:0}
+  @keyframes splashIn{from{transform:scale(.92);opacity:0}to{transform:none;opacity:1}}
+  .ripple{position:fixed;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;pointer-events:none;z-index:90;border:2px solid rgba(123,75,209,.55);background:radial-gradient(circle,rgba(123,75,209,.18),rgba(123,75,209,0) 70%);transform:scale(0);opacity:0;animation:ripple .8s cubic-bezier(.2,.6,.3,1) forwards}
+  .ripple.white,.ripple.white{border-color:rgba(255,255,255,.85);background:radial-gradient(circle,rgba(255,255,255,.25),rgba(255,255,255,0) 70%)}
+  @keyframes ripple{0%{transform:scale(0);opacity:.9}100%{transform:scale(var(--rs,7));opacity:0}}
+  @media (prefers-color-scheme: dark){ .ripple{border-color:rgba(200,180,255,.55);background:radial-gradient(circle,rgba(200,180,255,.18),rgba(200,180,255,0) 70%)} }
+  .note{background:var(--accent-soft);border-radius:12px;padding:10px 14px;font-size:14px;margin-bottom:14px}
+  .info h2{font-size:16px;margin:22px 0 8px}
+  .info .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px;font-size:15px;line-height:1.5}
+  .info .big{font-size:26px;font-weight:700;color:var(--accent)}
+  .foot{color:var(--muted);font-size:12px;text-align:center;margin-top:28px}
+  .empty{color:var(--muted);text-align:center;padding:30px 0}
+  .tabs{flex-wrap:wrap;justify-content:center;width:100%}
+  .top{justify-content:center}
+  .logoband{background:var(--accent);text-align:center;padding:22px 16px 6px}
+  .logoband img{display:block;width:min(340px,80%);height:auto;margin:0 auto}
+  .artist{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:14px;overflow:hidden}
+  .artist .pic{aspect-ratio:3/2;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:700;color:#fff;letter-spacing:.02em;background:var(--c)}
+  .artist .pic img{width:100%;height:100%;object-fit:cover}
+  .artist .in{padding:14px 16px 16px}
+  .artist h3{margin:0;font-size:19px}
+  .artist .role{color:var(--muted);font-size:14px;margin-top:2px}
+  .artist p{font-size:15px;line-height:1.5;margin:10px 0 0}
+  .links{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .links a{font-size:13px;font-weight:700;color:var(--link,#7b4bd1);background:var(--link-soft,#fff);text-decoration:none;border:1px solid var(--link,#7b4bd1);border-radius:999px;padding:5px 12px}
+  .links a.mapl{color:var(--accent);background:transparent;border-color:var(--accent)}
+  .sess{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+  .sess a{font-size:14px;color:var(--accent);text-decoration:none;font-weight:500}
+  .top{flex-wrap:wrap;row-gap:8px}
+  .time{flex-basis:76px}
+  /* Weekend days */
+  :root{--we:#fff1c9;--we-ink:#8a5a00}
+  @media (prefers-color-scheme: dark){ :root{--we:#3a2f14;--we-ink:#f0c75e} }
+  .day.we{background:rgba(0,0,0,.22);border-color:transparent}
+  .day.we small{color:#fff;font-weight:700}
+  .day.we.today{border-color:#ffd84a}
+  .day.we.on{border-color:#fff}
+  .day.today.on{border-color:#fff;animation:todayPulseOn 2.4s ease-in-out infinite}
+  @keyframes todayPulseOn{0%,100%{box-shadow:inset 0 0 12px 3px rgba(255,255,255,.75)}50%{box-shadow:inset 0 0 12px 3px rgba(255,255,255,.75),0 0 0 3px #ffd84a,0 0 18px 7px rgba(255,210,60,1)}}
+  .tag.we{background:var(--we);color:var(--we-ink)}
+  /* Venues + contacts */
+  .venue{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+  .venue h3{margin:0;font-size:18px}
+  .venue{overflow:hidden}
+  .venue .vpic{display:block;width:calc(100% + 32px);margin:-14px -16px 12px;aspect-ratio:9/5;object-fit:cover}
+  .venue p{font-size:15px;line-height:1.5;margin:6px 0 0}
+  .venue .addr{font-size:14px;color:var(--muted);margin-top:6px}
+  .phone{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+  .phone:first-of-type{border-top:none}
+  .phone .num{font-size:18px;font-weight:700;letter-spacing:.02em}
+  .phone a{font-size:13px;font-weight:700;color:var(--link);background:var(--link-soft);text-decoration:none;border:1px solid var(--link);border-radius:999px;padding:4px 11px;white-space:nowrap}
+  .mapbox{overflow:auto;border:1px solid var(--line);border-radius:14px;background:#fff;-webkit-overflow-scrolling:touch}
+  .mapbox img{display:block;width:100%}
+  .mapbox.zoom img{width:260%}
+  .nb h2{font-size:17px;margin:24px 0 4px}
+  .nb h4{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:16px 0 6px}
+  .nbi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;display:flex;justify-content:space-between;gap:10px;align-items:center}
+  .nbi b{font-size:15px}.nbi .who{font-size:13px}
+  .nbi a{font-size:12px;font-weight:700;color:var(--accent);text-decoration:none;border:1px solid var(--accent);border-radius:999px;padding:4px 10px;white-space:nowrap}
+</style>
+</head>
+<body>
+<div id="splash"><div class="sp-in"><div class="sp-w">Welcome to</div><img src="img/logo.png" alt="BARNA ARTS"></div></div>
+<script>setTimeout(function(){var s=document.getElementById("splash");if(!s)return;
+var a=s.querySelector("img"),b=document.querySelector(".logoband img");
+if(a&&b){var ra=a.getBoundingClientRect(),rb=b.getBoundingClientRect();
+ if(rb.width>0){var k=rb.width/ra.width,dx=(rb.left+rb.width/2)-(ra.left+ra.width/2),dy=(rb.top+rb.height/2)-(ra.top+ra.height/2);
+ a.style.transform="translate("+dx+"px,"+dy+"px) scale("+k+")";}}
+s.classList.add("out");setTimeout(function(){s.remove()},750)},1000);</script>
+<div class="logoband">
+  <img src="img/logo.png" alt="BARNA ARTS">
+</div>
+<header>
+  <div class="top">
+    <div class="tabs">
+      <button class="tab on" data-view="schedule">Schedule</button>
+      <button class="tab" data-view="artists">Artists</button>
+      <button class="tab" data-view="venues">Venues</button>
+      <button class="tab" data-view="nearby">Nearby</button>
+      <button class="tab" data-view="info">Info</button>
+    </div>
+  </div>
+  <nav class="days" id="days"></nav>
+</header>
+<main id="main"></main>
+<details id="help"><summary aria-label="Help">Help</summary><div class="helpbox">
+  <a href="https://wa.me/34689130137" target="_blank" rel="noopener">Albert<small>+34 689 130 137</small></a>
+  <a href="https://wa.me/34696504487" target="_blank" rel="noopener">Katie<small>+34 696 504 487</small></a>
+  <a href="https://wa.me/19542243117" target="_blank" rel="noopener">Ale<small>WhatsApp only</small></a>
+  <a class="sos" href="tel:112" data-tel="112">🚨 Emergency 112</a></div></details>
+<button id="totop" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Top</button>
+
+<script>
+const UPDATED = "18 Nov 2026";
+
+// Venues: name + address used for the map link.
+// g = groups rooms of the same building on the Venues tab; d = description for the Venues tab
+const V = {
+  yugo:     {n:"Yugo Barcelona Port", a:"Yugo Barcelona Port, C/ Portal de Santa Madrona 28, Barcelona", home:1,
+             d:"Your home in Barcelona: a student residence near the bottom of La Rambla, right next to Arts Santa Mònica and a short walk from the sea. Shared kitchens for cooking, plus common rooms and study spaces."},
+  pedrera:  {n:"La Pedrera (Casa Milà)", w:"https://www.lapedrera.com/en", a:"La Pedrera, Pg. de Gràcia 92, Barcelona",
+             d:"Gaudí's last private house, with its waving stone façade and rooftop of sculpted chimneys."},
+  batllo:   {n:"Casa Batlló", w:"https://www.casabatllo.es/en/", a:"Casa Batlló, Pg. de Gràcia 43, Barcelona",
+             d:"Gaudí's remodelled townhouse, full of curves, coloured glass and sea-inspired forms."},
+  brujas:   {n:"Las Brujas Flamenco Club", w:"https://lasbrujasflamenco.com/", a:"Las Brujas Flamenco Club, C/ de la Mercè 31, Barcelona",
+             d:"A small flamenco club in a 17th-century cellar in the Gothic Quarter, close to Jaume I and Barceloneta metro stations."},
+  caldera:  {n:"La Caldera", w:"https://www.lacaldera.info", a:"La Caldera, C/ Eugeni d'Ors 12, Barcelona",
+             d:"A dance and performing-arts creation centre in Les Corts. Our main studio from 14 to 17 January, and where the final presentation happens."},
+  santam:   {n:"Arts Santa Mònica", w:"https://www.santamonica.cat", a:"Arts Santa Mònica, La Rambla 7, Barcelona",
+             d:"A contemporary art centre at the bottom of La Rambla, by the sea. Exhibitions, workshops and evening events in the Sala Bar."},
+  santambar:{n:"Arts Santa Mònica — Sala Bar", a:"Arts Santa Mònica, La Rambla 7, Barcelona", g:"santam"},
+  santamact:{n:"Arts Santa Mònica — Sala d'actes", a:"Arts Santa Mònica, La Rambla 7, Barcelona", g:"santam"},
+  visiva:   {n:"La Visiva", w:"https://www.lavisiva.org", a:"C/ Sepúlveda 85, Barcelona",
+             d:"A creation space focused on the languages of the body. Entrance at the ground floor, right-hand door."},
+  piconera: {n:"La Piconera", w:"https://www.lapiconeradesolpico.com", a:"C/ Sancho Marraco 6, Barcelona",
+             d:"The home of choreographer Sol Picó's dance company, in Poble-sec, with two rehearsal studios."},
+  joaquin:  {n:"Joaquín Jara's studio", w:"https://joaquinjara.net", a:"Rambla del Raval 49, Barcelona",
+             d:"The artist's home studio in the Raval neighbourhood."},
+  raro:     {n:"Casa R.A.R.O.", w:"https://www.esrarobarcelona.com/en", a:"C/ Jaume Giralt 49, Barcelona",
+             d:"An artist-run space in the old town with shared studios, an artists' residency and a gallery."},
+  servei:   {n:"Servei Estació", w:"https://www.serveiestacio.com", a:"Servei Estació, C/ Aragó 270, Barcelona",
+             d:"A big materials and hardware store, a favourite of Barcelona's artists and designers."},
+  lliure:   {n:"Teatre Lliure Montjuïc — Sala Fabià Puigserver", w:"https://www.teatrelliure.com", a:"Teatre Lliure Montjuïc, Pg. de Santa Madrona 40, Barcelona",
+             d:"One of Barcelona's main theatres, on Montjuïc hill."},
+  mercat:   {n:"Mercat de les Flors", w:"https://mercatflors.cat", a:"Mercat de les Flors, C/ Lleida 59, Barcelona",
+             d:"Barcelona's dance house, on Montjuïc hill, next to the Teatre Lliure."},
+  filmo:    {n:"Filmoteca de Catalunya", w:"https://www.filmoteca.cat", a:"Filmoteca de Catalunya, Pl. de Salvador Seguí 1, Barcelona",
+             d:"Catalonia's film archive, with cinemas and exhibitions, in the Raval."},
+  tapies:   {n:"Museu Tàpies", w:"https://museutapies.org", a:"Museu Tàpies, C/ Aragó 255, Barcelona",
+             d:"A museum dedicated to the Catalan artist Antoni Tàpies."},
+  upf:      {n:"Sala Reflexió (within Pompeu Fabra University)", w:"https://www.upf.edu/web/campus/sala-de-reflexio", a:"Universitat Pompeu Fabra, C/ Ramon Trias Fargas 25-27, Barcelona", show:1,
+             d:"A quiet room for reflection designed with Antoni Tàpies, in the Jaume I building of Pompeu Fabra University's Ciutadella campus. While the Museu Tàpies is closed, we meet the museum team here."},
+  macba:    {n:"MACBA", w:"https://www.macba.cat", a:"MACBA, Plaça dels Àngels 1, Barcelona",
+             d:"Barcelona's Museum of Contemporary Art, in the Raval. Visit on the evenings marked in the schedule."},
+};
+
+// t: type → colour. opt = optional, tbc = to be confirmed, ext = extension group only
+const S = {
+"2027-01-06":[
+  {s:"",e:"",title:"Fly to Barcelona",t:"travel"}],
+"2027-01-07":[
+  {s:"14:30",e:"17:30",title:"Arrival · check-in · welcome gathering",who:"Yugo rooms are ready from 3 PM",v:"yugo",t:"social"},
+  {s:"18:00",e:"21:00",title:"Welcome drink & ice-breaker games",who:"In a private room at Yugo",v:"yugo",t:"social"}],
+"2027-01-08":[
+  {s:"10:00",e:"13:00",title:"Collaborating Strategies workshop",who:"Albert Quesada & Katie Vickers",v:"visiva",t:"workshop",ar:"Albert Quesada & Katie Vickers"},
+  {s:"14:00",e:"18:00",title:"Guided city tour",who:"with Catalina Girona · meet in the Yugo foyer",v:"yugo",t:"outing",ar:"Catalina Girona"},
+  {s:"19:00",e:"",title:"Evening on your own",t:"free"}],
+"2027-01-09":[
+  {s:"10:00",e:"14:00",title:"Movement & physical theatre workshop",who:"Los Informalls (Luis García & Pere Joseph)",v:"piconera",t:"guest",ar:"Los Informalls"},
+  {s:"16:30",e:"17:30",title:"Taller Estampa exhibition",v:"filmo",t:"outing",ar:"Taller Estampa"},
+  {s:"19:00",e:"20:15",title:"Performance: Dimanche",who:"Focus & Chaliwaté · Visual theatre without words",v:"lliure",t:"perf",link:["Show info","https://www.teatrelliure.com/en/dimanche"]}],
+"2027-01-10":[
+  {s:"09:30",e:"11:00",title:"Gaudí: La Pedrera",v:"pedrera",t:"outing",link:["Web","https://www.lapedrera.com/en"]},
+  {s:"11:30",e:"13:00",title:"Gaudí: Casa Batlló",v:"batllo",t:"outing",link:["Web","https://www.casabatllo.es/en/"]},
+  {s:"14:00",e:"17:00",title:"Music session with Núria Andorrà",who:"Percussion, improvisation and listening",t:"guest",ar:"Núria Andorrà"},
+  {s:"18:00",e:"20:00",title:"Talk with Joaquín Jara",v:"joaquin",t:"talk",ar:"Joaquín Jara"}],
+"2027-01-11":[
+  {s:"10:00",e:"13:00",title:"Hands-on materials workshop: clay, mud, paint",who:"Joaquín Jara",v:"joaquin",t:"guest",ar:"Joaquín Jara"},
+  {s:"14:00",e:"17:00",title:"Tour & talk",who:"with Darryl Eisden",t:"outing",tbc:1,ar:"Darryl Eisden"},
+  {s:"20:00",e:"22:00",title:"Cinema evening",v:"filmo",t:"perf",tbc:1,link:["Web","https://www.filmoteca.cat/"]}],
+"2027-01-12":[
+  {s:"10:00",e:"13:00",title:"Visual arts session with a guest artist",v:"raro",t:"guest",tbc:1},
+  {s:"14:00",e:"15:00",title:"Museu Tàpies session: talk",who:"With Maria Sellarès (Museu Tàpies), while the museum is closed for works",v:"upf",t:"talk",ar:"Maria Sellarès",links:[["Texts (4)","https://museutapies.org/en/blog/lectures/"],["Video (1h)","https://www.youtube.com/watch?v=9Z2GhLfCpDE"]]},
+  {s:"15:00",e:"17:00",title:"Workshop on Tàpies",v:"upf",t:"workshop"},
+  {s:"19:00",e:"20:00",title:"Video Tuesday",v:"santambar",t:"perf",opt:1,link:["Arts Santa Mònica","https://www.santamonica.cat"]},
+  {s:"20:00",e:"21:00",title:"Flamenco at Las Brujas",who:"Live flamenco in a 17th-century cellar in the Gothic Quarter",v:"brujas",t:"perf",link:["Las Brujas","https://lasbrujasflamenco.com/"]}],
+"2027-01-13":[
+  {s:"11:00",e:"12:00",title:"Guided exhibition visit",v:"santam",t:"outing"},
+  {s:"13:00",e:"16:00",title:"Mixed-media collaboration workshop",who:"Núria Guiu",v:"santamact",t:"workshop",ar:"Núria Guiu"},
+  {s:"16:30",e:"17:30",title:"Visit: Servei Estació",v:"servei",t:"outing"},
+  {s:"19:00",e:"20:00",title:"Sound & body Wednesday",v:"santambar",t:"perf",opt:1,link:["Arts Santa Mònica","https://www.santamonica.cat"]},
+  {s:"20:00",e:"22:00",title:"Concert",t:"perf",tbc:1}],
+"2027-01-14":[
+  {s:"10:00",e:"13:00",title:"Collaborating sessions",v:"caldera",t:"creation"},
+  {s:"14:00",e:"17:00",title:"Collaborating sessions",v:"caldera",t:"creation"},
+  {s:"18:00",e:"20:00",title:"MACBA",v:"macba",t:"free",opt:1},
+  {s:"19:00",e:"20:00",title:"Voice & word Thursday",v:"santambar",t:"perf",opt:1,link:["Arts Santa Mònica","https://www.santamonica.cat"]}],
+"2027-01-15":[
+  {s:"10:00",e:"13:00",title:"Warm-up + collaborating sessions",v:"caldera",t:"creation"},
+  {s:"14:00",e:"17:00",title:"Collaborating sessions",v:"caldera",t:"creation"},
+  {s:"18:00",e:"19:15",title:"MACBA",v:"macba",t:"free",opt:1},
+  {s:"20:00",e:"21:30",title:"Performance: Mette Ingvartsen — RUSH",who:"Solo performed by Manon Santkin · Ages 16+",v:"mercat",t:"perf",link:["Show info","https://mercatflors.cat/espectacle/rush/"]}],
+"2027-01-16":[
+  {s:"10:00",e:"13:00",title:"Final presentation",v:"caldera",t:"show"},
+  {s:"14:00",e:"17:00",title:"Final presentation",v:"caldera",t:"show"},
+  {s:"18:00",e:"20:00",title:"MACBA",v:"macba",t:"free",opt:1}],
+"2027-01-17":[
+  {s:"10:00",e:"14:00",title:"Free morning",who:"Time to pack and relax",t:"free"},
+  {s:"14:00",e:"17:00",title:"Final group practice & reflection",v:"caldera",t:"workshop"},
+  {s:"17:00",e:"19:00",title:"Goodbye dinner",v:"caldera",t:"social"}],
+"2027-01-18":[
+  {s:"",e:"",title:"Departure: core group",who:"Check out of Yugo by 10 AM. Be at the airport 2 to 3 hours before your flight.",t:"travel"},
+  {s:"09:30",e:"13:30",title:"Studio work",t:"studio",ext:1,tbc:1},
+  {s:"14:30",e:"17:30",title:"Mentoring",t:"talk",ext:1}],
+"2027-01-19":[
+  {s:"09:30",e:"13:30",title:"Studio work",t:"studio",ext:1,tbc:1},
+  {s:"14:30",e:"17:30",title:"Mentoring",t:"talk",ext:1},
+  {s:"19:00",e:"20:00",title:"Video Tuesday",v:"santambar",t:"perf",ext:1,opt:1,link:["Arts Santa Mònica","https://www.santamonica.cat"]}],
+"2027-01-20":[
+  {s:"09:30",e:"13:30",title:"Studio work",t:"studio",ext:1,tbc:1},
+  {s:"14:30",e:"17:30",title:"Mentoring",t:"talk",ext:1},
+  {s:"19:00",e:"20:00",title:"Sound & body Wednesday",v:"santambar",t:"perf",ext:1,opt:1,link:["Arts Santa Mònica","https://www.santamonica.cat"]}],
+"2027-01-21":[
+  {s:"09:30",e:"13:30",title:"Studio work",t:"studio",ext:1,tbc:1},
+  {s:"14:30",e:"17:30",title:"Mentoring",t:"talk",ext:1},
+  {s:"19:00",e:"20:00",title:"Voice & word Thursday",v:"santambar",t:"perf",ext:1,opt:1,link:["Arts Santa Mònica","https://www.santamonica.cat"]}],
+"2027-01-22":[
+  {s:"09:30",e:"13:30",title:"Studio work",t:"studio",ext:1,tbc:1},
+  {s:"14:30",e:"17:30",title:"Mentoring",t:"talk",ext:1}],
+"2027-01-23":[
+  {s:"",e:"",title:"Departure: extension group",who:"Check out of Yugo by 10 AM. Be at the airport 2 to 3 hours before your flight.",t:"travel",ext:1}],
+};
+
+const COL = {studio:"--c-studio",workshop:"--c-studio",guest:"--c-guest",outing:"--c-outing",perf:"--c-perf",
+  talk:"--c-talk",show:"--c-show",social:"--c-social",free:"--c-free",travel:"--c-travel",creation:"--c-creation"};
+const EMO = {studio:"🩰",workshop:"🎨",guest:"🌟",outing:"🚶",perf:"🎭",talk:"💬",show:"✨",social:"🥂",free:"☕",travel:"✈️",creation:"🌱"};
+const LABEL = {studio:"Studio",workshop:"Workshop",guest:"Workshop",outing:"Outing",perf:"Performance",
+  talk:"Talk",show:"Showing",social:"Social",free:"Own time",travel:"Travel",creation:"Creation"};
+
+const dates = Object.keys(S).sort();
+const extOnly = d => S[d].every(x => x.ext);
+const fmt = (d,o) => new Date(d+"T12:00:00").toLocaleDateString("en-US",o);
+
+// Current date/time in Barcelona
+function bcnNow(){
+  const p = new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/Madrid",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false})
+    .formatToParts(new Date()).reduce((o,x)=>(o[x.type]=x.value,o),{});
+  return {date:`${p.year}-${p.month}-${p.day}`, time:`${p.hour==="24"?"00":p.hour}:${p.minute}`};
+}
+const now = bcnNow();
+const todayInProgram = dates.includes(now.date);
+
+let view = "schedule";
+let current = null;
+
+function dayFromHash(){
+  const m = location.hash.match(/^#jan-(\d{1,2})(?:-\d+)?$/);
+  if(m){ const d = `2027-01-${m[1].padStart(2,"0")}`; if(S[d]) return d; }
+  if(location.hash==="#info") return "info";
+  if(location.hash==="#overview") return "overview";
+  if(location.hash==="#today") return outside() ? "today" : now.date;
+  if(location.hash==="#artists"||location.hash.startsWith("#artist-")) return "artists";
+  if(location.hash==="#venues") return "venues";
+  if(location.hash==="#nearby") return "nearby";
+  return null;
+}
+
+// "13:30" → "1:30 PM"
+function t12(hm){
+  if(!hm) return "";
+  let [h,m] = hm.split(":").map(Number);
+  const ap = h>=12 ? "PM" : "AM";
+  h = h%12 || 12;
+  return `${h}${m?":"+String(m).padStart(2,"0"):""} ${ap}`;
+}
+const isWeekend = d => [0,6].includes(new Date(d+"T12:00:00").getDay());
+
+function closestDay(){
+  const t = new Date(now.date+"T12:00:00");
+  return dates.reduce((best,d)=>Math.abs(new Date(d+"T12:00:00")-t) < Math.abs(new Date(best+"T12:00:00")-t) ? d : best, dates[0]);
+}
+
+function outside(){ return now.date<dates[0] || now.date>dates[dates.length-1]; }
+// Live countdown to 00:00 on the first day, Barcelona time (CET, UTC+1 in January)
+const START = new Date(dates[0]+"T00:00:00+01:00");
+function cdParts(){
+  let s = Math.max(0, Math.floor((START - Date.now())/1000));
+  const d=Math.floor(s/86400); s%=86400; const hh=Math.floor(s/3600); s%=3600; const mm=Math.floor(s/60); s%=60;
+  return {d,hh,mm,ss:s};
+}
+function cdText(){ const p=cdParts(); return `${p.d} days · ${p.hh} h · ${p.mm} min · ${p.ss} s`; }
+function countdownText(){
+  const last=dates[dates.length-1];
+  const gap=(a,b)=>Math.round((new Date(b+"T12:00:00")-new Date(a+"T12:00:00"))/864e5);
+  if(now.date<dates[0]) return `<b><span class="cd">${cdText()}</span> to go</b><br>`;
+  if(now.date>last){ const n=gap(last,now.date); return `<b>${n} ${n===1?"day":"days"} since the program</b><br>`; }
+  return "";
+}
+function renderToday(){
+  let html = `<h1>${fmt(now.date,{weekday:"long",month:"long",day:"numeric"})}</h1><p class="sub">Today</p>`;
+  if(now.date<dates[0]){
+    const p=cdParts();
+    html += `<div class="cdbox"><div class="cdl">Countdown to ${fmt(dates[0],{weekday:"short",month:"short",day:"numeric"})}</div>
+      <div class="cdg">${[["d","days"],["hh","hours"],["mm","min"],["ss","sec"]].map(([k,l],i)=>(i>1?`<div class="colon">:</div>`:"")+`<div class="cdu${i===0?" cdays":""}"><div class="flaps" data-k="${k}">${flapHTML(p[k])}</div><small>${l}</small></div>`).join("")}</div><div class="cdhint">Tap the board</div></div>
+      <p class="sub" style="text-align:center">Swipe left or tap a date to see the program.</p>`;
+  } else {
+    html += `<div class="cdbox"><div class="cdl">The program has ended. Thank you for being part of it!</div></div>`;
+  }
+  return html;
+}
+setInterval(()=>{
+  if(!(now.date<dates[0])) return;
+  const p=cdParts();
+  document.querySelectorAll(".cd").forEach(e=>e.textContent=cdText());
+  if(!shuffling) document.querySelectorAll(".flaps").forEach(box=>{
+    const s=String(p[box.dataset.k]).padStart(2,"0"), tiles=box.querySelectorAll(".flap");
+    if(tiles.length!==s.length){ box.innerHTML=flapHTML(p[box.dataset.k]); return; }
+    tiles.forEach((t,i)=>{ if(t.dataset.v!==s[i]) setFlap(t,s[i]); });
+  });
+  if(START-Date.now()<=10000 && !zeroFired && document.querySelector(".cdbox")){ zeroFired=true; confetti(); }
+},1000);
+let zeroFired=false;
+
+const flapStatic = c => `<div class="h t"><span>${c}</span></div><div class="h b"><span>${c}</span></div>`;
+// Tap the countdown: the whole board shuffles like a departures board, then lands on the real time
+let shuffling=false;
+document.addEventListener("click",e=>{
+  if(!e.target.closest(".cdbox") || shuffling) return;
+  shuffling=true;
+  if(!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)){
+    const fx=document.createElement("div"); fx.className="flicker"; document.body.appendChild(fx);
+    const box=document.querySelector(".cdbox"); if(box) box.classList.add("lit");
+    const hole=()=>{ if(!box) return; const b=box.getBoundingClientRect(), W=innerWidth, H=innerHeight, rr=16;
+      const x=b.left,y=b.top,w=b.width,hh=b.height;
+      const d=`M0 0H${W}V${H}H0Z M${x+rr} ${y}H${x+w-rr}A${rr} ${rr} 0 0 1 ${x+w} ${y+rr}V${y+hh-rr}A${rr} ${rr} 0 0 1 ${x+w-rr} ${y+hh}H${x+rr}A${rr} ${rr} 0 0 1 ${x} ${y+hh-rr}V${y+rr}A${rr} ${rr} 0 0 1 ${x+rr} ${y}Z`;
+      fx.style.clipPath=`path(evenodd, "${d}")`; fx.style.webkitClipPath=`path(evenodd, "${d}")`; };
+    hole(); addEventListener("scroll",hole,{passive:true}); addEventListener("resize",hole);
+    setTimeout(()=>{ removeEventListener("scroll",hole); removeEventListener("resize",hole); }, 7*230+1900);
+    const fadeMs=7*230+900;
+    setTimeout(()=>{ const o=getComputedStyle(fx).opacity; fx.style.animation="none"; fx.style.opacity=o; void fx.offsetWidth;
+      fx.style.transition=`opacity ${fadeMs}ms cubic-bezier(.4,0,.2,1)`; fx.style.opacity="0";
+      if(box){ box.style.transition=`box-shadow ${fadeMs}ms ease`; box.classList.remove("lit"); }
+      setTimeout(()=>{ fx.remove(); if(box) box.style.transition=""; },fadeMs+50); }, 900);
+  }
+  if(navigator.vibrate){ try{ navigator.vibrate([10,40,10,40,10]); }catch(_){} }
+  const tiles=[...document.querySelectorAll(".cdbox .flap")];
+  const STEP=110, FIRST=900, GAP=230;
+  const real=t=>{ const box=t.closest(".flaps"), p=cdParts(), s=String(p[box.dataset.k]).padStart(2,"0"); return s[[...box.querySelectorAll(".flap")].indexOf(t)]; };
+  tiles.forEach((t,i)=>{
+    const stop=FIRST+i*GAP;
+    // flips start fast and slow down as the tile approaches its landing
+    const times=[]; let ms=stop, step=260; while(ms>i*30+STEP){ ms-=step; times.push(ms); step=Math.max(STEP*0.8, step*0.78); }
+    times.forEach(tm=>setTimeout(()=>setFlap(t,String(Math.floor(Math.random()*10))), tm));
+    setTimeout(()=>setFlap(t,real(t)), stop);   // this tile lands, then the next one
+  });
+  const longest=FIRST+(tiles.length-1)*GAP+500;
+  setTimeout(()=>{ shuffling=false; }, longest);
+});
+function flapHTML(n){ return String(n).padStart(2,"0").split("").map(c=>`<span class="flap" data-v="${c}">${flapStatic(c)}</span>`).join(""); }
+// Split-flap: the top half of the old digit folds down onto the new bottom half
+function setFlap(t,nv){
+  const ov=t.dataset.v; t.dataset.v=nv;
+  if(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches){ t.innerHTML=flapStatic(nv); return; }
+  t.innerHTML=`<div class="h t"><span>${nv}</span></div><div class="h b"><span>${ov}</span></div><div class="h t ft"><span>${ov}</span></div><div class="h b fb"><span>${nv}</span></div>`;
+  clearTimeout(t._tm); t._tm=setTimeout(()=>{ if(t.dataset.v===nv) t.innerHTML=flapStatic(nv); },480);
+}
+
+// Lightweight confetti burst
+function confetti(){
+  if(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const c=document.createElement("canvas"); c.className="confetti"; document.body.appendChild(c);
+  const x=c.getContext("2d"), W=c.width=innerWidth*devicePixelRatio, H=c.height=innerHeight*devicePixelRatio;
+  const cols=["#d4442a","#f5c518","#7b4bd1","#ffffff","#2e8b57","#ff8fb1"];
+  const P=Array.from({length:140},()=>({x:W/2+(Math.random()-.5)*W*.3,y:H*.35,vx:(Math.random()-.5)*W*.02,vy:-Math.random()*H*.022-H*.006,s:(6+Math.random()*6)*devicePixelRatio,r:Math.random()*6,vr:(Math.random()-.5)*.3,c:cols[Math.random()*cols.length|0]}));
+  let t=0; (function f(){ t++; x.clearRect(0,0,W,H);
+    P.forEach(p=>{ p.vy+=H*.0006; p.vx*=.99; p.x+=p.vx; p.y+=p.vy; p.r+=p.vr; x.save(); x.translate(p.x,p.y); x.rotate(p.r); x.fillStyle=p.c; x.globalAlpha=Math.max(0,1-t/170); x.fillRect(-p.s/2,-p.s/4,p.s,p.s/2); x.restore(); });
+    if(t<170) requestAnimationFrame(f); else c.remove(); })();
+}
+
+let navInit=false;
+function renderDays(){
+  const nav = document.getElementById("days");
+  const showBar = view==="schedule"||view==="today";
+  nav.style.display = showBar ? "flex" : "none";
+  document.querySelector("header").classList.toggle("nodays", !showBar);
+  let html = dates.map(d=>{
+    const cls = ["day", (view==="schedule"&&d===current)?"on":"", d===now.date?"today":"", extOnly(d)?"ext":"", isWeekend(d)?"we":""].join(" ");
+    return `<button class="${cls}" data-d="${d}">${dayFresh(d)?'<i class="updot"></i>':''}<small>${fmt(d,{weekday:"short"})}</small><b>${+d.slice(8)}</b></button>`;
+  }).join("");
+  // Outside the program: a "today" chip before or after the dates, with a bar if not contiguous
+  const first=dates[0], last=dates[dates.length-1];
+  const gap=(a,b)=>Math.round((new Date(b+"T12:00:00")-new Date(a+"T12:00:00"))/864e5);
+  if(now.date<first || now.date>last){
+    const before = now.date<first, n = before ? gap(now.date,first) : gap(last,now.date);
+    const chip = `<div class="day today out${view==="today"?" on":""}" title="Today"><small>${fmt(now.date,{month:"short"})}</small><b>${+now.date.slice(8)}</b></div>`;
+    const sep = n>1 ? `<span class="daysep"></span>` : "";
+    html = before ? chip+sep+html : html+sep+chip;
+  }
+  const keepX = nav.scrollLeft;
+  nav.innerHTML = html;
+  nav.scrollLeft = keepX;
+  const tc = nav.querySelector(".day.out"); if(tc) tc.onclick=()=>{ location.hash="today"; };
+  nav.querySelectorAll(".day[data-d]").forEach(b=>b.onclick=()=>{location.hash="jan-"+(+b.dataset.d.slice(8));});
+  const on = nav.querySelector(".on");
+  if(on){ // only scroll if the selected date is off-screen; centre it just on first load
+    const nr=nav.getBoundingClientRect(), br=on.getBoundingClientRect();
+    if(!navInit){ nav.scrollLeft += (br.left+br.width/2) - (nr.left+nr.width/2); navInit=true; }
+    else if(br.left<nr.left+8) nav.scrollLeft -= (nr.left+8-br.left);
+    else if(br.right>nr.right-8) nav.scrollLeft += (br.right-(nr.right-8));
+  }
+}
+
+// Street part of the address: drop the leading venue name and the city
+function street(v){
+  const parts = v.a.split(", ").filter(p=>p!=="Barcelona");
+  if(parts.length>1 && /[A-Za-zÀ-ÿ]/.test(parts[0]) && !/^(C\/|Pg\.|Pl\.|Plaça|La Rambla|Rambla)/.test(parts[0])) parts.shift();
+  return parts.join(", ");
+}
+
+function mapLink(addr){
+  return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(addr);
+}
+
+// Link to one event: #jan-D-i (i = index in S[date])
+function evLink(d,test){
+  const i = S[d] ? S[d].findIndex(test) : -1;
+  return `#jan-${+d.slice(8)}${i>=0?"-"+i:""}`;
+}
+function slug(s){ return s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""); }
+function artistChips(name){
+  const a = ARTISTS.find(z=>z.name===name); if(!a) return "";
+  const btn = (href,label,ext)=>`<a class="alink" href="${href}"${ext?' target="_blank" rel="noopener"':''}>${label}</a>`;
+  return `<div>${btn("#artist-"+slug(a.name),"Artist",false)}${a.site?btn(a.site,"Web ↗",true):""}${a.ig?btn("https://instagram.com/"+a.ig,"IG ↗",true):""}</div>`;
+}
+
+const toM = t=>t?(+t.slice(0,2))*60+(+t.slice(3)):null;
+// Lunch (gap starting 11:30–15:00) and dinner (gap starting 17:00+, next thing at 7 PM or later), at least 45 min
+function breaksFor(items){
+  const out = {}; let maxEnd = null, lunch=false, dinner=false;
+  for(let i=0;i<items.length-1;i++){
+    const a=items[i]; if(a.e){ const m=toM(a.e); if(maxEnd===null||m>maxEnd[0]) maxEnd=[m,a.e]; }
+    const b=items[i+1]; if(!maxEnd||!b.s) continue;
+    const g0=maxEnd[0], g1=toM(b.s); if(g1-g0<45) continue;
+    if(!lunch && g0>=690 && g0<=900){ out[i]=`🥪 Lunch break · ${t12(maxEnd[1])} – ${t12(b.s)}`; lunch=true; }
+    else if(!dinner && g0>=1020 && g1>=1080 && b.t!=="free"){ out[i]=`🍝 Dinner break · ${t12(maxEnd[1])} – ${t12(b.s)}`; dinner=true; }
+  }
+  return out;
+}
+
+function ovNote(){
+  const first=dates[0], last=dates[dates.length-1];
+  const days = (a,b)=>Math.round((new Date(b+"T12:00:00")-new Date(a+"T12:00:00"))/864e5);
+  const today = fmt(now.date,{weekday:"short",month:"short",day:"numeric"});
+  if(now.date<first){ const n=days(now.date,first); return `<div class="note ovglow">Today is ${today}. The program starts in <b>${n} day${n===1?"":"s"}</b>.</div>`; }
+  if(now.date>last) return `<div class="note ovglow">Today is ${today}. The program has ended.</div>`;
+  return "";
+}
+
+function artistToday(a){
+  return (S[now.date]||[]).some(x=>x.ar===a.name) || (a.sess||[]).some(([d])=>d===now.date);
+}
+
+function renderOverview(){
+  const cd = current||closestDay();
+  return `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h1 style="margin-bottom:0">All days</h1><a class="alink" style="margin:0;white-space:nowrap" href="#jan-${+cd.slice(8)}">← ${fmt(cd,{weekday:"short",month:"short",day:"numeric"})}</a></div><p class="sub" style="margin-top:6px">Tap a day or a session to open it.</p>${ovNote()}${ON_GH?`<div style="margin:-4px 0 14px"><a class="alink" style="margin:0" href="program.ics">📅 Add the program to your calendar</a><p class="who" style="font-size:12px;margin:6px 0 0">One-time copy: if times change, this app has the latest.</p></div>`:""}` + dates.map(d=>{
+    const items=[...S[d]].sort((a,b)=>(a.s||"00:00").localeCompare(b.s||"00:00"));
+    const isNow = d===now.date;
+    return `<div class="ov${isWeekend(d)?" we":""}${isNow?" today":""}"${isNow?' id="ov-now"':''}>
+      <a class="ovd" href="#jan-${+d.slice(8)}">${fmt(d,{weekday:"short",month:"short",day:"numeric"})}${extOnly(d)?' <span class="tag ext">Extension</span>':''}${d===now.date?' <span class="tag now">Today</span>':''}</a>
+      ${items.map(x=>`<a class="ovr" href="#jan-${+d.slice(8)}-${S[d].indexOf(x)}"><span class="ovt">${x.s?t12(x.s):"All day"}</span><span>${EMO[x.t]||""} ${x.title}${x.opt?' <small>· optional</small>':''}${x.tbc?' <small>· TBC</small>':''}</span></a>`).join("")}
+    </div>`;}).join("");
+}
+
+// ---- Next up (during the program, on today's page)
+function nextUp(){
+  const its=(S[now.date]||[]).filter(x=>x.s).sort((a,b)=>a.s.localeCompare(b.s));
+  const cur=its.find(x=>x.e && now.time>=x.s && now.time<x.e);
+  const nx=its.find(x=>x.s>now.time);
+  const show=(x,lbl)=>{ const v=x.v?V[x.v]:null;
+    const dir=v&&v.a?`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(V.yugo.a)}&destination=${encodeURIComponent(v.a)}&travelmode=transit`:"";
+    return `<div class="nextup"><div><small>${lbl}</small><b>${x.title}</b><span>${t12(x.s)}${v?` · ${v.n.split(" — ")[0]}`:""}</span></div>${dir?`<a class="map" style="margin:0" href="${dir}" target="_blank" rel="noopener">Route →</a>`:""}</div>`; };
+  if(nx) return show(nx, cur?"Next, after this":"Next up");
+  if(cur) return show(cur,"Happening now");
+  return `<div class="nextup"><div><small>Done for today</small><b>Nothing else scheduled</b><span>See tomorrow →</span></div></div>`;
+}
+
+// ---- "Updated" tags: compare each session with what this phone saw before
+const SEEN_KEY="inter27-seen";
+let seen={}, seenInit=false;
+try{ const raw=localStorage.getItem(SEEN_KEY); if(raw){ seen=JSON.parse(raw); seenInit=true; } }catch(_){}
+const sig=x=>[x.s,x.e,x.v||"",(x.vs||[]).join(","),x.who||"",x.tbc?1:0].join("|");
+const evKey=(d,x)=>d+"|"+x.title;
+const FRESH=24*3600e3;
+(function diffAll(){
+  const t=Date.now(), next={};
+  for(const d of dates) for(const x of S[d]){
+    const k=evKey(d,x), s=sig(x), old=seen[k];
+    if(!seenInit) next[k]={h:s,t:0};
+    else if(!old) next[k]={h:s,t,n:1};
+    else if(old.h!==s) next[k]={h:s,t,u:1};
+    else next[k]=old;
+  }
+  seen=next; try{ localStorage.setItem(SEEN_KEY,JSON.stringify(seen)); }catch(_){}
+})();
+function freshState(d,x){ const e=seen[evKey(d,x)]; if(!e||!e.t||Date.now()-e.t>FRESH) return ""; return e.u?"Updated":e.n?"New":""; }
+function updTag(d,x){ const s=freshState(d,x); return s?`<span class="tag upd">${s}</span>`:""; }
+function dayFresh(d){ return S[d].some(x=>freshState(d,x)); }
+
+function renderSchedule(){
+  const d = current, items = [...S[d]].sort((a,b)=>(a.s||"00:00").localeCompare(b.s||"00:00"));
+  const isToday = d===now.date;
+  let html = `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h1 style="margin-bottom:0">${fmt(d,{weekday:"long",month:"long",day:"numeric"})}</h1><a class="alink" style="margin:0;white-space:nowrap" href="#overview">All days</a></div>`;
+  html += isToday ? `<p class="sub">Today</p>` : `<div style="height:14px"></div>`;
+  if(extOnly(d)) html += `<div class="note">This day is for the <b>extension group</b> only.</div>`;
+  if(isToday) html += nextUp();
+  const brk = breaksFor(items);
+  html += items.map((x,ix)=>{
+    const venue = x.v ? V[x.v] : null;
+    const live = isToday && x.s && x.e && now.time>=x.s && now.time<x.e;
+    const tags = [
+      live?`<span class="tag now">Now</span>`:"",
+      `<span class="tag tt">${LABEL[x.t]}</span>`,
+      updTag(d,x),
+      x.opt?`<span class="tag opt">Optional</span>`:"",
+      x.tbc?`<span class="tag tbc">To be confirmed</span>`:"",
+      x.ext?`<span class="tag ext">Extension group</span>`:"",
+    ].join("");
+    const time = x.s ? `${t12(x.s)}${x.e?`<small>to ${t12(x.e)}</small>`:""}` : `<small>All day</small>`;
+    return `<div class="ev reveal${live?" now":""}" id="ev-${+d.slice(8)}-${S[d].indexOf(x)}" style="--c:var(${COL[x.t]})">
+      <div class="time">${time}</div>
+      <div class="body">
+        <div class="title">${EMO[x.t]||""} ${x.title}</div>
+        ${x.who?`<div class="who">${x.who}</div>`:""}
+        ${x.vs?x.vs.map(k=>`<div class="where">${V[k].n}<br><span class="who">${street(V[k])}</span></div><a class="map" href="${mapLink(V[k].a)}" target="_blank" rel="noopener">Maps →</a>`).join(""):""}
+        ${venue?`<div class="where">${venue.n}${venue.a?`<br><span class="who">${street(venue)}</span>`:""}</div>`:x.vs?"":
+          (x.t!=="travel"&&x.t!=="free"?`<div class="where who">Location to be announced</div>`:"")}
+        <div class="tags">${tags}</div>
+        ${venue&&venue.a?`<a class="map" href="${mapLink(venue.a)}" target="_blank" rel="noopener">Maps →</a>`:""}
+        ${x.link?`<a class="alink" style="margin-left:6px" href="${x.link[1]}" target="_blank" rel="noopener">${x.link[0]} ↗</a>`:""}
+        ${x.links?x.links.map(l=>`<a class="alink" style="margin-left:6px" href="${l[1]}" target="_blank" rel="noopener">${l[0]} ↗</a>`).join(""):""}
+        ${x.ar?artistChips(x.ar):""}
+      </div></div>` + (brk[ix]?`<div class="lunch"><span>${brk[ix]}</span></div>`:"");
+  }).join("");
+  return html;
+}
+
+// Artists. img: data URI (add photos later). ig: handle without @.
+const ARTISTS = [
+  {name:"Albert Quesada & Katie Vickers", role:"Dancers, choreographers · Directors of BARNA ARTS", c:"#d4442a",
+   bio:"Founders and directors of BARNA ARTS. They lead the Collaborating Strategies workshop and guide your creative process at La Caldera, all the way to the final presentation.",
+   site:"https://www.barnaarts.com", siteLabel:"BARNA ARTS", ig:"", more:[["Albert's site","http://acmearts.xyz"],["Katie's site","http://katie-vickers.com"]],
+   sess:[["2027-01-08","Collaborating Strategies workshop"],["2027-01-14","Collaborating sessions at La Caldera"],["2027-01-16","Final presentation"]]},
+  {name:"Catalina Girona", role:"Guide, teacher · City tour", c:"#b38a00",
+   bio:"Catalina leads your first walk through Barcelona: a guided tour to get to know the city on your first full day.",
+   site:"", ig:"catalinagirona_teacher",
+   sess:[["2027-01-08","Guided city tour"]]},
+  {name:"Darryl Eisden", role:"Sculptor", c:"#4b5563", tbc:1,
+   bio:"A Dutch-Caribbean sculptor based in Barcelona. Born in Curaçao and raised in the Netherlands, he started out as a musician and now sculpts mainly in plastiline combined with traditional clay techniques, making work about movement and change.",
+   site:"https://darryleisden.com", ig:"eisden_art", more:[["Interview","https://www.artistcloseup.com/blog/interview-darryl-eisden"]],
+   sess:[["2027-01-11","Tour & talk"]]},
+  {name:"Los Informalls", role:"Luis García & Pere Joseph · Performance company", c:"#c2398a",
+   bio:"A Barcelona company working between dance, theatre and something harder to name. Their work runs on movement, humour, play and physical risk.",
+   site:"https://www.losinformalls.com", ig:"losinformalls",
+   sess:[["2027-01-09","Movement & physical theatre workshop"]]},
+  {name:"Joaquín Jara", role:"Environmental sculptor, painter, performer", c:"#e07b1a",
+   bio:"An artist who works with sculpture in natural and urban spaces, painting and performance. You'll visit his studio in the Raval for a talk on Sunday and get your hands dirty on Monday.",
+   site:"https://joaquinjara.net", ig:"joaquinjaraartist", more:[["Saatchi Art","https://www.saatchiart.com/joaquinjara"]],
+   sess:[["2027-01-10","Talk at his studio"],["2027-01-11","Hands-on materials workshop"]]},
+  {name:"Núria Andorrà", role:"Percussionist, improviser, composer", c:"#2f6fdb",
+   bio:"A leading figure in Barcelona's improvised and experimental music scene. Trained in classical and contemporary percussion, she plays with everyday objects as much as drums, building pieces where sound, image and the body meet.",
+   site:"https://nuriaandorra.com/", ig:"nuriaandorra",
+   sess:[["2027-01-10","Music session"]]},
+  {name:"Núria Guiu", role:"Choreographer, dancer", c:"#7b4bd1",
+   bio:"A Barcelona choreographer who looks at the body in digital culture: social media, memes, viral dances. Winner of Catalonia's National Culture Award in 2022.",
+   site:"https://www.nuriaguiu.com", ig:"guiu_guiu",
+   sess:[["2027-01-13","Mixed-media collaboration workshop"]]},
+  {name:"Maria Sellarès", role:"Museu Tàpies · Education & public programmes", c:"#b38a00",
+   bio:"Part of the Museu Tàpies education and public programmes team. While the museum is closed for works, she gives our Tàpies talk in the Sala de Reflexió at Pompeu Fabra University, a quiet room designed with Antoni Tàpies.",
+   site:"https://museutapies.org", siteLabel:"Museu Tàpies", ig:"mariasellaresperez",
+   sess:[["2027-01-12","Museu Tàpies session: talk"]]},
+  {name:"Taller Estampa", role:"Art collective · Film, code, research", c:"#2e8b57",
+   bio:"A Barcelona collective of filmmakers, programmers and researchers working with experimental film, digital images and artificial intelligence.",
+   site:"https://tallerestampa.com", ig:"tallerestampa", more:[["Vimeo","https://vimeo.com/tallerestampa"]],
+   sess:[["2027-01-09","Exhibition visit at the Filmoteca"]]},
+];
+
+const PHOTOS = {"Maria Sellarès": "img/a-maria-sellares.jpg", "Albert Quesada & Katie Vickers": "img/a-albert-quesada-katie-vickers.jpg", "Catalina Girona": "img/a-catalina-girona.jpg", "Darryl Eisden": "img/a-darryl-eisden.jpg", "Los Informalls": "img/a-los-informalls.jpg", "Joaqu\u00edn Jara": "img/a-joaquin-jara.jpg", "N\u00faria Guiu": "img/a-nuria-guiu.jpg", "Taller Estampa": "img/a-taller-estampa.jpg", "N\u00faria Andorr\u00e0": "img/a-nuria-andorra.jpg"};
+ARTISTS.forEach(a=>{ if(PHOTOS[a.name]) a.img = PHOTOS[a.name]; });
+
+function initials(n){ return n.split(/[ &·]+/).filter(w=>/^[A-ZÀ-Ý]/.test(w)).slice(0,2).map(w=>w[0]).join(""); }
+
+function renderArtists(){
+  return `<h1>Artists</h1><p class="sub">The artists you'll work with in Barcelona. Tap a session to see it in the schedule.</p>` +
+  ARTISTS.map((a,ai)=>`<div class="artist reveal${artistToday(a)?" now":""}" id="a-${slug(a.name)}">${artistToday(a)?'<span class="tag now todaytag">Today</span>':''}
+    <div class="pic" style="--c:${a.c}">${a.img?`<img src="${a.img}" alt="${a.name}">`:initials(a.name)}</div>
+    <div class="in">
+      <h3>${a.name}</h3>
+      <div class="role">${a.role}</div>
+      ${a.tbc?`<div class="tags"><span class="tag tbc">To be confirmed</span></div>`:""}
+      <p>${a.bio}</p>
+      <div class="sess">${a.sess.map(([d,l])=>`<a href="${evLink(d,x=>x.ar===a.name)!==`#jan-${+d.slice(8)}`?evLink(d,x=>x.ar===a.name):evLink(d,x=>x.title.includes(l)||l.includes(x.title)||(x.who||"").includes(a.name))}">${fmt(d,{weekday:"short",month:"short",day:"numeric"})} · ${l} →</a>`).join("")}</div>
+      <div class="links">
+        ${a.site?`<a href="${a.site}" target="_blank" rel="noopener">${a.siteLabel||"Web"} ↗</a>`:""}
+        ${a.ig?`<a href="https://instagram.com/${a.ig}" target="_blank" rel="noopener">IG ↗</a>`:""}
+        ${(a.more||[]).map(([l,u])=>`<a href="${u}" target="_blank" rel="noopener">${l} ↗</a>`).join("")}
+      </div>
+    </div></div>`).join("");
+}
+
+const VPHOTOS = {"caldera": "img/v-caldera.jpg", "servei": "img/v-servei.jpg", "filmo": "img/v-filmo.jpg", "joaquin": "img/v-joaquin.jpg", "lliure": "img/v-lliure.jpg", "piconera": "img/v-piconera.jpg", "santam": "img/v-santam.jpg", "macba": "img/v-macba.jpg", "mercat": "img/v-mercat.jpg", "tapies": "img/v-tapies.jpg", "visiva": "img/v-visiva.jpg", "raro": "img/v-raro.jpg", "yugo": "img/v-yugo.jpg", "pedrera": "img/v-pedrera.jpg", "batllo": "img/v-batllo.jpg", "brujas": "img/v-brujas.jpg"};
+
+function renderVenues(){
+  // Collect dates per venue (rooms grouped under their building)
+  const days = {};
+  for(const d of dates) for(const x of S[d]) for(const k of (x.vs||[])) (days[k] ||= new Set()).add(d);
+  for(const d of dates) for(const x of S[d]) if(x.v){
+    const k = V[x.v].g || x.v;
+    (days[k] ||= new Set()).add(d);
+  }
+  const keys = Object.keys(V).filter(k=>!V[k].g && !V[k].home && days[k]);
+  keys.sort((a,b)=>[...days[a]][0].localeCompare([...days[b]][0]));
+  Object.keys(V).forEach(k=>{ if(V[k].show && !days[k]){ keys.push(k); days[k]=new Set(); } });
+  if(!VPHOTOS.upf) VPHOTOS.upf = "img/sala-reflexio.jpg";
+  return `<h1>Venues</h1><p class="sub">Everywhere we go, in order of first visit. Tap a date to see what's on.</p>` +
+  keys.map((k,vi)=>{const v=V[k]; const tdy=days[k].has(now.date); return `<div class="venue reveal${tdy?" now":""}">${tdy?'<span class="tag now todaytag">Today</span>':''}
+    ${VPHOTOS[k]?`<img class="vpic" src="${VPHOTOS[k]}" alt="${v.n}">`:""}
+    <h3>${v.n.split(" — ")[0]}${v.home?' <span class="tag opt">Where you stay</span>':''}</h3>
+    ${v.d?`<p>${v.d}</p>`:""}
+    ${v.a?`<div class="addr">📍 ${street(v)}</div>`:""}
+    <div class="sess">${days[k].size?"":`<span class="tag tbc">Date to be confirmed</span>`}${[...days[k]].sort().map(d=>`<a href="${evLink(d,x=>(x.vs||[]).includes(k)||(x.v&&(x.v===k||V[x.v].g===k)))}">${fmt(d,{weekday:"short",month:"short",day:"numeric"})} →</a>`).join("")}</div>
+    <div class="links">
+      ${v.a?`<a class="mapl" href="${mapLink(v.a)}" target="_blank" rel="noopener">Maps ↗</a>`:""}
+      ${v.w?`<a href="${v.w}" target="_blank" rel="noopener">Web ↗</a>`:""}
+    </div>
+  </div>`;}).join("");
+}
+
+
+// Nearby essentials. Hours change: always check before going.
+const NEARBY = [
+ {area:"Around Yugo (home)", groups:[
+  {g:"🩺 Health", items:[
+   ["Farmàcia Miramar","C/ Peracamps 13, corner of Portal de Santa Madrona","Pharmacy right next to Yugo. Mon–Fri 8 AM–8 PM, Sat–Sun mornings"],
+   ["Farmàcia Clapés","La Rambla 98","Pharmacy open 24 hours"],
+   ["CAP Drassanes","Av. de les Drassanes 17-21","Public primary-care clinic for non-urgent problems. Mon–Fri 8 AM–8 PM"],
+   ["Hospital del Mar – Urgències","Pg. Marítim de la Barceloneta 25-29","24-hour emergency room"]]},
+  {g:"🛒 Groceries", items:[
+   ["Carrefour Market","La Rambla 113","Big supermarket on two floors, up La Rambla"],
+   ["BHG Supermercat del Món","C/ del Parlament 21","International supermarket in Sant Antoni, open every day"]]},
+  {g:"🍽️ Eat cheap", items:[
+   ["Rincón del Raval","C/ de Sant Pau 100","Home-style dishes, very good value"],
+   ["Que Bo Raval","C/ de Sant Pau 68","Moroccan food, veggie options. Cash only"],
+   ["The Atlas","Rambla del Raval 30","Moroccan sandwiches and kebabs, open late"],
+   ["Bocatas de Sultan","C/ de Joaquín Costa 56","Falafel sandwiches and €1 fries"]]},
+  {g:"☕ Breakfast & coffee", items:[
+   ["La Candelaria","C/ de l'Hospital 81","Coffee and empanadas, opens 8 AM"],
+   ["Morning Glory","C/ de la Riereta 15","Brunch spot, closed Mondays"]]},
+  {g:"🧺 Other", items:[
+   ["Lavaxpres laundromat","C/ Nou de Sant Francesc 5","Self-service laundry, every day 8 AM–10 PM, cards accepted"],
+   ["Mossos d'Esquadra (police)","C/ Nou de la Rambla 76-78","24-hour police station, for theft or lost passport reports"]]}
+ ]},
+ {area:"Around La Caldera (studio)", groups:[
+  {g:"🩺 Health", items:[
+   ["Farmàcia Les Corts","Travessera de les Corts 194","Pharmacy, every day 9 AM–9 PM"],
+   ["CAP Les Corts","C/ de Mejía Lequerica 1","Public primary-care clinic. Mon–Fri 8 AM–8 PM"],
+   ["Hospital Clínic – Urgències","C/ de Villarroel 170","24-hour emergency room"]]},
+  {g:"🛒 Groceries", items:[
+   ["Consum","C/ de Llucà 19","Supermarket a few minutes' walk from La Caldera"],
+   ["Mercadona","Travessera de les Corts 142","Supermarket, good ready-made food"]]},
+  {g:"🍽️ Lunch", items:[
+   ["Restaurante Cafetería Venecia","C/ de Sabino Arana 32","Classic menú del día (set lunch)"],
+   ["Bar Restaurante La Concordia","C/ de Cabestany 21","Tapas on Plaça de la Concòrdia"],
+   ["Taberna Davidson","C/ de Joan Güell 207","Set lunch menu, closed Sundays"]]}
+ ]}
+];
+
+// Walking minutes from Yugo / La Caldera (Google Maps, Nov 2026)
+const WALK = {"Farmàcia Miramar": 1, "Farmàcia Clapés": 12, "CAP Drassanes": 4, "Hospital del Mar – Urgències": 31, "Carrefour Market": 16, "BHG Supermercat del Món": 16, "Rincón del Raval": 7, "Que Bo Raval": 8, "The Atlas": 8, "Bocatas de Sultan": 19, "La Candelaria": 12, "Morning Glory": 9, "Lavaxpres laundromat": 8, "Mossos d'Esquadra (police)": 4, "Farmàcia Les Corts": 3, "CAP Les Corts": 6, "Hospital Clínic – Urgències": 31, "Consum": 4, "Mercadona": 5, "Restaurante Cafetería Venecia": 8, "Bar Restaurante La Concordia": 7, "Taberna Davidson": 6};
+function renderNearby(){
+  return `<div class="nb"><h1>Nearby</h1><p class="sub">Essentials around where you stay and where we work. Opening hours change, so check before you go.</p>` +
+  NEARBY.map(A=>`<h2>${A.area}</h2>`+A.groups.map(G=>`<h4>${G.g}</h4>`+G.items.map(([n,a,d])=>
+    `<div class="nbi reveal-x"><div><b>${n}</b>${WALK[n]!=null?`<span class="walk">🚶 ${WALK[n]} min${WALK[n]>=25?" · taxi in an emergency":""}</span>`:""}<div class="who">${a}</div><div class="who">${d}</div></div><a href="${mapLink(n+", "+a+", Barcelona")}" target="_blank" rel="noopener">Map ↗</a></div>`).join("")).join("")).join("") +
+  `</div>`;
+}
+
+
+// Group WhatsApp: paste the invite link between the quotes when ready.
+const WHATSAPP_GROUP = "https://chat.whatsapp.com/EJSfqA0xi3H3Pyi5Pe9Qmn?s=cl&p=i&iam=2";
+
+// Who's coming (from Notion roster). Students shown as first name + last initial.
+const GROUP_PEOPLE = [
+  {uni:"Colby College", people:[["Caleb A.","Creative writing"],["Clara G.","Music & mixed media"],["Freya H.","Painting, film, mixed media"],["James O.","Performance, theater, dance"]], ext:true},
+  {uni:"Shenandoah University", people:[["Allee C.","Art education, visual arts"],["Andrew S.","Writing, acting"],["Elijah R.","Photography, visual arts"]]},
+  {uni:"UNC School of the Arts", people:[], tbc:3},
+  {uni:"UNC Greensboro", people:[["Bernice T.",""]]},
+];
+const FACULTY = [["Abigail Gómez","Shenandoah University"],["Betsy Towns","UNC School of the Arts"]];
+
+function renderGroup(){
+  const wa = WHATSAPP_GROUP
+    ? `<a class="alink" href="${WHATSAPP_GROUP}" target="_blank" rel="noopener" style="font-size:15px;padding:8px 16px">Join the group WhatsApp ↗</a>`
+    : `<span class="who">The invite link will be posted here before the trip.</span>`;
+  return `<h2>💬 Group WhatsApp</h2>
+    <div class="card">Everyday updates, meeting points and last-minute changes go here.<br><br>${wa}</div>
+    <h2>👋 Who's coming</h2>
+    <div class="card">
+      ${GROUP_PEOPLE.map(g=>`<b>${g.uni}</b>${g.ext?' <span class="tag ext">Also in the extension</span>':''}<br>
+        ${g.people.map(([n,d])=>`${n}${d?` <span class="who">· ${d}</span>`:''}`).join('<br>')}
+        ${g.tbc?`<span class="who">${g.tbc} students, names coming soon</span>`:''}`).join('<br><br>')}
+      <br><br><b>Faculty</b><br>${FACULTY.map(([n,u])=>`${n} <span class="who">· ${u}</span>`).join('<br>')}
+      <br><br><b>BARNA ARTS team</b><br>Albert Quesada & Katie Vickers <span class="who">· Directors</span><br>Ale <span class="who">· Program assistant</span>
+    </div>`;
+}
+
+function renderInfo(){
+  return `<div class="info">
+    <h1>Program info</h1>
+    <p class="sub">BARNA ARTS Interdisciplinary Program · Barcelona, 7–18 January 2027 · Extension 18–23 January</p>
+    <h2>📄 Info doc & files</h2>
+    <div class="card">Everything to read before you travel (accommodation, food, artists, health) is in the student info doc. Upload any documents we ask for to the shared folder.
+      <div class="links"><a href="https://docs.google.com/document/d/1cidZN3sWpeN-Q2N_MP-b0_8tda-y9X9g2-s0uQpeuFQ/edit" target="_blank" rel="noopener">Student info doc ↗</a><a href="https://drive.google.com/drive/folders/1fyDmH_y-SkAWy8YgRGl6vQqO_CHw8z85" target="_blank" rel="noopener">Shared folder ↗</a></div></div>
+    <h2>🏠 Where you stay</h2>
+    <div class="venue"><img class="vpic" src="${VPHOTOS.yugo}" alt="Yugo Barcelona Port">
+      <h3>Yugo Barcelona Port</h3>
+      <p>Student residence near the bottom of La Rambla, next to Arts Santa Mònica. Shared kitchens: daily meals aren't included, so you'll cook here (the welcome drink and goodbye dinner are on us).</p>
+      <div class="addr">📍 C/ Portal de Santa Madrona 28</div>
+      <p>🔑 <b>Rooms:</b> ready from 3 PM on arrival day; check out by 10 AM on departure day.<br>
+      🛏️ <b>Your room:</b> individual, with private bathroom, heating, desk and wardrobe. Bed linen and towels included, cleaned with a change of sheets every two weeks. Bring your own toiletries; laundry is self-service (paid).<br>
+      🚭 Non-smoking residence. Please respect the house rules on quiet.<br>
+      ☎️ <b>Yugo reception (24h):</b> barcelonaport@yugo.com · +34 616 553 709</p>
+      <div class="links"><a class="mapl" href="${mapLink(V.yugo.a)}" target="_blank" rel="noopener">Maps ↗</a></div>
+    </div>
+    ${renderGroup()}
+    <h2>🚨 Emergency</h2>
+    <a class="card sosc" href="tel:112" data-tel="112"><div class="big">112</div>Police, ambulance and fire anywhere in Spain. Calls work without a SIM card.<span class="callme">📞 Tap to call</span></a>
+    <h2>📞 Contacts</h2>
+    <div class="card">
+      <div class="phone"><div><b>Albert Quesada</b><br><span class="num">+34 689 130 137</span></div><a href="https://wa.me/34689130137" target="_blank" rel="noopener">WhatsApp</a></div>
+      <div class="phone"><div><b>Katie Vickers</b><br><span class="num">+34 696 504 487</span></div><a href="https://wa.me/34696504487" target="_blank" rel="noopener">WhatsApp</a></div>
+      <div class="phone"><div><b>Ale</b> · Program assistant<br><span class="num">+1 (954) 224-3117</span><br><span class="who">WhatsApp only</span></div><a href="https://wa.me/19542243117" target="_blank" rel="noopener">WhatsApp</a></div>
+      <span class="who">Albert and Katie are the program directors. Call or message any time during the program.</span>
+    </div>
+    <h2>💡 Good to know</h2>
+   <div class="card">
+   🆘 <b>Emergencies: 112.</b> For anything non-urgent, a pharmacist can help first: they're trained to advise on minor problems.<br><br>
+   🏥 <b>Insurance:</b> bring your insurance documents (provided either by your university or by BARNA ARTS), and carry your insurance card and passport. Public hospitals can charge visitors from outside the EU, so check with your insurer what to do before you go in.<br><br>
+   🛒 <b>Sundays:</b> most supermarkets are closed. Shop on Saturday.<br><br>
+   🍽️ <b>Meal times:</b> lunch is around 1:30–4 PM and dinner from 8:30 PM. Look for a <i>menú del dia</i> at lunch: a cheap set meal on weekdays.<br><br>
+   👜 <b>Pickpockets:</b> keep phones and wallets in front pockets or zipped bags, especially on La Rambla, in the metro and at busy sights.<br><br>
+   💧 <b>Water:</b> tap water is safe to drink. Bring a refillable bottle.<br><br>
+   💶 <b>Cash machines:</b> use bank cash machines, and always choose to be charged in euros, not dollars.<br><br>
+   🪙 <b>Tipping:</b> not expected. Rounding up is enough.</div>
+    <h2>📖 How to use this page</h2>
+    <div class="card">Check it every morning. Plans can change, and this page always shows the latest version.<br><br>
+      Tap <b>Maps</b> to get directions.<br>
+      <b>Optional</b> means it's up to you.<br>
+      <b>To be confirmed</b> means the time or place may still change.<br>
+      <b>Updated</b> or <b>New</b> marks a session that changed since you last opened the app, and a dot on the date shows which days changed.</div>
+    <details class="fold"><summary>📱 Put it on your phone like an app</summary>
+    <div class="card"><b>Android (Chrome)</b><br>
+      1. Open this page in <b>Chrome</b>.<br>
+      2. Tap the <b>⋮</b> menu at the top right.<br>
+      3. Tap <b>Add to Home screen</b> (on some phones it says <b>Install app</b>).<br>
+      4. Tap <b>Add</b> or <b>Install</b>. The icon appears on your home screen.<br><br>
+      <b>iPhone (Safari)</b><br>
+      1. Open this page in <b>Safari</b>.<br>
+      2. Tap the <b>Share</b> button (square with an arrow).<br>
+      3. Scroll down and tap <b>Add to Home Screen</b>, then <b>Add</b>.<br><br>
+      <span class="who">Open it from the home-screen icon and it always loads the latest version.</span></div></details>
+    <h2>🚇 Getting around: your T-usual</h2>
+    <div class="card">We'll all buy a <b>T-usual</b> when we land: a monthly pass on a T-mobilitat card with unlimited metro, bus, tram and train rides in zone 1 for 30 days from the first time you use it.<br><br>
+      📍 <b>Where:</b> at the ticket machines in the airport metro station (line L9 Sud, Terminal 1 or 2). The T-usual also covers the airport metro, so you can ride straight into the city.<br>
+      💳 <b>Cost:</b> €22.80 for zone 1, plus €1 for the cardboard T-mobilitat card.<br>
+      🛂 <b>Bring your passport.</b> The card is personal: one per person, no sharing.<br>
+      🎫 <b>Keep the card</b> for the whole program, and tap it at the gates every time you enter.
+      <div class="links"><a href="https://www.tmb.cat/en" target="_blank" rel="noopener">TMB website ↗</a><a href="https://t-mobilitat.atm.cat/en/web/t-mobilitat/fares/t-usual" target="_blank" rel="noopener">T-usual info ↗</a><a href="#" onclick="document.getElementById('metro-map').scrollIntoView({behavior:'smooth'});return false;">Metro map ↓</a></div></div>
+    <h2>✈️ Airport ↔ Yugo</h2>
+    <div class="card"><b>Metro:</b> L9 Sud from the airport to Zona Universitària, then L3 (green) to Drassanes. About 60–70 min. Covered by your T-usual.<br><br>
+      <b>Aerobús + metro:</b> Aerobús to Plaça de Catalunya, then L3 to Drassanes. About 45–55 min. The Aerobús is €7.45 one way and is not covered by the T-usual.<br><br>
+      <b>Taxi:</b> about €35–40, 25–30 min, from the official rank outside arrivals.<br><br>
+      ⏰ <b>Going home:</b> check out of Yugo by 10 AM and be at the airport 2 to 3 hours before your flight.
+      <div class="links"><a href="https://aerobusbarcelona.es/en/" target="_blank" rel="noopener">Aerobús ↗</a></div></div>
+    <h2>🧳 What to bring</h2>
+    <div class="card">Barcelona in January is mild but cool: about 5–15 °C (40–60 °F), colder at night, with some rainy days. Studios can be chilly.<br><br>
+      🧥 Warm layers, a warm jacket and a rain jacket or umbrella<br>
+      👟 Comfortable shoes for walking a lot<br>
+      🩰 Clothes to move in, plus socks and layers for the studio<br>
+      📓 A notebook or sketchbook for your visual journal<br>
+      🔌 Adapter for European plugs (type C/F, 230V)<br>
+      🧴 Your own toiletries<br>
+      📄 Passport and insurance documents</div>
+    <h2 id="metro-map">🗺️ Metro map</h2>
+    <div class="mapbox" id="mapbox"><img src="img/metro-map.jpg" alt="Barcelona metro network map"></div>
+    <div class="links"><a href="#" onclick="document.getElementById('mapbox').classList.toggle('zoom');return false;">Zoom in / out</a></div>
+    <p class="who" style="font-size:13px">Closest metro to Yugo: Drassanes (L3, green). Pinch or tap Zoom to read station names.</p>
+  </div>`;
+}
+
+let todayConfetti=false, lastConfettiDay=null, revealObs=null;
+// Cards drift in one at a time as they scroll into view
+function setupReveal(){
+  if(view==="info") document.querySelectorAll(".info > *:not(h1):not(.sub)").forEach(e=>e.classList.add("reveal"));
+  if(view==="nearby") document.querySelectorAll(".nb h2, .nb h4").forEach(e=>e.classList.add("reveal-x"));
+  const els=[...document.querySelectorAll(".reveal:not(.in),.reveal-x:not(.in)")];
+  if(revealObs) revealObs.disconnect();
+  if(!("IntersectionObserver" in window)){ els.forEach(e=>e.classList.add("in")); return; }
+  revealObs = new IntersectionObserver(entries=>{
+    let k=0;
+    entries.filter(e=>e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top).forEach(e=>{
+      const el=e.target; el.style.setProperty("--d",(k++*80)+"ms"); el.classList.add("in"); revealObs.unobserve(el);
+      const big=el.querySelector&&el.querySelector(".big"); if(big){ setTimeout(()=>big.classList.add("sos"),400+(k*80)); }
+    });
+  },{rootMargin:"0px 0px -8% 0px",threshold:0.08});
+  els.forEach(e=>revealObs.observe(e));
+}
+function render(){
+  const lb = document.querySelector(".logoband"), lbh = lb ? lb.offsetHeight : 0;
+  const logoHidden = lbh>0 && window.scrollY >= lbh - 2;
+  const h = dayFromHash();
+  if(h==="info"||h==="artists"||h==="venues"||h==="nearby"||h==="overview"||h==="today"){ view=h; }
+  else if(!h && !current && outside()){ view="today"; }
+  else { view="schedule"; current = h || current || closestDay(); }
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",t.dataset.view===view||((view==="overview"||view==="today")&&t.dataset.view==="schedule")));
+  renderDays();
+  const main = document.getElementById("main");
+  main.classList.remove("slide-l","slide-r"); if(swipeDir){ void main.offsetWidth; main.classList.add(swipeDir>0?"slide-l":"slide-r"); } swipeDir=0;
+  main.innerHTML = (view==="today"?renderToday():view==="overview"?renderOverview():view==="info"?renderInfo():view==="artists"?renderArtists():view==="venues"?renderVenues():view==="nearby"?renderNearby():renderSchedule()) + (view==="today" ? "" : `<div class="foot">${countdownText()}Last updated ${UPDATED}</div>`);
+  // Keep the logo hidden if it was already scrolled away
+  setupReveal();
+  window.scrollTo(0, logoHidden ? lbh : 0);
+  if(view==="schedule" && (current==="2027-01-16" || (current===dates[1] && now.date===dates[1])) && lastConfettiDay!==current){ setTimeout(confetti,300); }
+  lastConfettiDay = view==="schedule" ? current : null;
+  const em = location.hash.match(/^#jan-(\d{1,2})-(\d+)$/);
+  if(em){ const el=document.getElementById(`ev-${em[1]}-${em[2]}`); if(el){ el.classList.add("hit"); const hh=document.querySelector("header").offsetHeight; window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - hh - 10); } }
+  if(view==="overview" && now.date>=dates[0] && now.date<=dates[dates.length-1]){ const el=document.getElementById("ov-now"); if(el){ const hh=document.querySelector("header").offsetHeight; window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - hh - 10); } }
+  const am = location.hash.match(/^#artist-(.+)$/);
+  if(am){ const el=document.getElementById("a-"+am[1]); if(el){ el.classList.add("hit"); const hh=document.querySelector("header").offsetHeight; window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - hh - 10); } }
+}
+
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
+  location.hash = t.dataset.view!=="schedule" ? t.dataset.view : "jan-"+(+(current||"2027-01-07").slice(8));
+});
+window.addEventListener("hashchange",render);
+const ON_GH = /github\.io$/.test(location.hostname);
+if(ON_GH && "serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
+// Water ripple where you tap on empty space
+let lastTap=null, tapLevel=0;
+document.addEventListener("pointerdown",e=>{
+  if(e.target.closest("a,button,summary,details,input,select,textarea,.day,.tab,.cdbox,.mapbox,.callsheet,#splash")) return;
+  if(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  // Keep tapping the same spot and the ripples grow
+  const now=Date.now(), near=lastTap && Math.hypot(e.clientX-lastTap.x,e.clientY-lastTap.y)<40 && now-lastTap.t<900;
+  tapLevel = near ? Math.min(tapLevel+1, 10) : 0; lastTap={x:e.clientX,y:e.clientY,t:now};
+  const scale=7*(1+tapLevel*0.6), rings=2+Math.min(tapLevel,3), dur=800+tapLevel*120;
+  const onOrange=!!e.target.closest(".logoband,header");
+  for(let k=0;k<rings;k++){ const d=k*140, s=document.createElement("span"); s.className="ripple"+(onOrange?" white":"");
+    s.style.left=e.clientX+"px"; s.style.top=e.clientY+"px"; s.style.animationDelay=d+"ms"; s.style.animationDuration=dur+"ms"; s.style.setProperty("--rs",scale);
+    document.body.appendChild(s); setTimeout(()=>s.remove(),dur+d+100); }
+},{passive:true});
+// Phone links: some phones block calls from inside the page. If nothing happens, show the number big.
+document.addEventListener("click",e=>{
+  const a=e.target.closest("a[data-tel]"); if(!a) return;
+  e.preventDefault();
+  let left=false; const mark=()=>{ left=true; };
+  window.addEventListener("blur",mark,{once:true}); document.addEventListener("visibilitychange",mark,{once:true});
+  try{ window.location.href="tel:"+a.dataset.tel; }catch(_){}
+  setTimeout(()=>{ if(left || document.hidden) return; showCallSheet(a.dataset.tel); },900);
+});
+function showCallSheet(n){
+  const s=document.createElement("div"); s.className="callsheet";
+  s.innerHTML=`<div class="cs-box"><div class="cs-t">Call ${n} from your Phone app</div><div class="cs-n">${n}</div><div class="cs-d">This page can't start the call on your phone. Open the Phone app and dial the number above. It works even without a SIM card.</div><button class="cs-x">Close</button></div>`;
+  s.onclick=ev=>{ if(ev.target===s||ev.target.classList.contains("cs-x")) s.remove(); };
+  document.body.appendChild(s);
+}
+// Warm the cache: fetch every photo quietly after the page has shown, so tabs open with images ready
+window.addEventListener("load",()=>setTimeout(()=>{
+  [...Object.values(PHOTOS),...Object.values(VPHOTOS),"img/metro-map.jpg"].forEach(src=>{ const i=new Image(); i.decoding="async"; i.src=src; });
+},400));
+// Haptic tick on taps (Android Chrome; iPhones don't allow web vibration)
+document.addEventListener("pointerdown",e=>{
+  if(e.target.closest(".day,.tab,.alink,.map,.links a,.phone a,.nbi a,.ovr,.ovd,summary") && navigator.vibrate){ try{ navigator.vibrate(8); }catch(_){} }
+},{passive:true});
+function updateTop(){
+  const b=document.getElementById("totop"); if(!b) return;
+  const showTop = view!=="schedule" && view!=="today" && window.scrollY>400;
+  b.classList.toggle("show", showTop);
+  const hp=document.getElementById("help"); if(hp){ hp.classList.toggle("gone", showTop); if(showTop) hp.open=false; }
+}
+window.addEventListener("scroll",updateTop,{passive:true});
+window.addEventListener("hashchange",()=>setTimeout(updateTop,50));
+
+// Swipe left/right on the schedule to change day
+let swipeDir = 0;
+(function(){
+  const main = document.getElementById("main"); let x0=null, y0=null;
+  main.addEventListener("touchstart",e=>{ if(e.touches.length>1||e.target.closest(".mapbox")){x0=null;return;} x0=e.touches[0].clientX; y0=e.touches[0].clientY; },{passive:true});
+  main.addEventListener("touchend",e=>{
+    if(x0===null) return;
+    const dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0; x0=null;
+    if(Math.abs(dx)<60 || Math.abs(dx)<Math.abs(dy)*1.5) return;
+    const dir = dx<0?1:-1;
+    if(view==="today"){
+      if(now.date<dates[0] && dir>0){ swipeDir=dir; location.hash="jan-"+(+dates[0].slice(8)); }
+      if(now.date>dates[dates.length-1] && dir<0){ swipeDir=dir; location.hash="jan-"+(+dates[dates.length-1].slice(8)); }
+      return;
+    }
+    if(view==="schedule"){
+      const i=dates.indexOf(current), j=i+dir;
+      if((j<0 && now.date<dates[0]) || (j>=dates.length && now.date>dates[dates.length-1])){ swipeDir=dir; location.hash="today"; return; }
+      if(j<0||j>=dates.length) return;
+      swipeDir = dir; location.hash="jan-"+(+dates[j].slice(8)); return;
+    }
+    // Other tabs: Artists ↔ Venues ↔ Nearby ↔ Info (swipe right from Artists or All days goes back to the day)
+    if(view==="overview"){ swipeDir=dir; location.hash = dir<0 ? "jan-"+(+(current||closestDay()).slice(8)) : "artists"; return; }
+    const order=["overview","artists","venues","nearby","info"];
+    const k=order.indexOf(view)+dir;
+    if(k<0||k>=order.length) return;
+    swipeDir = dir;
+    location.hash = k===0 ? "jan-"+(+(current||closestDay()).slice(8)) : order[k];
+  },{passive:true});
+})();
+render();
+</script>
+</body>
+</html>
