@@ -1024,11 +1024,12 @@ window.addEventListener("load",()=>setTimeout(()=>{
   [...Object.values(PHOTOS),...Object.values(VPHOTOS),"img/metro-map.jpg"].forEach(src=>{ const i=new Image(); i.decoding="async"; i.src=src; });
 },400));
 // Haptic tick on taps: Android vibrates; on iPhone (iOS 18+) toggling a hidden native switch gives a tick
-const hapticSw=(()=>{ const l=document.createElement("label"); l.setAttribute("aria-hidden","true");
-  l.style.cssText="position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden;left:-10px;top:0";
-  const i=document.createElement("input"); i.type="checkbox"; i.setAttribute("switch",""); i.tabIndex=-1; l.appendChild(i);
-  document.body.appendChild(l); return l; })();
-function haptic(ms){ if(navigator.vibrate){ try{ navigator.vibrate(ms||8); return; }catch(_){} } try{ hapticSw.click(); }catch(_){} }
+function iosTick(){ // a fresh hidden native switch, clicked and removed (the pattern Safari gives a haptic for)
+  const l=document.createElement("label"); l.ariaHidden="true"; l.style.display="none";
+  const i=document.createElement("input"); i.type="checkbox"; i.setAttribute("switch",""); l.appendChild(i);
+  document.head.appendChild(l); l.click(); document.head.removeChild(l);
+}
+function haptic(ms){ if(navigator.vibrate){ try{ navigator.vibrate(ms||8); return; }catch(_){} } try{ iosTick(); }catch(_){} }
 document.addEventListener("click",e=>{
   if(e.target.closest(".day,.tab,.alink,.map,.links a,.phone a,.nbi a,#totop,.ovr,.ovd,summary,a.card,.sos")) haptic(8);
 },true);
