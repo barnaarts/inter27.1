@@ -687,7 +687,7 @@ function renderSchedule(){
       x.ext?`<span class="tag ext">Extension group</span>`:"",
     ].join("");
     const time = x.s ? `${t12(x.s)}${x.e?`<small>to ${t12(x.e)}</small>`:""}` : `<small>All day</small>`;
-    return `<div class="ev reveal${live?" now":""}${x.opt?" opt":""}" id="ev-${+d.slice(8)}-${S[d].indexOf(x)}" style="--c:var(${COL[x.t]})">
+    return `<div class="ev reveal${live?" now":""}${x.opt||x.t==="free"?" opt":""}" id="ev-${+d.slice(8)}-${S[d].indexOf(x)}" style="--c:var(${COL[x.t]})">
       <div class="time">${time}</div>
       <div class="body">
         <div class="title">${EMO[x.t]||""} ${x.title}</div>
