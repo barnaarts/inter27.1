@@ -240,12 +240,12 @@
 
   /* Tap ink inside buttons */
   .ink{position:absolute;inset:0;border-radius:inherit;overflow:hidden;pointer-events:none;z-index:0}
-  .ink i{position:absolute;border-radius:50%;background:currentColor;opacity:.3;transform:scale(0);animation:ink .6s cubic-bezier(.2,.6,.3,1) forwards}
-  @keyframes ink{to{transform:scale(1);opacity:0}}
+  .ink i{position:absolute;border-radius:50%;background:currentColor;opacity:.5;transform:scale(0);animation:ink .75s cubic-bezier(.2,.6,.3,1) forwards}
+  @keyframes ink{0%{transform:scale(0);opacity:.55}60%{opacity:.35}100%{transform:scale(1);opacity:0}}
   /* Venues map */
   .vmapwrap{margin:0 0 16px}
   .vmap{height:min(62vh,420px);border-radius:14px;border:1px solid var(--line);overflow:hidden;background:#dfe7ec;z-index:0}
-  @media (prefers-color-scheme: dark){ .vmap{background:#1b2226} }
+  @media (prefers-color-scheme: dark){ .vmap{background:#1b2226} .vmap .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.9) contrast(.9)} }
   .vchips{display:flex;gap:6px;overflow-x:auto;padding:0 0 10px;scrollbar-width:none}
   .vchips::-webkit-scrollbar{display:none}
   .vchip{flex:0 0 auto;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:13px;padding:5px 11px;border-radius:999px;cursor:pointer;position:relative}
@@ -594,7 +594,7 @@ function renderDays(){
   nav.scrollLeft = keepX;
   const tc = nav.querySelector(".day.out"); if(tc) tc.onclick=()=>{ location.hash="today"; };
   nav.querySelectorAll(".day[data-d]").forEach(b=>b.onclick=()=>{location.hash="jan-"+(+b.dataset.d.slice(8));});
-  if(pendingInk && Date.now()-pendingInk.t<500){ const b=nav.querySelector(`.day[data-d="${pendingInk.d}"]`); if(b) inkAt(b,pendingInk.x,pendingInk.y); pendingInk=null; }
+  if(pendingInk && Date.now()-pendingInk.t<800){ const b=nav.querySelector(`.day[data-d="${pendingInk.d}"]`); if(b) inkAt(b,pendingInk.x,pendingInk.y); pendingInk=null; }
   const on = nav.querySelector(".on");
   if(on){ // only scroll if the selected date is off-screen; centre it just on first load
     const nr=nav.getBoundingClientRect(), br=on.getBoundingClientRect();
@@ -851,8 +851,8 @@ function initVenueMap(){
      .forEach(p=>L.polyline(p,{color:road,weight:4,opacity:.9,interactive:false}).addTo(vmap));
     // Real map tiles on top when available
     let loaded=0;
-    const tiles=L.tileLayer(`https://{s}.basemaps.cartocdn.com/rastertiles/${dark?"dark_all":"voyager"}/{z}/{x}/{y}{r}.png`,
-      {maxZoom:19,subdomains:"abcd",attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/attributions">CARTO</a>'});
+    const tiles=L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {maxZoom:19,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'});
     tiles.on("tileload",()=>loaded++);
     tiles.on("tileerror",()=>{ if(!loaded && vmap && vmap.hasLayer(tiles)){ vmap.removeLayer(tiles); vmap.attributionControl.setPrefix(false); const n=document.getElementById("vnote"); if(n) n.textContent="Simplified map: the full street map needs an internet connection."; } });
     tiles.addTo(vmap);
@@ -1165,12 +1165,11 @@ document.addEventListener("pointerdown",e=>{
 const INK_SEL=".day,.tab,.alink,.map,.links a,.phone a,.nbi a,#totop,a.card,.sos,.vchip";
 var pendingInk=null;
 function inkAt(el,x,y){
-  if(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   if(getComputedStyle(el).position==="static") el.style.position="relative";
   const r=el.getBoundingClientRect(), size=2*Math.hypot(Math.max(x,r.width-x),Math.max(y,r.height-y));
   const w=document.createElement("span"); w.className="ink";
   const i=document.createElement("i"); i.style.width=i.style.height=size+"px"; i.style.left=(x-size/2)+"px"; i.style.top=(y-size/2)+"px";
-  w.appendChild(i); el.appendChild(w); setTimeout(()=>w.remove(),650);
+  w.appendChild(i); el.appendChild(w); setTimeout(()=>w.remove(),800);
 }
 document.addEventListener("pointerdown",e=>{
   const el=e.target.closest(INK_SEL); if(!el) return;
