@@ -187,7 +187,9 @@
   .empty{color:var(--muted);text-align:center;padding:30px 0}
   .tabs{flex-wrap:wrap;justify-content:center;width:100%}
   .top{justify-content:center}
+  html,body{overscroll-behavior-y:none}
   .logoband{background:var(--accent);text-align:center;padding:22px 16px 6px}
+  .logoband .lb-sub{color:#fff;font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;opacity:.9;margin-top:8px}
   .logoband img{display:block;width:min(340px,80%);height:auto;margin:0 auto}
   .artist{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:14px;overflow:hidden}
   .artist .pic{aspect-ratio:3/2;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:700;color:#fff;letter-spacing:.02em;background:var(--c)}
@@ -244,6 +246,7 @@ if(a&&b){var ra=a.getBoundingClientRect(),rb=b.getBoundingClientRect();
 s.classList.add("out");setTimeout(function(){s.remove()},750)},1000);</script>
 <div class="logoband">
   <img src="img/logo.png" alt="BARNA ARTS">
+  <div class="lb-sub">Interdisciplinary January'27</div>
 </div>
 <header>
   <div class="top">
@@ -925,7 +928,7 @@ function renderInfo(){
     <h2>🚇 Getting around: your T-usual</h2>
     <div class="card">We'll all buy a <b>T-usual</b> when we land: a monthly pass on a T-mobilitat card with unlimited metro, bus, tram and train rides in zone 1 for 30 days from the first time you use it.<br><br>
       📍 <b>Where:</b> at the ticket machines in the airport metro station (line L9 Sud, Terminal 1 or 2). The T-usual also covers the airport metro, so you can ride straight into the city.<br>
-      💳 <b>Cost:</b> €22.80 for zone 1, plus €1 for the cardboard T-mobilitat card.<br>
+      💳 <b>Cost:</b> €22.80 (about $26) for zone 1, plus €1 (about $1.15) for the cardboard T-mobilitat card. About €24 / $27 in total.<br>
       🛂 <b>Bring your passport.</b> The card is personal: one per person, no sharing.<br>
       🎫 <b>Keep the card</b> for the whole program, and tap it at the gates every time you enter.
       <div class="links"><a href="https://www.tmb.cat/en" target="_blank" rel="noopener">TMB website ↗</a><a href="https://t-mobilitat.atm.cat/en/web/t-mobilitat/fares/t-usual" target="_blank" rel="noopener">T-usual info ↗</a><a href="#" onclick="document.getElementById('metro-map').scrollIntoView({behavior:'smooth'});return false;">Metro map ↓</a></div></div>
@@ -997,7 +1000,11 @@ document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
 });
 window.addEventListener("hashchange",render);
 const ON_GH = /github\.io$/.test(location.hostname);
-if(ON_GH && "serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
+if(ON_GH && "serviceWorker" in navigator){
+  navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(reg=>{ reg.update().catch(()=>{}); }).catch(()=>{});
+  let reloaded=false; navigator.serviceWorker.addEventListener("controllerchange",()=>{ if(reloaded) return; reloaded=true; location.reload(); });
+  document.addEventListener("visibilitychange",()=>{ if(!document.hidden) navigator.serviceWorker.getRegistration().then(r=>r&&r.update()).catch(()=>{}); });
+}
 // Water ripple where you tap on empty space
 let lastTap=null, tapLevel=0;
 document.addEventListener("pointerdown",e=>{
