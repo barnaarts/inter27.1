@@ -260,10 +260,10 @@
   .leaflet-popup-content-wrapper{border-radius:14px;background:var(--card);color:var(--ink)}
   .leaflet-popup-tip{background:var(--card)}
   .leaflet-popup-content{margin:12px 14px;font-family:"DM Sans",system-ui,sans-serif;font-size:14px;line-height:1.4;min-width:200px}
-  .vpop img{display:block;width:calc(100% + 28px);margin:-12px -14px 8px;aspect-ratio:9/5;object-fit:cover;border-radius:14px 14px 0 0}
+  .vpop img{display:block;width:calc(100% + 28px);margin:-12px -14px 8px;aspect-ratio:16/7;object-fit:cover;border-radius:14px 14px 0 0}
   .vpop h4{margin:0 0 2px;font-size:16px}
   .vpop .addr{color:var(--muted);font-size:13px}
-  .vpop .sess{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+  .vpop .sess{display:flex;flex-direction:row;flex-wrap:wrap;gap:4px;margin-top:8px}
   .vpop .sess a{display:inline-block;width:auto}
   .vpop .links a{display:inline-block}
   .vpop .sess a{font-size:12px;font-weight:700;color:var(--accent);text-decoration:none;border:1px solid var(--accent);border-radius:999px;padding:2px 8px}
@@ -902,7 +902,7 @@ document.addEventListener("click",e=>{
     const k=o.dataset.k, wrap=document.getElementById("vmapwrap"); if(!wrap||!vmap) return;
     if(mapDay!=="all" && !vmarkers[k]){ mapDay="all"; document.querySelectorAll(".vchip").forEach(b=>b.classList.toggle("on",b.dataset.md==="all")); drawVenuePins(true); }
     const hh=document.querySelector("header").offsetHeight; window.scrollTo({top:wrap.getBoundingClientRect().top+window.scrollY-hh-8,behavior:"smooth"});
-    setTimeout(()=>{ const m=vmarkers[k]; if(m){ vmap.setView(VC[k],15); m.openPopup(); } },450);
+    setTimeout(()=>{ const m=vmarkers[k]; if(m){ vmap.setView(VC[k],15,{animate:false}); m.openPopup(); } },450);
   }
 });
 
