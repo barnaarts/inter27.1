@@ -326,6 +326,19 @@
   .tv-who img{width:52px;height:52px;object-fit:cover;border-radius:50%}
   .tv-who span{font-weight:700;font-size:15px}
   .tv-who small{display:block;font-weight:400;color:var(--muted);font-size:13px}
+  .tv-q img.mc-img{width:100%;height:190px;object-fit:cover;border-radius:14px}
+  .mc-note{font-size:14px;line-height:1.45;color:var(--ink);min-height:1em;max-width:420px}
+  .qz-opts.two{grid-template-columns:1fr 1fr}
+  .qz-opt.tf{text-align:center;font-weight:700;font-size:17px;padding:16px}
+  .tl-list{display:flex;flex-direction:column;gap:8px;width:100%}
+  .tl-item{display:grid;grid-template-columns:30px 1fr;align-items:center;gap:2px 10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:15px;padding:10px 12px;border-radius:12px;text-align:left;position:relative;cursor:pointer}
+  .tl-item i{grid-row:span 2;width:28px;height:28px;border-radius:50%;border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:700}
+  .tl-item.sel i{border:0;background:var(--accent);color:#fff}
+  .tl-item small{color:var(--muted);font-size:13px}
+  .tl-item small:empty{display:none}
+  .tl-item.ok{border-color:#2e8b57;box-shadow:inset 3px 0 0 #2e8b57}
+  .tl-item.no{border-color:#d4442a;box-shadow:inset 3px 0 0 #d4442a}
+  .tl-item.ok i{background:#2e8b57}.tl-item.no i{background:#d4442a}
 </style>
 </head>
 <body>
@@ -1254,7 +1267,7 @@ document.addEventListener("pointerdown",e=>{
     document.body.appendChild(s); setTimeout(()=>s.remove(),dur+d+100); }
 },{passive:true});
 // Ink ripple inside buttons and pills where you tap
-const INK_SEL=".day,.tab,.alink,.map,.links a,.phone a,.nbi a,#totop,a.card,.sos,.vchip,.g-top button,.g-btn,.qz-opt,.cp-clap";
+const INK_SEL=".day,.tab,.alink,.map,.links a,.phone a,.nbi a,#totop,a.card,.sos,.vchip,.g-top button,.g-btn,.qz-opt,.cp-clap,.tl-item";
 var pendingInk=null;
 function inkAt(el,x,y){
   if(getComputedStyle(el).position==="static") el.style.position="relative";
@@ -1504,7 +1517,123 @@ const TRIVIA={title:"Artists trivia", start(){
   round();
 }};
 
-const GAMES=[SIMON,COMPAS,MEMORY,QUIZ,TRIVIA];
+// Generic multiple-choice game: items [{q, a, o:[wrong…], img, note}]
+function mcGame(key,title,intro,items,R,optsFn){ const G={title, start(){
+  const qs=shuffle(items).slice(0,Math.min(R,items.length)); let r=0, score=0, streak=0, answered=false;
+  body.innerHTML=`<p class="g-msg" id="mc-msg">${intro}</p><div class="tv-q" id="mc-q"></div><div class="qz-opts" id="mc-opts"></div><div class="mc-note" id="mc-note"></div>
+    <div class="g-score">Question <b id="mc-r">1</b>/${qs.length} · Score <b id="mc-s">0</b> · Best <b id="mc-b">${getBest(key)}</b></div><button class="g-btn" id="mc-next" hidden>Next →</button><button class="g-btn" id="mc-go" hidden>Play again</button>`;
+  const qEl=body.querySelector("#mc-q"), opts=body.querySelector("#mc-opts"), note=body.querySelector("#mc-note"), msg=body.querySelector("#mc-msg"), nx=body.querySelector("#mc-next");
+  function round(){ answered=false; note.textContent=""; nx.hidden=true; const q=qs[r]; body.querySelector("#mc-r").textContent=r+1;
+    qEl.innerHTML=(q.img?`<img class="mc-img" src="${q.img}" alt="">`:"")+`<b>${q.q}</b>`;
+    const o=optsFn?optsFn(q):shuffle([q.a,...shuffle(q.o).slice(0,3)]);
+    opts.innerHTML=o.map(x=>`<button class="qz-opt${o.length===2?" tf":""}" data-o="${x.replace(/"/g,"&quot;")}">${x}</button>`).join("");
+    opts.className="qz-opts"+(o.length===2?" two":""); opts.querySelectorAll(".qz-opt").forEach(b=>b.onclick=()=>answer(b)); }
+  function answer(b){ if(answered) return; answered=true; const q=qs[r], ok=b.dataset.o===q.a;
+    opts.querySelectorAll(".qz-opt").forEach(x=>{ if(x.dataset.o===q.a) x.classList.add("ok"); else if(x===b) x.classList.add("no"); });
+    if(ok){ streak++; const p=100+(streak>1?25*(streak-1):0); score+=p; msg.textContent=streak>1?`Right! ${streak} in a row: +${p}`:`Right! +${p}`; tone(660,.15,"triangle",.2); later(()=>tone(880,.2,"triangle",.2),120); tick(10); }
+    else { streak=0; msg.textContent=`Not quite. The answer is: ${q.a}`; tone(150,.35,"sawtooth",.15); tick([30,30,30]); }
+    body.querySelector("#mc-s").textContent=score;
+    if(q.note){ note.textContent=q.note; nx.hidden=false; nx.onclick=next; } else later(next,1700); }
+  function next(){ if(++r<qs.length) return round(); const nb=setBest(key,score); body.querySelector("#mc-b").textContent=getBest(key);
+    qEl.innerHTML=""; opts.innerHTML=""; note.textContent=""; nx.hidden=true; msg.textContent=`You scored ${score}.${nb&&score?" New best!":""}`;
+    const g=body.querySelector("#mc-go"); g.hidden=false; g.onclick=()=>G.start(); }
+  round(); }}; return G; }
+
+// 6. Catalan survival words
+const CAT=[["bon dia","good morning"],["bona tarda","good afternoon"],["bona nit","good night"],["adéu","goodbye"],["si us plau","please"],["gràcies","thank you"],["de res","you're welcome"],["perdó","sorry / excuse me"],["d'acord","OK"],["no ho entenc","I don't understand"],["parles anglès?","do you speak English?"],["quant val?","how much is it?"],["on és…?","where is…?"],["el compte, si us plau","the bill, please"],["sortida","exit"],["entrada","entrance"],["obert","open"],["tancat","closed"],["empenteu","push"],["estireu","pull"],["carrer","street"],["plaça","square"],["platja","beach"],["lavabo","toilet"],["dreta","right"],["esquerra","left"],["avui","today"],["demà","tomorrow"],["ahir","yesterday"],["esmorzar","breakfast"],["dinar","lunch"],["sopar","dinner"],["aigua","water"],["bitllet","ticket"],["andana","platform"],["parada","stop (bus)"],["vaga","strike"],["farmàcia de guàrdia","on-duty pharmacy"],["ajuda!","help!"]];
+const CATALAN=mcGame("catalan","Catalan survival words","Street signs, menus and metro notices are often in Catalan. Pick the right meaning.",
+  CAT.map(([c,e])=>Math.random()<.65 ? {q:`“${c}”`, a:e, o:CAT.filter(x=>x[1]!==e).map(x=>x[1])} : {q:`How do you say “${e}” in Catalan?`, a:c, o:CAT.filter(x=>x[0]!==c).map(x=>x[0])}),10);
+
+// 7. Metro navigator (from Yugo: Drassanes, L3 green)
+const METRO=[
+  {q:"From Yugo (Drassanes) to La Caldera (Les Corts)?", a:"L3 green towards Zona Universitària, no change", o:["L3 green towards Trinitat Nova, no change","L1 red towards Hospital de Bellvitge","L3 to Catalunya, then L1 red"], note:"Les Corts is on L3, 7 stops west. Good to know: you'll do this trip four days in a row."},
+  {q:"From Drassanes to La Pedrera (Diagonal)?", a:"L3 green towards Trinitat Nova, no change", o:["L3 green towards Zona Universitària, no change","L4 yellow towards La Pau","L3 to Catalunya, then L7"]},
+  {q:"From Drassanes to Casa Batlló (Passeig de Gràcia)?", a:"L3 green towards Trinitat Nova, no change", o:["L3 green towards Zona Universitària, no change","L2 purple towards Badalona","L5 blue towards Vall d'Hebron"]},
+  {q:"From Drassanes to Mercat de les Flors and the Teatre Lliure (Poble Sec)?", a:"L3 green towards Zona Universitària, no change", o:["L3 green towards Trinitat Nova, no change","L1 red to Espanya, then walk","L2 purple towards Paral·lel"], note:"Poble Sec is 2 stops away. It's also a 20-minute walk."},
+  {q:"From Drassanes to the Sala Reflexió at Pompeu Fabra University (Ciutadella | Vila Olímpica)?", a:"L3 to Passeig de Gràcia, then L4 yellow towards La Pau", o:["L3 to Catalunya, then L1 red towards Fondo","L3 towards Zona Universitària, no change","L4 yellow from Drassanes, no change"], note:"Drassanes is only on L3, so you change at Passeig de Gràcia for L4."},
+  {q:"From Drassanes to the airport?", a:"L3 to Zona Universitària, then L9 Sud (orange)", o:["L3 to Sants, then L1 red","L4 yellow, no change","L3 to Catalunya, then L9 Sud"], note:"Or the Aerobús from Plaça de Catalunya. Your T-usual covers the metro to the airport."},
+  {q:"From Drassanes to the Sagrada Família?", a:"L3 to Diagonal, then L5 blue towards Vall d'Hebron", o:["L3 to Passeig de Gràcia, then L4 yellow","L3 towards Trinitat Nova, no change","L1 red towards Fondo, no change"]},
+  {q:"From Drassanes to Park Güell (Lesseps or Vallcarca)?", a:"L3 green towards Trinitat Nova, no change", o:["L3 green towards Zona Universitària, no change","L3 to Diagonal, then L5 blue","L4 yellow towards Trinitat Nova"], note:"From the station it's an uphill walk of about 15 minutes."},
+  {q:"From Drassanes to Sants train station?", a:"L3 green towards Zona Universitària, no change", o:["L3 green towards Trinitat Nova, no change","L1 red towards Hospital de Bellvitge","L3 to Espanya, then L1 red"]},
+  {q:"What colour is line L3, the one at Drassanes?", a:"Green", o:["Red","Yellow","Purple"]},
+  {q:"What colour is line L1?", a:"Red", o:["Green","Blue","Orange"]},
+  {q:"What colour is line L4?", a:"Yellow", o:["Blue","Red","Purple"]},
+  {q:"What colour is line L5?", a:"Blue", o:["Yellow","Green","Red"]},
+  {q:"What colour is line L2?", a:"Purple", o:["Orange","Green","Yellow"]},
+  {q:"You're at Catalunya on L3 and want Les Corts. Which direction?", a:"Zona Universitària", o:["Trinitat Nova","Hospital de Bellvitge","Fondo"]},
+];
+const METROG=mcGame("metro","Metro navigator","Yugo's closest metro is Drassanes (L3, green). Pick the best way to get there.",METRO,8);
+
+// 8. Program timeline
+const TIMELINE={title:"Program timeline", start(){
+  const pool=[]; dates.forEach(d=>S[d].forEach(x=>{ if(x.s && !x.ext && !["free","travel"].includes(x.t) && !/Studio work|Mentoring/.test(x.title)) pool.push({d,x,k:d+" "+x.s}); }));
+  const uniq=[...new Map(pool.map(p=>[p.x.title,p])).values()]; const R=3; let r=0, score=0, picked=[], set=[];
+  body.innerHTML=`<p class="g-msg" id="tl-msg">Tap these sessions in the order they happen, from first to last.</p><div class="tl-list" id="tl-list"></div><div class="mc-note" id="tl-note"></div>
+    <div class="g-score">Round <b id="tl-r">1</b>/${R} · Score <b id="tl-s">0</b> · Best <b id="tl-b">${getBest("timeline")}</b></div><button class="g-btn" id="tl-next" hidden>Next →</button><button class="g-btn" id="tl-go" hidden>Play again</button>`;
+  const list=body.querySelector("#tl-list"), msg=body.querySelector("#tl-msg"), nx=body.querySelector("#tl-next"), note=body.querySelector("#tl-note");
+  function round(){ picked=[]; nx.hidden=true; note.textContent=""; body.querySelector("#tl-r").textContent=r+1; msg.textContent="Tap these sessions in the order they happen, from first to last.";
+    set=shuffle(uniq).slice(0,5);
+    list.innerHTML=set.map((p,i)=>`<button class="tl-item" data-i="${i}"><i></i><span>${EMO[p.x.t]||""} ${p.x.title}</span><small></small></button>`).join("");
+    list.querySelectorAll(".tl-item").forEach(b=>b.onclick=()=>{ if(b.classList.contains("sel")||picked.length===set.length) return; picked.push(+b.dataset.i); b.classList.add("sel"); b.querySelector("i").textContent=picked.length; tone(400+picked.length*80,.1,"triangle",.15); tick(6); if(picked.length===set.length) check(); }); }
+  function check(){ const order=[...set.keys()].sort((a,b)=>set[a].k.localeCompare(set[b].k)); let right=0;
+    list.querySelectorAll(".tl-item").forEach(b=>{ const i=+b.dataset.i, pos=picked.indexOf(i), ok=order[pos]===i; if(ok) right++;
+      b.classList.add(ok?"ok":"no"); b.querySelector("small").textContent=`${fmt(set[i].d,{weekday:"short",month:"short",day:"numeric"})} · ${t12(set[i].x.s)}`; b.style.order=order.indexOf(i); });
+    const p=right*40+(right===5?100:0); score+=p; body.querySelector("#tl-s").textContent=score;
+    msg.textContent= right===5?`Perfect order! +${p}`:`${right} of 5 in the right place. +${p}`; right===5?(tone(660,.15),later(()=>tone(880,.2),120)):tone(300,.2);
+    note.textContent="Now in the real order, with dates."; nx.hidden=false; nx.textContent= r+1<R?"Next →":"See score";
+    nx.onclick=()=>{ if(++r<R) return round(); const nb=setBest("timeline",score); body.querySelector("#tl-b").textContent=getBest("timeline");
+      list.innerHTML=""; note.textContent=""; nx.hidden=true; msg.textContent=`You scored ${score} out of ${R*300}.${nb&&score?" New best!":""}`; const g=body.querySelector("#tl-go"); g.hidden=false; g.onclick=()=>TIMELINE.start(); }; }
+  round();
+}};
+
+// 9. Gaudí or not?
+const GAUDI=[
+  ["La Pedrera (Casa Milà)",1,"Gaudí, 1906–1912. You visit it in the program.","img/v-pedrera.jpg"],
+  ["Casa Batlló",1,"Gaudí remodelled it in 1904–1906. You visit it too.","img/v-batllo.jpg"],
+  ["The Sagrada Família",1,"Gaudí worked on it from 1883 until his death in 1926. It's still being built."],
+  ["Park Güell",1,"Gaudí, 1900–1914, originally planned as a garden city."],
+  ["Palau Güell, just off La Rambla",1,"One of Gaudí's early works, a few minutes' walk from Yugo."],
+  ["Casa Vicens",1,"Gaudí's first important house, in Gràcia (1883–1885)."],
+  ["Palau de la Música Catalana",0,"By Lluís Domènech i Montaner, another star of Catalan Modernisme."],
+  ["Hospital de Sant Pau",0,"Also by Domènech i Montaner."],
+  ["Casa Amatller, next door to Casa Batlló",0,"By Josep Puig i Cadafalch."],
+  ["Casa de les Punxes",0,"By Josep Puig i Cadafalch, who loved Gothic-style turrets."],
+  ["The Barcelona Pavilion",0,"By Ludwig Mies van der Rohe, for the 1929 International Exposition."],
+  ["Torre Glòries (the 'bullet' tower)",0,"By Jean Nouvel, finished in 2005."],
+  ["MACBA",0,"The museum building is by Richard Meier (1995).","img/v-macba.jpg"],
+  ["Museu Tàpies building",0,"Built by Domènech i Montaner as a publishing house; the wire sculpture on top is by Tàpies.","img/v-tapies.jpg"],
+  ["Fundació Joan Miró",0,"By Josep Lluís Sert, a friend of Miró."],
+  ["The Arc de Triomf",0,"By Josep Vilaseca, for the 1888 Universal Exposition."],
+  ["The W Hotel ('the sail')",0,"By Ricardo Bofill."],
+].map(([n,g,note,img])=>({q:n,a:g?"Gaudí":"Not Gaudí",note,img}));
+const GAUDIG=mcGame("gaudi","Gaudí or not?","Barcelona is full of amazing buildings, but not all of them are by Gaudí. Which are his?",GAUDI,10,()=>["Gaudí","Not Gaudí"]);
+
+// 10. Barcelona time & manners
+const MANNERS=[
+  ["Lunch is usually eaten around 2 PM.",1,"Lunch is the main meal, often between 1:30 and 3:30 PM."],
+  ["Dinner at 6 PM is normal in Barcelona.",0,"Most people eat dinner around 9 PM or later. Many kitchens don't open before 8."],
+  ["You're expected to tip 20% in restaurants.",0,"Tipping is optional. Rounding up or leaving a few coins for good service is plenty."],
+  ["Two kisses on the cheek is a common greeting among friends.",1,"Right cheek first. A handshake is fine in formal situations."],
+  ["Every shop closes for a siesta in the afternoon.",0,"Big shops and supermarkets stay open. Some small shops close for a few hours after lunch."],
+  ["Catalan and Spanish are both official languages in Barcelona.",1,"You'll see Catalan on most signs. Locals switch easily, and many speak English too."],
+  ["Tap water in Barcelona is safe to drink.",1,"It's safe, though some people don't like the taste. Bring a refillable bottle."],
+  ["Most shops are closed on Sundays.",1,"Plan your shopping for Saturday. Some shops in tourist areas open."],
+  ["Pickpocketing is common on La Rambla and in the metro.",1,"Keep your phone and wallet in front pockets or a zipped bag, especially in crowds."],
+  ["Walking around town in your swimsuit is fine.",0,"Away from the beach it can get you a fine. Put a shirt on."],
+  ["Drinking alcohol in the street is allowed.",0,"It's banned in public spaces and you can be fined."],
+  ["The emergency number is 112.",1,"112 works for police, ambulance and fire, and you can ask for English."],
+  ["Waiters bring the bill as soon as you finish eating.",0,"Lingering is normal. Ask for it: “el compte, si us plau”."],
+  ["Clubs only get busy after 1 AM.",1,"Nights start late here. Your program starts in the morning, so pace yourself!"],
+  ["People usually say hello when entering a small shop or a lift.",1,"A quick “bon dia” or “hola” is polite."],
+].map(([q,t,note])=>({q,a:t?"True":"False",note}));
+const MANNERSG=mcGame("manners","Barcelona time & manners","True or false? Local habits that will help you fit in.",MANNERS,10,()=>["True","False"]);
+
+// 11. Dance & art vocabulary
+const VOC=[["Improvisation","Movement created in the moment, not set beforehand"],["Score","A set of instructions or rules that structures a performance"],["Site-specific","Work made for, and shaped by, a particular place"],["Contact improvisation","Dancing through shared weight and touch with a partner"],["Compás","The rhythmic cycle of a flamenco form, such as 12 beats"],["Palmas","Rhythmic hand-clapping in flamenco"],["Choreography","Composing movement into a structured piece"],["Dramaturgy","Shaping a work's meaning, structure and context"],["Installation","An artwork that occupies and transforms a whole space"],["Performance art","Live art where the artist's action is the work"],["Residency","A period when artists work in a host space to develop new work"],["Devising","Creating a piece collectively from the group's own material"],["Proprioception","The body's sense of its own position and movement"],["Canon","The same movement performed by dancers starting one after another"],["Unison","Dancers doing the same movement at the same time"],["Trencadís","Mosaic made from broken pieces of tile"],["Modernisme","The Catalan version of Art Nouveau, around 1890–1910"]];
+const VOCAB=mcGame("vocab","Dance & art vocabulary","Words you'll hear from the artists this month. Pick the right meaning.",
+  VOC.map(([t,d])=>Math.random()<.6 ? {q:t, a:d, o:VOC.filter(x=>x[1]!==d).map(x=>x[1])} : {q:d, a:t, o:VOC.filter(x=>x[0]!==t).map(x=>x[0])}),8);
+
+const GAMES=[SIMON,COMPAS,MEMORY,QUIZ,TRIVIA,CATALAN,METROG,TIMELINE,GAUDIG,MANNERSG,VOCAB];
 function play(g){ clearAll(); cur=g; ttl.textContent=g.title; body.scrollTop=0; g.start(); }
 function nextGame(){ if(!bag.length){ bag=shuffle(GAMES); if(bag[0]===cur && bag.length>1) bag.push(bag.shift()); } play(bag.shift()); }
 function openGames(){ if(!box.hidden) return; box.hidden=false; document.body.classList.add("g-open"); tick([10,30,10]); nextGame(); }
