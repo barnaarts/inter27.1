@@ -278,6 +278,7 @@
   #game[hidden]{display:none}
   .g-top{display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;background:var(--accent);color:#fff}
   .g-top button{border:1px solid rgba(255,255,255,.6);background:none;color:#fff;font:inherit;font-size:14px;padding:6px 12px;border-radius:999px;position:relative;cursor:pointer;flex:none}
+  .g-sp{width:44px;flex:none}
   .g-t{flex:1;font-weight:700;font-size:17px;text-align:center}
   .g-body{flex:1;overflow:auto;padding:16px 16px calc(24px + env(safe-area-inset-bottom));max-width:520px;width:100%;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;-webkit-user-select:none;user-select:none}
   .g-msg{margin:0;font-size:15px;line-height:1.45;color:var(--muted);min-height:2.9em}
@@ -319,7 +320,6 @@
   .qz-opt{border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:15px;padding:12px 14px;border-radius:12px;text-align:left;position:relative;cursor:pointer}
   .qz-opt.ok{background:#2e8b57;color:#fff;border-color:#2e8b57}
   .qz-opt.no{background:#d4442a;color:#fff;border-color:#d4442a}
-  .g-cv{display:block;border-radius:14px;touch-action:none;box-shadow:0 1px 0 var(--line)}
   .tv-q{display:flex;flex-direction:column;align-items:center;gap:10px;font-size:18px;line-height:1.35}
   .tv-q img{width:150px;height:150px;object-fit:cover;border-radius:50%}
   .tv-who{display:flex;align-items:center;gap:10px;text-align:left;min-height:56px}
@@ -1325,7 +1325,7 @@ let swipeDir = 0;
 render();
 </script>
 <div id="game" hidden>
-  <div class="g-top"><button class="g-x" aria-label="Close">✕</button><div class="g-t" id="g-title"></div><button class="g-next">Next game ↻</button></div>
+  <div class="g-top"><button class="g-x" aria-label="Close">✕</button><div class="g-t" id="g-title"></div><span class="g-sp"></span></div>
   <div class="g-body" id="g-body"></div>
 </div>
 <script>
@@ -1459,93 +1459,7 @@ const QUIZ={title:"Which venue is this?", start(){
   round();
 }};
 
-// Canvas helper sized to the game area
-function makeCanvas(ratio){
-  const W=Math.min(body.clientWidth-32,480), H=Math.min(Math.round(W*ratio), body.clientHeight-150);
-  const c=document.createElement("canvas"), d=devicePixelRatio||1; c.width=W*d; c.height=H*d; c.style.width=W+"px"; c.style.height=H+"px"; c.className="g-cv";
-  const x=c.getContext("2d"); x.scale(d,d); return {c,x,W,H};
-}
-
-// 5. Barceloneta keepy-uppy: tap the ball to keep it in the air
-const KEEPY={title:"Beach keepy-uppy", start(){
-  body.innerHTML=`<p class="g-msg" id="kp-msg">Tap the beach ball to kick it up. Tap off-centre to send it sideways. Don't let it touch the sand!</p>
-    <div id="kp-wrap"></div><div class="g-score">Kicks <b id="kp-s">0</b> · Best <b id="kp-b">${getBest("keepy")}</b></div><button class="g-btn" id="kp-go">Start</button>`;
-  const {c,x,W,H}=makeCanvas(1.25); body.querySelector("#kp-wrap").appendChild(c);
-  const R=Math.max(26,W*.09), sand=H*.86; let b, kicks=0, live=false, spin=0;
-  const reset=()=>{ b={x:W/2,y:sand-R,vx:0,vy:0,a:0}; kicks=0; body.querySelector("#kp-s").textContent=0; };
-  function draw(){
-    const sky=x.createLinearGradient(0,0,0,H); sky.addColorStop(0,"#8fd0f5"); sky.addColorStop(.62,"#d8f0fb"); x.fillStyle=sky; x.fillRect(0,0,W,H);
-    x.fillStyle="#2f8fd0"; x.fillRect(0,H*.7,W,sand-H*.7); x.fillStyle="rgba(255,255,255,.6)"; for(let i=0;i<6;i++){ x.fillRect((i*W/5+performance.now()/60)%(W+40)-40,H*.72+i%3*8,30,2); }
-    x.fillStyle="#f1d9a6"; x.fillRect(0,sand,W,H-sand);
-    const sh=Math.max(.2,1-(sand-b.y)/H); x.fillStyle=`rgba(0,0,0,${.18*sh})`; x.beginPath(); x.ellipse(b.x,sand+6,R*sh,R*.22*sh,0,0,6.28); x.fill();
-    x.save(); x.translate(b.x,b.y); x.rotate(b.a); const cols=["#d4442a","#ffffff","#f2c230","#ffffff","#2f6fdb","#ffffff"];
-    for(let i=0;i<6;i++){ x.beginPath(); x.moveTo(0,0); x.arc(0,0,R,i*Math.PI/3,(i+1)*Math.PI/3); x.fillStyle=cols[i]; x.fill(); }
-    x.beginPath(); x.arc(0,0,R*.18,0,6.28); x.fillStyle="#fff"; x.fill(); x.restore();
-    x.beginPath(); x.arc(b.x-R*.35,b.y-R*.4,R*.25,0,6.28); x.fillStyle="rgba(255,255,255,.35)"; x.fill();
-    x.lineWidth=2; x.strokeStyle="rgba(0,0,0,.15)"; x.beginPath(); x.arc(b.x,b.y,R,0,6.28); x.stroke();
-  }
-  let last=0;
-  function loop(t){ const dt=Math.min(.033,(t-(last||t))/1000); last=t;
-    if(live){ b.vy+=H*1.9*dt; b.x+=b.vx*dt; b.y+=b.vy*dt; b.a+=spin*dt; spin*=.99;
-      if(b.x<R){ b.x=R; b.vx=Math.abs(b.vx)*.8; tone(300,.05,"sine",.1); } if(b.x>W-R){ b.x=W-R; b.vx=-Math.abs(b.vx)*.8; tone(300,.05,"sine",.1); }
-      if(b.y>sand-R){ b.y=sand-R; live=false; tone(120,.4,"sawtooth",.18); tick([40,40,40]);
-        const nb=setBest("keepy",kicks); body.querySelector("#kp-b").textContent=getBest("keepy");
-        body.querySelector("#kp-msg").textContent=`It hit the sand after ${kicks} kick${kicks===1?"":"s"}.${nb&&kicks?" New best!":""}`; const g=body.querySelector("#kp-go"); g.textContent="Play again"; g.hidden=false; } }
-    draw(); raf=requestAnimationFrame(loop); }
-  c.addEventListener("pointerdown",e=>{ e.preventDefault(); if(!live) return; const r=c.getBoundingClientRect(), px=e.clientX-r.left, py=e.clientY-r.top;
-    if(Math.hypot(px-b.x,py-b.y)>R*1.45) return; const off=(b.x-px)/R;
-    b.vy=-H*(1.05+Math.min(kicks,30)*.006); b.vx=off*W*.9+(Math.random()-.5)*W*.15; spin=off*8; kicks++;
-    body.querySelector("#kp-s").textContent=kicks; tone(380+Math.min(kicks,20)*18,.09,"triangle",.2); tick(8); });
-  body.querySelector("#kp-go").onclick=e=>{ ac(); reset(); e.target.hidden=true; live=true; b.vy=-H*1.1; body.querySelector("#kp-msg").textContent="Keep it up!"; };
-  reset(); raf=requestAnimationFrame(loop);
-}};
-
-// 6. Trencadís breakout
-const BREAK={title:"Trencadís breakout", start(){
-  body.innerHTML=`<p class="g-msg" id="bk-msg">Drag along the bottom to move the paddle and smash the mosaic. You have 3 balls.</p>
-    <div id="bk-wrap"></div><div class="g-score">Score <b id="bk-s">0</b> · Balls <b id="bk-l">3</b> · Best <b id="bk-b">${getBest("breakout")}</b></div><button class="g-btn" id="bk-go">Start</button>`;
-  const {c,x,W,H}=makeCanvas(1.35); body.querySelector("#bk-wrap").appendChild(c);
-  const C=["#1f6fb5","#3b9ad9","#f2c230","#2e8b57","#d4442a","#7fc4e8","#e8a33d","#7b4bd1"], cols=7, gap=4, bw=(W-gap*(cols+1))/cols, bh=Math.max(14,H*.04);
-  let pad, ball, bricks, score=0, lives=3, level=1, live=false, stuck=true;
-  function build(){ bricks=[]; const rows=4+Math.min(level,4);
-    for(let r=0;r<rows;r++) for(let k=0;k<cols;k++){ const j=()=>(Math.random()-.5)*bw*.18;
-      bricks.push({x:gap+k*(bw+gap), y:H*.08+r*(bh+gap), c:C[(r+k*3+level)%C.length], hp:r<level-1?2:1, sk:[j(),j(),j(),j()]}); } }
-  function resetBall(){ pad={w:W*.24,x:W/2}; ball={x:W/2,y:H-36-8,vx:0,vy:0,r:Math.max(6,W*.018)}; stuck=true; }
-  function launch(){ const s=H*(.7+level*.08); const a=(-Math.PI/2)+(Math.random()-.5)*.8; ball.vx=Math.cos(a)*s; ball.vy=Math.sin(a)*s; stuck=false; }
-  function draw(){ x.fillStyle=getComputedStyle(document.body).getPropertyValue("--card")||"#fff"; x.fillStyle="#f5f1e6"; x.fillRect(0,0,W,H);
-    bricks.forEach(b=>{ x.beginPath(); x.moveTo(b.x+b.sk[0]*.3,b.y); x.lineTo(b.x+bw+b.sk[1]*.3,b.y+b.sk[2]*.1); x.lineTo(b.x+bw,b.y+bh); x.lineTo(b.x+b.sk[3]*.3,b.y+bh); x.closePath();
-      x.fillStyle=b.c; x.globalAlpha=b.hp>1?1:.88; x.fill(); x.globalAlpha=1; if(b.hp>1){ x.strokeStyle="#fff"; x.lineWidth=2; x.beginPath(); x.moveTo(b.x+bw*.3,b.y+bh*.2); x.lineTo(b.x+bw*.55,b.y+bh*.8); x.stroke(); } });
-    x.fillStyle="#d4442a"; const py=H-36; x.beginPath(); x.roundRect ? x.roundRect(pad.x-pad.w/2,py,pad.w,12,6) : x.rect(pad.x-pad.w/2,py,pad.w,12); x.fill();
-    x.beginPath(); x.arc(ball.x,ball.y,ball.r,0,6.28); x.fillStyle="#1b1b1b"; x.fill(); }
-  let last=0;
-  function lose(){ lives--; body.querySelector("#bk-l").textContent=lives; tone(140,.35,"sawtooth",.15); tick([30,30,30]);
-    if(lives<=0){ live=false; const nb=setBest("breakout",score); body.querySelector("#bk-b").textContent=getBest("breakout");
-      body.querySelector("#bk-msg").textContent=`Game over: ${score} points, level ${level}.${nb&&score?" New best!":""}`; const g=body.querySelector("#bk-go"); g.textContent="Play again"; g.hidden=false; }
-    else { resetBall(); body.querySelector("#bk-msg").textContent="Tap to launch the next ball."; } }
-  function loop(t){ const dt=Math.min(.025,(t-(last||t))/1000); last=t;
-    if(live){ if(stuck){ ball.x=pad.x; ball.y=H-36-ball.r-1; }
-      else { const steps=3; for(let s=0;s<steps;s++){ ball.x+=ball.vx*dt/steps; ball.y+=ball.vy*dt/steps;
-        if(ball.x<ball.r){ ball.x=ball.r; ball.vx=Math.abs(ball.vx); } if(ball.x>W-ball.r){ ball.x=W-ball.r; ball.vx=-Math.abs(ball.vx); }
-        if(ball.y<ball.r){ ball.y=ball.r; ball.vy=Math.abs(ball.vy); }
-        const py=H-36; if(ball.vy>0 && ball.y+ball.r>=py && ball.y<py+12 && Math.abs(ball.x-pad.x)<pad.w/2+ball.r){
-          const sp=Math.hypot(ball.vx,ball.vy)*1.01, off=(ball.x-pad.x)/(pad.w/2), a=-Math.PI/2+off*1.05; ball.vx=Math.cos(a)*sp; ball.vy=Math.sin(a)*sp; ball.y=py-ball.r; tone(440,.05,"square",.08); tick(5); }
-        for(let i=0;i<bricks.length;i++){ const b=bricks[i];
-          if(ball.x+ball.r>b.x && ball.x-ball.r<b.x+bw && ball.y+ball.r>b.y && ball.y-ball.r<b.y+bh){
-            const ox=Math.min(ball.x+ball.r-b.x,b.x+bw-(ball.x-ball.r)), oy=Math.min(ball.y+ball.r-b.y,b.y+bh-(ball.y-ball.r));
-            if(ox<oy) ball.vx*=-1; else ball.vy*=-1;
-            if(--b.hp<=0){ bricks.splice(i,1); score+=10*level; tone(520+Math.random()*400,.08,"triangle",.14); tick(6); } else tone(300,.06,"triangle",.12);
-            body.querySelector("#bk-s").textContent=score; break; } }
-        if(ball.y>H+ball.r){ lose(); break; } }
-        if(live && !bricks.length){ level++; build(); resetBall(); body.querySelector("#bk-msg").textContent=`Level ${level}! Tap to launch.`; tone(660,.15); later(()=>tone(880,.2),140); } } }
-    draw(); raf=requestAnimationFrame(loop); }
-  const move=e=>{ const r=c.getBoundingClientRect(); pad.x=Math.max(pad.w/2,Math.min(W-pad.w/2,e.clientX-r.left)); };
-  c.addEventListener("pointerdown",e=>{ e.preventDefault(); if(!live) return; move(e); if(stuck){ launch(); body.querySelector("#bk-msg").textContent="Smash the mosaic!"; } });
-  c.addEventListener("pointermove",e=>{ if(live) move(e); });
-  body.querySelector("#bk-go").onclick=e=>{ ac(); score=0; lives=3; level=1; body.querySelector("#bk-s").textContent=0; body.querySelector("#bk-l").textContent=3; build(); resetBall(); live=true; e.target.hidden=true; body.querySelector("#bk-msg").textContent="Tap the board to launch the ball."; };
-  build(); resetBall(); raf=requestAnimationFrame(loop);
-}};
-
-// 7. Artists trivia (facts from the Artists tab)
+// 5. Artists trivia (facts from the Artists tab)
 const AQ=[
   ["Which artist was born in Curaçao?","Darryl Eisden"],
   ["Who won Catalonia's National Culture Award in 2022?","Núria Guiu"],
@@ -1590,13 +1504,12 @@ const TRIVIA={title:"Artists trivia", start(){
   round();
 }};
 
-const GAMES=[SIMON,COMPAS,MEMORY,QUIZ,KEEPY,BREAK,TRIVIA];
+const GAMES=[SIMON,COMPAS,MEMORY,QUIZ,TRIVIA];
 function play(g){ clearAll(); cur=g; ttl.textContent=g.title; body.scrollTop=0; g.start(); }
 function nextGame(){ if(!bag.length){ bag=shuffle(GAMES); if(bag[0]===cur && bag.length>1) bag.push(bag.shift()); } play(bag.shift()); }
 function openGames(){ if(!box.hidden) return; box.hidden=false; document.body.classList.add("g-open"); tick([10,30,10]); nextGame(); }
 function closeGames(){ clearAll(); box.hidden=true; document.body.classList.remove("g-open"); body.innerHTML=""; }
 box.querySelector(".g-x").onclick=closeGames;
-box.querySelector(".g-next").onclick=nextGame;
 document.addEventListener("keydown",e=>{ if(e.key==="Escape" && !box.hidden) closeGames(); });
 
 // Logo: double-tap or long-press
