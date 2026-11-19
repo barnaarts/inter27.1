@@ -128,6 +128,7 @@
   @keyframes flip{0%{transform:rotateX(90deg);opacity:.2}100%{transform:rotateX(0);opacity:1}}
   .confetti{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:50}
   #main{overflow-x:clip;min-height:100vh}
+  .ev.opt{background:transparent;border:1.5px dashed var(--c,var(--c-free));box-shadow:none}
   .reveal{opacity:0;transform:translateY(18px)}
   .reveal.in{animation:rise .5s ease both;animation-delay:var(--d,0ms)}
   .artist.reveal.in,.venue.reveal.in,.info .reveal.in{animation:riseFade 1s cubic-bezier(.25,.6,.3,1) both;animation-delay:var(--d,0ms)}
@@ -686,7 +687,7 @@ function renderSchedule(){
       x.ext?`<span class="tag ext">Extension group</span>`:"",
     ].join("");
     const time = x.s ? `${t12(x.s)}${x.e?`<small>to ${t12(x.e)}</small>`:""}` : `<small>All day</small>`;
-    return `<div class="ev reveal${live?" now":""}" id="ev-${+d.slice(8)}-${S[d].indexOf(x)}" style="--c:var(${COL[x.t]})">
+    return `<div class="ev reveal${live?" now":""}${x.opt?" opt":""}" id="ev-${+d.slice(8)}-${S[d].indexOf(x)}" style="--c:var(${COL[x.t]})">
       <div class="time">${time}</div>
       <div class="body">
         <div class="title">${EMO[x.t]||""} ${x.title}</div>
