@@ -199,6 +199,13 @@
   .artist{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:14px;overflow:hidden}
   .artist .pic{aspect-ratio:3/2;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:700;color:#fff;letter-spacing:.02em;background:var(--c)}
   .artist .pic img{width:100%;height:100%;object-fit:cover}
+  .avrow{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 14px;margin:0 -2px 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .avrow::-webkit-scrollbar{display:none}
+  .av{flex:0 0 auto;width:64px;display:flex;flex-direction:column;align-items:center;gap:5px;background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer}
+  .avp{width:58px;height:58px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--c);color:#fff;font-weight:700;font-size:18px;box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--c)}
+  .avp img{width:100%;height:100%;object-fit:cover}
+  .av small{font-size:11px;line-height:1.2;text-align:center;max-width:64px}
+  .av:active .avp{transform:scale(.94)}
   .artist .in{padding:14px 16px 16px}
   .artist h3{margin:0;font-size:19px}
   .artist .role{color:var(--muted);font-size:14px;margin-top:2px}
@@ -917,7 +924,10 @@ ARTISTS.forEach(a=>{ if(PHOTOS[a.name]) a.img = PHOTOS[a.name]; });
 function initials(n){ return n.split(/[ &·]+/).filter(w=>/^[A-ZÀ-Ý]/.test(w)).slice(0,2).map(w=>w[0]).join(""); }
 
 function renderArtists(){
-  return `<h1>Artists</h1><p class="sub">The artists you'll work with in Barcelona. Tap a session to see it in the schedule.</p>` +
+  const SHORT={"Albert Quesada & Katie Vickers":"Albert & Katie","Los Informalls":"Informalls","Frames Percussion":"Frames","Taller Estampa":"Estampa","Núria Andorrà":"Núria A.","Núria Guiu":"Núria G."};
+  const short=n=>SHORT[n]||n.split(" ")[0];
+  const row=`<div class="avrow">${ARTISTS.map(a=>`<button class="av" onclick="jumpTo('a-${slug(a.name)}')"><span class="avp" style="--c:${a.c}">${a.img?`<img src="${a.img}" alt=""${a.pos?` style="object-position:${a.pos}"`:""}>`:initials(a.name)}</span><small>${short(a.name)}</small></button>`).join("")}</div>`;
+  return `<h1>Artists</h1><p class="sub">The artists you'll work with in Barcelona. Tap a face to jump to them, or a session to see it in the schedule.</p>` + row +
   ARTISTS.map((a,ai)=>`<div class="artist reveal${artistToday(a)?" now":""}" id="a-${slug(a.name)}">${artistToday(a)?'<span class="tag now todaytag">Today</span>':''}
     <div class="pic" style="--c:${a.c}">${a.img?`<img src="${a.img}" alt="${a.name}"${a.pos?` style="object-position:${a.pos}"`:""}>`:initials(a.name)}</div>
     <div class="in">
