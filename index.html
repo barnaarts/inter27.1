@@ -923,10 +923,32 @@ ARTISTS.forEach(a=>{ if(PHOTOS[a.name]) a.img = PHOTOS[a.name]; });
 
 function initials(n){ return n.split(/[ &·]+/).filter(w=>/^[A-ZÀ-Ý]/.test(w)).slice(0,2).map(w=>w[0]).join(""); }
 
+// Slowly drift the face row so it's clear there are more; stops while touched, resumes after a pause
+let avRAF=0;
+function driftAvatars(){
+  cancelAnimationFrame(avRAF);
+  const r=document.getElementById("avrow"); if(!r) return;
+  if(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  let dir=1, pausedUntil=performance.now()+1200, pos=r.scrollLeft;
+  const hold=ms=>{ pausedUntil=performance.now()+ms; };
+  ["touchstart","pointerdown","wheel"].forEach(ev=>r.addEventListener(ev,()=>hold(5000),{passive:true}));
+  r.addEventListener("scroll",()=>{ if(performance.now()<pausedUntil) pos=r.scrollLeft; },{passive:true});
+  (function f(t){
+    if(!document.body.contains(r)) return;
+    const max=r.scrollWidth-r.clientWidth;
+    if(max>0 && t>pausedUntil){
+      pos+=dir*0.35; if(pos>=max){ pos=max; dir=-1; hold(1500); } else if(pos<=0){ pos=0; dir=1; hold(1500); }
+      r.scrollLeft=pos;
+    }
+    avRAF=requestAnimationFrame(f);
+  })(performance.now());
+}
+
 function renderArtists(){
   const SHORT={"Albert Quesada & Katie Vickers":"Albert & Katie","Los Informalls":"Informalls","Frames Percussion":"Frames","Taller Estampa":"Estampa","Núria Andorrà":"Núria A.","Núria Guiu":"Núria G."};
   const short=n=>SHORT[n]||n.split(" ")[0];
-  const row=`<div class="avrow">${ARTISTS.map(a=>`<button class="av" onclick="jumpTo('a-${slug(a.name)}')"><span class="avp" style="--c:${a.c}">${a.img?`<img src="${a.img}" alt=""${a.pos?` style="object-position:${a.pos}"`:""}>`:initials(a.name)}</span><small>${short(a.name)}</small></button>`).join("")}</div>`;
+  const AV=[]; ARTISTS.forEach(a=>{ if(a.name==="Albert Quesada & Katie Vickers"){ AV.push({to:a.name,c:a.c,img:"img/av-albert.jpg",n:"Albert"},{to:a.name,c:a.c,img:"img/av-katie.jpg",n:"Katie"}); } else AV.push({to:a.name,c:a.c,img:a.img,pos:a.pos,n:short(a.name)}); });
+  const row=`<div class="avrow" id="avrow">${AV.map(a=>`<button class="av" onclick="jumpTo('a-${slug(a.to)}')"><span class="avp" style="--c:${a.c}">${a.img?`<img src="${a.img}" alt=""${a.pos?` style="object-position:${a.pos}"`:""}>`:initials(a.to)}</span><small>${a.n}</small></button>`).join("")}</div>`;
   return `<h1>Artists</h1><p class="sub">The artists you'll work with in Barcelona. Tap a face to jump to them, or a session to see it in the schedule.</p>` + row +
   ARTISTS.map((a,ai)=>`<div class="artist reveal${artistToday(a)?" now":""}" id="a-${slug(a.name)}">${artistToday(a)?'<span class="tag now todaytag">Today</span>':''}
     <div class="pic" style="--c:${a.c}">${a.img?`<img src="${a.img}" alt="${a.name}"${a.pos?` style="object-position:${a.pos}"`:""}>`:initials(a.name)}</div>
@@ -1380,6 +1402,7 @@ function render(){
   main.innerHTML = (view==="today"?renderToday():view==="overview"?renderOverview():view==="info"?renderInfo():view==="artists"?renderArtists():view==="venues"?renderVenues():view==="nearby"?renderNearby():renderSchedule()) + (view==="today" ? "" : `<div class="foot">${countdownText()}Last updated ${UPDATED}</div>`);
   // Keep the logo hidden if it was already scrolled away
   setupReveal();
+  if(view==="artists") driftAvatars();
   if(view==="venues"){ initVenueMap(); filterVenueCards(); centerChip(false); } else if(vmap){ try{vmap.remove();}catch(_){} vmap=null; }
   window.scrollTo(0, logoHidden ? lbh : 0);
   if(view==="schedule" && (current==="2027-01-16" || (current===dates[1] && now.date===dates[1])) && lastConfettiDay!==current){ setTimeout(confetti,300); }
@@ -1459,7 +1482,7 @@ window.addEventListener("hashchange",()=>setTimeout(updateTop,50));
 let swipeDir = 0;
 (function(){
   const main = document.getElementById("main"); let x0=null, y0=null;
-  main.addEventListener("touchstart",e=>{ if(e.touches.length>1||e.target.closest(".mapbox,.vmapwrap,.leaflet-container")){x0=null;return;} x0=e.touches[0].clientX; y0=e.touches[0].clientY; },{passive:true});
+  main.addEventListener("touchstart",e=>{ if(e.touches.length>1||e.target.closest(".mapbox,.vmapwrap,.leaflet-container,.avrow")){x0=null;return;} x0=e.touches[0].clientX; y0=e.touches[0].clientY; },{passive:true});
   main.addEventListener("touchend",e=>{
     if(x0===null) return;
     const dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0; x0=null;
