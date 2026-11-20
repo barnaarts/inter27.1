@@ -887,6 +887,14 @@ const ARTISTS = [
    bio:"A Barcelona collective of filmmakers, programmers and researchers working with experimental film, digital images and artificial intelligence.",
    site:"https://tallerestampa.com", ig:"tallerestampa", more:[["Vimeo","https://vimeo.com/tallerestampa"]],
    sess:[["2027-01-09","Exhibition visit at the Filmoteca"]]},
+  {name:"Abigail Gómez", role:"Painter, teaching artist · Faculty, Shenandoah University", c:"#c2398a",
+   bio:"A Latina painter, teaching artist and arts advocate based in Virginia, and Professor of Art and Design at Shenandoah University. She runs Pretty Girl Painting and founded Arte Libre VA, a tuition-free arts nonprofit for youth of colour. She travels with the SU group for the whole program.",
+   site:"https://www.prettygirlpainting.com/meet-the-artist", ig:"prettygirlpainting",
+   sess:[]},
+  {name:"Betsy Towns", role:"Sculptor · Faculty, UNC School of the Arts", c:"#e07b1a",
+   bio:"A visual artist, scholar and teacher who makes stoneware sculpture, mixed media and public art. She travels with the UNCSA group for the whole program.",
+   site:"https://betsytowns.com/public_html/wordpresssite/",
+   sess:[]},
   {name:"Ale", role:"Program assistant · BARNA ARTS team", c:"#2e8b57",
    bio:"Ale assists Albert and Katie throughout the program and is around for day-to-day questions. Message her on WhatsApp any time.",
    site:"https://wa.me/19542243117", siteLabel:"WhatsApp", ig:"floreeealeee",
@@ -1245,8 +1253,8 @@ function renderGroup(){
       ${GROUP_PEOPLE.map(g=>`<b>${g.uni}</b>${g.ext?' <span class="tag ext">Also in the extension</span>':''}<br>
         ${g.people.map(([n,d])=>`${n}${d?` <span class="who">· ${d}</span>`:''}`).join('<br>')}
         ${g.tbc?`<span class="who">${g.tbc} students, names coming soon</span>`:''}`).join('<br><br>')}
-      <br><br><b>Faculty</b><br>${FACULTY.map(([n,u])=>`${n} <span class="who">· ${u}</span>`).join('<br>')}
-      <br><br><b>BARNA ARTS team</b><br>Albert Quesada & Katie Vickers <span class="who">· Directors</span><br><a href="#artist-ale" style="color:inherit">Ale</a> <span class="who">· Program assistant · <a href="https://instagram.com/floreeealeee" target="_blank" rel="noopener" style="color:var(--link)">IG ↗</a></span>
+      <br><br><b>Faculty</b><br>${FACULTY.map(([n,u])=>`<a href="#artist-${slug(n)}" style="color:inherit">${n}</a> <span class="who">· ${u}</span>`).join('<br>')}
+      <br><br><b>BARNA ARTS team</b><br><a href="#artist-albert-quesada-katie-vickers" style="color:inherit">Albert Quesada & Katie Vickers</a> <span class="who">· Directors</span><br><a href="#artist-ale" style="color:inherit">Ale</a> <span class="who">· Program assistant · <a href="https://instagram.com/floreeealeee" target="_blank" rel="noopener" style="color:var(--link)">IG ↗</a></span>
     </div>`;
 }
 
@@ -1274,9 +1282,9 @@ function renderInfo(){
     <a class="card sosc" href="tel:112"><div class="sosrow"><div class="big">112</div><span class="callme">📞 Tap to call</span></div>Police, ambulance and fire anywhere in Spain. Calls work without a SIM card.</a>
     <h2 id="i-contacts">📞 Contacts</h2>
     <div class="card">
-      <div class="phone"><div><b>Albert Quesada</b><br><span class="num">+34 689 130 137</span></div><a href="https://wa.me/34689130137" target="_blank" rel="noopener">WhatsApp</a></div>
-      <div class="phone"><div><b>Katie Vickers</b><br><span class="num">+34 696 504 487</span></div><a href="https://wa.me/34696504487" target="_blank" rel="noopener">WhatsApp</a></div>
-      <div class="phone"><div><b>Ale</b> · Program assistant<br><span class="num">+1 (954) 224-3117</span></div><span style="display:flex;gap:6px"><a href="https://instagram.com/floreeealeee" target="_blank" rel="noopener">IG</a><a href="https://wa.me/19542243117" target="_blank" rel="noopener">WhatsApp</a></span></div>
+      <div class="phone"><div><b><a href="#artist-albert-quesada-katie-vickers" style="color:inherit">Albert Quesada</a></b> · Director<br><span class="num">+34 689 130 137</span></div><span style="display:flex;gap:6px"><a href="http://acmearts.xyz" target="_blank" rel="noopener">Web</a><a href="https://wa.me/34689130137" target="_blank" rel="noopener">WhatsApp</a></span></div>
+      <div class="phone"><div><b><a href="#artist-albert-quesada-katie-vickers" style="color:inherit">Katie Vickers</a></b> · Director<br><span class="num">+34 696 504 487</span></div><span style="display:flex;gap:6px"><a href="http://katie-vickers.com" target="_blank" rel="noopener">Web</a><a href="https://wa.me/34696504487" target="_blank" rel="noopener">WhatsApp</a></span></div>
+      <div class="phone"><div><b><a href="#artist-ale" style="color:inherit">Ale</a></b> · Program assistant<br><span class="num">+1 (954) 224-3117</span></div><span style="display:flex;gap:6px"><a href="https://instagram.com/floreeealeee" target="_blank" rel="noopener">IG</a><a href="https://wa.me/19542243117" target="_blank" rel="noopener">WhatsApp</a></span></div>
       <span class="who">Albert and Katie are the program directors. Call or message any time.</span>
     </div>
     <h2 id="i-tips">💡 Good to know</h2>
