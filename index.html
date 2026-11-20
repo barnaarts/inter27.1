@@ -410,8 +410,10 @@ const V = {
              d:"The home of choreographer Sol Picó's dance company, in Poble-sec, with two rehearsal studios."},
   joaquin:  {n:"Joaquín Jara's studio", w:"https://joaquinjara.net", a:"Rambla del Raval 49, Barcelona",
              d:"The artist's home studio in the Raval neighbourhood."},
-  raro:     {n:"Casa R.A.R.O.", w:"https://www.esrarobarcelona.com/en", a:"C/ Jaume Giralt 49, Barcelona",
-             d:"An artist-run space in the old town with shared studios, an artists' residency and a gallery."},
+  nuriaand: {n:"Núria Andorrà's studio", a:"C/ de la Font Honrada 23, Barcelona",
+             d:"Núria Andorrà's own rehearsal space in Poble-sec, full of drums, objects and instruments. Ground floor (baixos)."},
+  neil:     {n:"Neil Lorenzo's studio", w:"https://www.neil-lorenzo.com", a:"Arc de Triomf, Barcelona",
+             d:"The painter's studio near the Arc de Triomf. Exact address shared before the session."},
   servei:   {n:"Servei Estació", w:"https://www.serveiestacio.com", a:"Servei Estació, C/ Aragó 270, Barcelona",
              d:"A big materials and hardware store, a favourite of Barcelona's artists and designers."},
   lliure:   {n:"Teatre Lliure Montjuïc — Sala Fabià Puigserver", w:"https://www.teatrelliure.com", a:"Teatre Lliure Montjuïc, Pg. de Santa Madrona 40, Barcelona",
@@ -424,6 +426,8 @@ const V = {
              d:"A museum dedicated to the Catalan artist Antoni Tàpies."},
   upf:      {n:"Sala Reflexió (within Pompeu Fabra University)", w:"https://www.upf.edu/web/campus/sala-de-reflexio", a:"Universitat Pompeu Fabra, C/ Ramon Trias Fargas 25-27, Barcelona", show:1,
              d:"A quiet room for reflection designed with Antoni Tàpies, in the Jaume I building of Pompeu Fabra University's Ciutadella campus. While the Museu Tàpies is closed, we meet the museum team here."},
+  auditori: {n:"L'Auditori — Sala 2 Oriol Martorell", w:"https://www.auditori.cat/en", a:"L'Auditori, C/ Lepant 150, Barcelona",
+             d:"Barcelona's main concert hall for contemporary and classical music, next to the Teatre Nacional de Catalunya. Home of the Barcelona Symphony Orchestra."},
   macba:    {n:"MACBA", w:"https://www.macba.cat", a:"MACBA, Plaça dels Àngels 1, Barcelona",
              d:"Barcelona's Museum of Contemporary Art, in the Raval. Visit on the evenings marked in the schedule."},
 };
@@ -433,8 +437,9 @@ const S = {
 "2027-01-06":[
   {s:"",e:"",title:"Fly to Barcelona",t:"travel"}],
 "2027-01-07":[
-  {s:"14:30",e:"17:30",title:"Arrival · check-in · welcome gathering",who:"Yugo rooms are ready from 3 PM",v:"yugo",t:"social"},
-  {s:"18:00",e:"21:00",title:"Welcome drink & ice-breaker games",who:"In a private room at Yugo",v:"yugo",t:"social"}],
+  {s:"11:10",e:"",title:"UNCSA group lands at BCN",who:"Flight DL8557 from Paris (CDG) · with Betsy Towns",t:"travel"},
+  {s:"15:00",e:"18:00",title:"Arrival · check-in · welcome gathering",who:"Yugo rooms are ready from 3 PM",v:"yugo",t:"social"},
+  {s:"18:00",e:"20:00",title:"Welcome drink & ice-breaker games",who:"In a private room at Yugo",v:"yugo",t:"social"}],
 "2027-01-08":[
   {s:"10:00",e:"13:00",title:"Collaborating Strategies workshop",who:"Albert Quesada & Katie Vickers",v:"visiva",t:"workshop",ar:"Albert Quesada & Katie Vickers"},
   {s:"14:00",e:"18:00",title:"Guided city tour",who:"with Catalina Girona · meet in the Yugo foyer",v:"yugo",t:"outing",ar:"Catalina Girona"},
@@ -446,14 +451,14 @@ const S = {
 "2027-01-10":[
   {s:"09:30",e:"11:00",title:"Gaudí: La Pedrera",v:"pedrera",t:"outing",link:["Web","https://www.lapedrera.com/en"]},
   {s:"11:30",e:"13:00",title:"Gaudí: Casa Batlló",v:"batllo",t:"outing",link:["Web","https://www.casabatllo.es/en/"]},
-  {s:"14:00",e:"17:00",title:"Music session with Núria Andorrà",who:"Percussion, improvisation and listening",t:"guest",ar:"Núria Andorrà"},
+  {s:"14:00",e:"17:00",title:"Music session with Núria Andorrà",who:"Percussion, improvisation and listening · at her own studio",v:"nuriaand",t:"guest",ar:"Núria Andorrà"},
   {s:"18:00",e:"20:00",title:"Talk with Joaquín Jara",v:"joaquin",t:"talk",ar:"Joaquín Jara"}],
 "2027-01-11":[
   {s:"10:00",e:"13:00",title:"Hands-on materials workshop: clay, mud, paint",who:"Joaquín Jara",v:"joaquin",t:"guest",ar:"Joaquín Jara"},
   {s:"14:00",e:"17:00",title:"Tour & talk",who:"with Darryl Eisden",t:"outing",tbc:1,ar:"Darryl Eisden"},
-  {s:"20:00",e:"22:00",title:"Cinema evening",v:"filmo",t:"perf",tbc:1,link:["Web","https://www.filmoteca.cat/"]}],
+  {s:"19:00",e:"22:00",title:"Cinema evening",v:"filmo",t:"perf",tbc:1,link:["Web","https://www.filmoteca.cat/"]}],
 "2027-01-12":[
-  {s:"10:00",e:"13:00",title:"Visual arts session with a guest artist",v:"raro",t:"guest",tbc:1},
+  {s:"10:00",e:"13:00",title:"Visual artists workshop",who:"Neil Lorenzo · at his studio near Arc de Triomf",v:"neil",t:"guest",ar:"Neil Lorenzo"},
   {s:"14:00",e:"15:00",title:"Museu Tàpies session: talk",who:"With Maria Sellarès (Museu Tàpies), while the museum is closed for works",v:"upf",t:"talk",ar:"Maria Sellarès",links:[["Texts (4)","https://museutapies.org/en/blog/lectures/"],["Video (1h)","https://www.youtube.com/watch?v=9Z2GhLfCpDE"]]},
   {s:"15:00",e:"17:00",title:"Workshop on Tàpies",v:"upf",t:"workshop"},
   {s:"19:00",e:"20:00",title:"Video Tuesday",v:"santambar",t:"perf",opt:1,link:["Arts Santa Mònica","https://www.santamonica.cat"]},
@@ -462,26 +467,23 @@ const S = {
   {s:"11:00",e:"12:00",title:"Guided exhibition visit",v:"santam",t:"outing"},
   {s:"13:00",e:"16:00",title:"Mixed-media collaboration workshop",who:"Núria Guiu",v:"santamact",t:"workshop",ar:"Núria Guiu"},
   {s:"16:30",e:"17:30",title:"Visit: Servei Estació",v:"servei",t:"outing"},
-  {s:"19:00",e:"20:00",title:"Sound & body Wednesday",v:"santambar",t:"perf",opt:1,link:["Arts Santa Mònica","https://www.santamonica.cat"]},
-  {s:"20:00",e:"22:00",title:"Concert",t:"perf",tbc:1}],
+  {s:"19:00",e:"20:00",title:"Sound & body Wednesday",v:"santambar",t:"perf",opt:1,link:["Arts Santa Mònica","https://www.santamonica.cat"]}],
 "2027-01-14":[
   {s:"10:00",e:"13:00",title:"Collaborating sessions",v:"caldera",t:"creation"},
   {s:"14:00",e:"17:00",title:"Collaborating sessions",v:"caldera",t:"creation"},
-  {s:"18:00",e:"20:00",title:"MACBA",v:"macba",t:"free",opt:1},
-  {s:"19:00",e:"20:00",title:"Voice & word Thursday",v:"santambar",t:"perf",opt:1,link:["Arts Santa Mònica","https://www.santamonica.cat"]}],
+  {s:"18:00",e:"20:00",title:"MACBA",v:"macba",t:"free",opt:1}],
 "2027-01-15":[
   {s:"10:00",e:"13:00",title:"Warm-up + collaborating sessions",v:"caldera",t:"creation"},
   {s:"14:00",e:"17:00",title:"Collaborating sessions",v:"caldera",t:"creation"},
-  {s:"18:00",e:"19:15",title:"MACBA",v:"macba",t:"free",opt:1},
   {s:"20:00",e:"21:30",title:"Performance: Mette Ingvartsen — RUSH",who:"Solo performed by Manon Santkin · Ages 16+",v:"mercat",t:"perf",link:["Show info","https://mercatflors.cat/espectacle/rush/"]}],
 "2027-01-16":[
   {s:"10:00",e:"13:00",title:"Final presentation",v:"caldera",t:"show"},
-  {s:"14:00",e:"17:00",title:"Final presentation",v:"caldera",t:"show"},
-  {s:"18:00",e:"20:00",title:"MACBA",v:"macba",t:"free",opt:1}],
+  {s:"14:00",e:"17:00",title:"Final presentation",v:"caldera",t:"show"}],
 "2027-01-17":[
   {s:"10:00",e:"14:00",title:"Free morning",who:"Time to pack and relax",t:"free"},
-  {s:"14:00",e:"17:00",title:"Final group practice & reflection",v:"caldera",t:"workshop"},
-  {s:"17:00",e:"19:00",title:"Goodbye dinner",v:"caldera",t:"social"}],
+  {s:"14:00",e:"16:30",title:"Final group practice & reflection",v:"caldera",t:"workshop"},
+  {s:"16:30",e:"18:00",title:"Goodbye dinner",v:"caldera",t:"social"},
+  {s:"19:00",e:"20:30",title:"Concert: Frames Percussion — Xenakis, Pléïades",who:"Six percussionists play Iannis Xenakis' landmark 1978 piece",v:"auditori",t:"perf",ar:"Frames Percussion",link:["L'Auditori","https://www.auditori.cat/en"]}],
 "2027-01-18":[
   {s:"",e:"",title:"Departure: core group",who:"Check out of Yugo by 10 AM. Be at the airport 2 to 3 hours before your flight.",t:"travel"},
   {s:"09:30",e:"13:30",title:"Studio work",t:"studio",ext:1,tbc:1},
@@ -740,7 +742,7 @@ function breaksFor(items){
     const b=items[i+1]; if(!maxEnd||!b.s) continue;
     const g0=maxEnd[0], g1=toM(b.s); if(g1-g0<45) continue;
     if(!lunch && g0>=690 && g0<=900){ out[i]=`🥪 Lunch break · ${t12(maxEnd[1])} – ${t12(b.s)}`; lunch=true; }
-    else if(!dinner && g0>=1020 && g1>=1080 && b.t!=="free"){ out[i]=`🍝 Dinner break · ${t12(maxEnd[1])} – ${t12(b.s)}`; dinner=true; }
+    else if(!dinner && g0>=1020 && g1>=1080 && b.t!=="free" && !items.slice(0,i+1).some(x=>/dinner/i.test(x.title))){ out[i]=`🍝 Dinner break · ${t12(maxEnd[1])} – ${t12(b.s)}`; dinner=true; }
   }
   return out;
 }
@@ -856,6 +858,10 @@ const ARTISTS = [
    bio:"A Dutch-Caribbean sculptor based in Barcelona. Born in Curaçao and raised in the Netherlands, he started out as a musician and now sculpts mainly in plastiline combined with traditional clay techniques, making work about movement and change.",
    site:"https://darryleisden.com", ig:"eisden_art", more:[["Interview","https://www.artistcloseup.com/blog/interview-darryl-eisden"]],
    sess:[["2027-01-11","Tour & talk"]]},
+  {name:"Frames Percussion", role:"Contemporary percussion ensemble", c:"#d4442a",
+   bio:"A Barcelona percussion group devoted to new music, closely tied to L'Auditori and winner of the Ernst von Siemens ensemble prize in 2022. They also make music for stage work, including Albert Quesada's piece <i>Desert</i>. On your last night you hear them play Xenakis' <i>Pléïades</i>.",
+   site:"https://framespercussion.com", ig:"framespercussion",
+   sess:[["2027-01-17","Concert: Frames Percussion"]]},
   {name:"Los Informalls", role:"Luis García & Pere Joseph · Performance company", c:"#c2398a",
    bio:"A Barcelona company working between dance, theatre and something harder to name. Their work runs on movement, humour, play and physical risk.",
    site:"https://www.losinformalls.com", ig:"losinformalls",
@@ -864,10 +870,14 @@ const ARTISTS = [
    bio:"An artist who works with sculpture in natural and urban spaces, painting and performance. You'll visit his studio in the Raval for a talk on Sunday and get your hands dirty on Monday.",
    site:"https://joaquinjara.net", ig:"joaquinjaraartist", more:[["Saatchi Art","https://www.saatchiart.com/joaquinjara"]],
    sess:[["2027-01-10","Talk at his studio"],["2027-01-11","Hands-on materials workshop"]]},
+  {name:"Neil Lorenzo", role:"Painter", c:"#4b5563",
+   bio:"A painter who builds his canvases in layers of spray, blocking, covering and sanding back, so images appear, vanish and come back. Faces turn into skies, landscapes swallow buildings: his work sits between control and collapse, plan and accident. You visit his studio near the Arc de Triomf for a hands-on session.",
+   site:"https://www.neil-lorenzo.com", ig:"neil.lorenzo",
+   sess:[["2027-01-12","Visual artists workshop"]]},
   {name:"Núria Andorrà", role:"Percussionist, improviser, composer", c:"#2f6fdb",
    bio:"A leading figure in Barcelona's improvised and experimental music scene. Trained in classical and contemporary percussion, she plays with everyday objects as much as drums, building pieces where sound, image and the body meet.",
    site:"https://nuriaandorra.com/", ig:"nuriaandorra",
-   sess:[["2027-01-10","Music session"]]},
+   sess:[["2027-01-10","Music session at her studio"]]},
   {name:"Núria Guiu", role:"Choreographer, dancer", c:"#7b4bd1",
    bio:"A Barcelona choreographer who looks at the body in digital culture: social media, memes, viral dances. Winner of Catalonia's National Culture Award in 2022.",
    site:"https://www.nuriaguiu.com", ig:"guiu_guiu",
@@ -886,7 +896,7 @@ const ARTISTS = [
    sess:[]},
 ];
 
-const PHOTOS = {"Ale": "img/a-ale.jpg", "Maria Sellarès": "img/a-maria-sellares.jpg", "Albert Quesada & Katie Vickers": "img/a-albert-quesada-katie-vickers.jpg", "Catalina Girona": "img/a-catalina-girona.jpg", "Darryl Eisden": "img/a-darryl-eisden.jpg", "Los Informalls": "img/a-los-informalls.jpg", "Joaqu\u00edn Jara": "img/a-joaquin-jara.jpg", "N\u00faria Guiu": "img/a-nuria-guiu.jpg", "Taller Estampa": "img/a-taller-estampa.jpg", "N\u00faria Andorr\u00e0": "img/a-nuria-andorra.jpg"};
+const PHOTOS = {"Ale": "img/a-ale.jpg", "Maria Sellarès": "img/a-maria-sellares.jpg", "Albert Quesada & Katie Vickers": "img/a-albert-quesada-katie-vickers.jpg", "Catalina Girona": "img/a-catalina-girona.jpg", "Darryl Eisden": "img/a-darryl-eisden.jpg", "Los Informalls": "img/a-los-informalls.jpg", "Joaqu\u00edn Jara": "img/a-joaquin-jara.jpg", "N\u00faria Guiu": "img/a-nuria-guiu.jpg", "Taller Estampa": "img/a-taller-estampa.jpg", "N\u00faria Andorr\u00e0": "img/a-nuria-andorra.jpg", "Frames Percussion": "img/a-frames-percussion.jpg", "Neil Lorenzo": "img/a-neil-lorenzo.jpg"};
 ARTISTS.forEach(a=>{ if(PHOTOS[a.name]) a.img = PHOTOS[a.name]; });
 
 function initials(n){ return n.split(/[ &·]+/).filter(w=>/^[A-ZÀ-Ý]/.test(w)).slice(0,2).map(w=>w[0]).join(""); }
@@ -909,14 +919,14 @@ function renderArtists(){
     </div></div>`).join("");
 }
 
-const VPHOTOS = {"caldera": "img/v-caldera.jpg", "servei": "img/v-servei.jpg", "filmo": "img/v-filmo.jpg", "joaquin": "img/v-joaquin.jpg", "lliure": "img/v-lliure.jpg", "piconera": "img/v-piconera.jpg", "santam": "img/v-santam.jpg", "macba": "img/v-macba.jpg", "mercat": "img/v-mercat.jpg", "tapies": "img/v-tapies.jpg", "visiva": "img/v-visiva.jpg", "raro": "img/v-raro.jpg", "yugo": "img/v-yugo.jpg", "pedrera": "img/v-pedrera.jpg", "batllo": "img/v-batllo.jpg", "brujas": "img/v-brujas.jpg"};
+const VPHOTOS = {"caldera": "img/v-caldera.jpg", "servei": "img/v-servei.jpg", "filmo": "img/v-filmo.jpg", "joaquin": "img/v-joaquin.jpg", "lliure": "img/v-lliure.jpg", "piconera": "img/v-piconera.jpg", "santam": "img/v-santam.jpg", "macba": "img/v-macba.jpg", "mercat": "img/v-mercat.jpg", "tapies": "img/v-tapies.jpg", "visiva": "img/v-visiva.jpg", "nuriaand": "img/v-nuriaandorra.jpg", "neil": "img/v-neil.jpg", "auditori": "img/v-auditori.jpg", "yugo": "img/v-yugo.jpg", "pedrera": "img/v-pedrera.jpg", "batllo": "img/v-batllo.jpg", "brujas": "img/v-brujas.jpg"};
 
 // ---------- Venues map ----------
 // Approximate coordinates for each venue (lat, lng)
 const VC = {
   yugo:[41.3773,2.1745], pedrera:[41.3953,2.1619], batllo:[41.3916,2.1649], brujas:[41.3806,2.1801],
   caldera:[41.3832,2.1322], santam:[41.3767,2.1761], visiva:[41.3783,2.1598], piconera:[41.3721,2.1617],
-  joaquin:[41.3796,2.1693], raro:[41.3864,2.1789], servei:[41.3928,2.1653], lliure:[41.3724,2.1587],
+  joaquin:[41.3796,2.1693], nuriaand:[41.3737,2.1590], neil:[41.3911,2.1806], auditori:[41.3984,2.1868], servei:[41.3928,2.1653], lliure:[41.3724,2.1587],
   mercat:[41.3718,2.1574], filmo:[41.3792,2.1697], tapies:[41.3915,2.1636], upf:[41.3901,2.1912], macba:[41.3833,2.1668]
 };
 const vkey = k => V[k] && V[k].g ? V[k].g : k;
