@@ -438,7 +438,7 @@ const S = {
   {s:"",e:"",title:"Fly to Barcelona",t:"travel"}],
 "2027-01-07":[
   {s:"11:10",e:"",title:"UNCSA group lands at BCN",who:"Flight DL8557 from Paris (CDG) · with Betsy Towns",t:"travel"},
-  {s:"15:00",e:"18:00",title:"Arrival · check-in · welcome gathering",who:"Yugo rooms are ready from 3 PM",v:"yugo",t:"social"},
+  {s:"15:00",e:"18:00",title:"Arrival · check-in",em:"🧳",who:"Yugo rooms are ready from 3 PM",v:"yugo",t:"social"},
   {s:"18:00",e:"20:00",title:"Welcome drink & ice-breaker games",who:"In a private room at Yugo",v:"yugo",t:"social"}],
 "2027-01-08":[
   {s:"10:00",e:"13:00",title:"Collaborating Strategies workshop",who:"Albert Quesada & Katie Vickers",v:"visiva",t:"workshop",ar:"Albert Quesada & Katie Vickers"},
@@ -467,11 +467,11 @@ const S = {
   {s:"11:00",e:"12:00",title:"Guided exhibition visit",v:"santam",t:"outing"},
   {s:"13:00",e:"16:00",title:"Mixed-media collaboration workshop",who:"Núria Guiu",v:"santamact",t:"workshop",ar:"Núria Guiu"},
   {s:"16:30",e:"17:30",title:"Visit: Servei Estació",v:"servei",t:"outing"},
-  {s:"19:00",e:"20:00",title:"Sound & body Wednesday",v:"santambar",t:"perf",opt:1,link:["Arts Santa Mònica","https://www.santamonica.cat"]}],
+  {s:"19:00",e:"20:00",title:"Sound & body Wednesday",v:"santambar",t:"perf",link:["Arts Santa Mònica","https://www.santamonica.cat"]}],
 "2027-01-14":[
   {s:"10:00",e:"13:00",title:"Collaborating sessions",v:"caldera",t:"creation"},
   {s:"14:00",e:"17:00",title:"Collaborating sessions",v:"caldera",t:"creation"},
-  {s:"18:00",e:"20:00",title:"MACBA",v:"macba",t:"free",opt:1}],
+  {s:"18:00",e:"20:00",title:"MACBA",who:"Free entry in the evening",v:"macba",t:"free"}],
 "2027-01-15":[
   {s:"10:00",e:"13:00",title:"Warm-up + collaborating sessions",v:"caldera",t:"creation"},
   {s:"14:00",e:"17:00",title:"Collaborating sessions",v:"caldera",t:"creation"},
@@ -486,30 +486,27 @@ const S = {
   {s:"19:00",e:"20:30",title:"Concert: Frames Percussion — Xenakis, Pléïades",who:"Six percussionists play Iannis Xenakis' landmark 1978 piece",v:"auditori",t:"perf",ar:"Frames Percussion",link:["L'Auditori","https://www.auditori.cat/en"]}],
 "2027-01-18":[
   {s:"",e:"",title:"Departure: core group",who:"Check out of Yugo by 10 AM. Be at the airport 2 to 3 hours before your flight.",t:"travel"},
-  {s:"09:30",e:"13:30",title:"Studio work",t:"studio",ext:1,tbc:1},
-  {s:"14:30",e:"17:30",title:"Mentoring",t:"talk",ext:1}],
+  {s:"10:00",e:"17:00",title:"Extension work",t:"studio",ext:1}],
 "2027-01-19":[
-  {s:"09:30",e:"13:30",title:"Studio work",t:"studio",ext:1,tbc:1},
-  {s:"14:30",e:"17:30",title:"Mentoring",t:"talk",ext:1},
+  {s:"10:00",e:"17:00",title:"Extension work",t:"studio",ext:1},
   {s:"19:00",e:"20:00",title:"Video Tuesday",v:"santambar",t:"perf",ext:1,opt:1,link:["Arts Santa Mònica","https://www.santamonica.cat"]}],
 "2027-01-20":[
-  {s:"09:30",e:"13:30",title:"Studio work",t:"studio",ext:1,tbc:1},
-  {s:"14:30",e:"17:30",title:"Mentoring",t:"talk",ext:1},
+  {s:"10:00",e:"17:00",title:"Extension work",t:"studio",ext:1},
   {s:"19:00",e:"20:00",title:"Sound & body Wednesday",v:"santambar",t:"perf",ext:1,opt:1,link:["Arts Santa Mònica","https://www.santamonica.cat"]}],
 "2027-01-21":[
-  {s:"09:30",e:"13:30",title:"Studio work",t:"studio",ext:1,tbc:1},
-  {s:"14:30",e:"17:30",title:"Mentoring",t:"talk",ext:1},
+  {s:"10:00",e:"17:00",title:"Extension work",t:"studio",ext:1},
   {s:"19:00",e:"20:00",title:"Voice & word Thursday",v:"santambar",t:"perf",ext:1,opt:1,link:["Arts Santa Mònica","https://www.santamonica.cat"]}],
 "2027-01-22":[
-  {s:"09:30",e:"13:30",title:"Studio work",t:"studio",ext:1,tbc:1},
-  {s:"14:30",e:"17:30",title:"Mentoring",t:"talk",ext:1}],
+  {s:"10:00",e:"17:00",title:"Extension work",t:"studio",ext:1},
+  {s:"18:00",e:"20:00",title:"Goodbye dinner",v:"caldera",t:"social",ext:1}],
 "2027-01-23":[
   {s:"",e:"",title:"Departure: extension group",who:"Check out of Yugo by 10 AM. Be at the airport 2 to 3 hours before your flight.",t:"travel",ext:1}],
 };
 
 const COL = {studio:"--c-studio",workshop:"--c-studio",guest:"--c-guest",outing:"--c-outing",perf:"--c-perf",
   talk:"--c-talk",show:"--c-show",social:"--c-social",free:"--c-free",travel:"--c-travel",creation:"--c-creation"};
-const EMO = {studio:"🩰",workshop:"🎨",guest:"🌟",outing:"🚶",perf:"🎭",talk:"💬",show:"✨",social:"🥂",free:"☕",travel:"✈️",creation:"🌱"};
+const EMO = {studio:"🩰",workshop:"🌟",guest:"🎨",outing:"🚶",perf:"🎭",talk:"💬",show:"✨",social:"🥂",free:"☕",travel:"✈️",creation:"🌱"};
+const ico = x => x.em || EMO[x.t] || "";
 const LABEL = {studio:"Studio",workshop:"Workshop",guest:"Workshop",outing:"Outing",perf:"Performance",
   talk:"Talk",show:"Showing",social:"Social",free:"Own time",travel:"Travel",creation:"Creation"};
 
@@ -767,7 +764,7 @@ function renderOverview(){
     const isNow = d===now.date;
     return `<div class="ov${isWeekend(d)?" we":""}${isNow?" today":""}"${isNow?' id="ov-now"':''}>
       <a class="ovd" href="#jan-${+d.slice(8)}">${fmt(d,{weekday:"short",month:"short",day:"numeric"})}${extOnly(d)?' <span class="tag ext">Extension</span>':''}${d===now.date?' <span class="tag now">Today</span>':''}</a>
-      ${items.map(x=>`<a class="ovr" href="#jan-${+d.slice(8)}-${S[d].indexOf(x)}"><span class="ovt">${x.s?t12(x.s):"All day"}</span><span>${EMO[x.t]||""} ${x.title}${x.opt?' <small>· optional</small>':''}${x.tbc?' <small>· TBC</small>':''}</span></a>`).join("")}
+      ${items.map(x=>`<a class="ovr" href="#jan-${+d.slice(8)}-${S[d].indexOf(x)}"><span class="ovt">${x.s?t12(x.s):"All day"}</span><span>${ico(x)} ${x.title}${x.opt?' <small>· optional</small>':''}${x.tbc?' <small>· TBC</small>':''}</span></a>`).join("")}
     </div>`;}).join("");
 }
 
@@ -829,7 +826,7 @@ function renderSchedule(){
     return `<div class="ev reveal${live?" now":""}${x.opt||x.t==="free"?" opt":""}" id="ev-${+d.slice(8)}-${S[d].indexOf(x)}" style="--c:var(${COL[x.t]})">
       <div class="time">${time}</div>
       <div class="body">
-        <div class="title">${EMO[x.t]||""} ${x.title}</div>
+        <div class="title">${ico(x)} ${x.title}</div>
         ${x.who?`<div class="who">${x.who}</div>`:""}
         ${x.vs?x.vs.map(k=>`<div class="where">${V[k].n}<br><span class="who">${street(V[k])}</span></div><a class="map" href="${mapLink(V[k].a)}" target="_blank" rel="noopener">Maps →</a>`).join(""):""}
         ${venue?`<div class="where">${venue.n}${venue.a?`<br><span class="who">${street(venue)}</span>`:""}</div>`:x.vs?"":
@@ -870,7 +867,7 @@ const ARTISTS = [
    bio:"An artist who works with sculpture in natural and urban spaces, painting and performance. You'll visit his studio in the Raval for a talk on Sunday and get your hands dirty on Monday.",
    site:"https://joaquinjara.net", ig:"joaquinjaraartist", more:[["Saatchi Art","https://www.saatchiart.com/joaquinjara"]],
    sess:[["2027-01-10","Talk at his studio"],["2027-01-11","Hands-on materials workshop"]]},
-  {name:"Neil Lorenzo", role:"Painter", c:"#4b5563",
+  {name:"Neil Lorenzo", role:"Painter", c:"#4b5563", pos:"center 8%",
    bio:"A painter who builds his canvases in layers of spray, blocking, covering and sanding back, so images appear, vanish and come back. Faces turn into skies, landscapes swallow buildings: his work sits between control and collapse, plan and accident. You visit his studio near the Arc de Triomf for a hands-on session.",
    site:"https://www.neil-lorenzo.com", ig:"neil.lorenzo",
    sess:[["2027-01-12","Visual artists workshop"]]},
@@ -904,7 +901,7 @@ function initials(n){ return n.split(/[ &·]+/).filter(w=>/^[A-ZÀ-Ý]/.test(w))
 function renderArtists(){
   return `<h1>Artists</h1><p class="sub">The artists you'll work with in Barcelona. Tap a session to see it in the schedule.</p>` +
   ARTISTS.map((a,ai)=>`<div class="artist reveal${artistToday(a)?" now":""}" id="a-${slug(a.name)}">${artistToday(a)?'<span class="tag now todaytag">Today</span>':''}
-    <div class="pic" style="--c:${a.c}">${a.img?`<img src="${a.img}" alt="${a.name}">`:initials(a.name)}</div>
+    <div class="pic" style="--c:${a.c}">${a.img?`<img src="${a.img}" alt="${a.name}"${a.pos?` style="object-position:${a.pos}"`:""}>`:initials(a.name)}</div>
     <div class="in">
       <h3>${a.name}</h3>
       <div class="role">${a.role}</div>
@@ -1044,7 +1041,9 @@ function renderVenues(){
     (days[k] ||= new Set()).add(d);
   }
   const keys = Object.keys(V).filter(k=>!V[k].g && !V[k].home && days[k]);
-  keys.sort((a,b)=>[...days[a]][0].localeCompare([...days[b]][0]));
+  const firstAt = {};
+  for(const d of dates) for(const x of S[d]){ const ks=[...(x.vs||[]),...(x.v?[V[x.v].g||x.v]:[])]; for(const k of ks){ const t=d+" "+(x.s||"00:00"); if(!firstAt[k]||t<firstAt[k]) firstAt[k]=t; } }
+  keys.sort((a,b)=>(firstAt[a]||"").localeCompare(firstAt[b]||""));
   Object.keys(V).forEach(k=>{ if(V[k].show && !days[k]){ keys.push(k); days[k]=new Set(); } });
   if(!VPHOTOS.upf) VPHOTOS.upf = "img/sala-reflexio.jpg";
   return `<h1>Venues</h1><p class="sub">Everywhere we go, in order of first visit. Tap a pin or a date to see what's on.</p>
@@ -1689,14 +1688,14 @@ const METROG=mcGame("metro","Metro navigator","Yugo's closest metro is Drassanes
 
 // 8. Program timeline
 const TIMELINE={title:"Program timeline", start(){
-  const pool=[]; dates.forEach(d=>S[d].forEach(x=>{ if(x.s && !x.ext && !["free","travel"].includes(x.t) && !/Studio work|Mentoring/.test(x.title)) pool.push({d,x,k:d+" "+x.s}); }));
+  const pool=[]; dates.forEach(d=>S[d].forEach(x=>{ if(x.s && !x.ext && !["free","travel"].includes(x.t) && !/Studio work|Extension work|Mentoring/.test(x.title)) pool.push({d,x,k:d+" "+x.s}); }));
   const uniq=[...new Map(pool.map(p=>[p.x.title,p])).values()]; const R=3; let r=0, score=0, picked=[], set=[];
   body.innerHTML=`<p class="g-msg" id="tl-msg">Tap these sessions in the order they happen, from first to last.</p><div class="tl-list" id="tl-list"></div><div class="mc-note" id="tl-note"></div>
     <div class="g-score">Round <b id="tl-r">1</b>/${R} · Score <b id="tl-s">0</b> · Best <b id="tl-b">${getBest("timeline")}</b></div><button class="g-btn" id="tl-next" hidden>Next →</button><button class="g-btn" id="tl-go" hidden>Play again</button>`;
   const list=body.querySelector("#tl-list"), msg=body.querySelector("#tl-msg"), nx=body.querySelector("#tl-next"), note=body.querySelector("#tl-note");
   function round(){ picked=[]; nx.hidden=true; note.textContent=""; body.querySelector("#tl-r").textContent=r+1; msg.textContent="Tap these sessions in the order they happen, from first to last.";
     set=shuffle(uniq).slice(0,5);
-    list.innerHTML=set.map((p,i)=>`<button class="tl-item" data-i="${i}"><i></i><span>${EMO[p.x.t]||""} ${p.x.title}</span><small></small></button>`).join("");
+    list.innerHTML=set.map((p,i)=>`<button class="tl-item" data-i="${i}"><i></i><span>${ico(p.x)} ${p.x.title}</span><small></small></button>`).join("");
     list.querySelectorAll(".tl-item").forEach(b=>b.onclick=()=>{ if(b.classList.contains("sel")||picked.length===set.length) return; picked.push(+b.dataset.i); b.classList.add("sel"); b.querySelector("i").textContent=picked.length; tone(400+picked.length*80,.1,"triangle",.15); tick(6); if(picked.length===set.length) check(); }); }
   function check(){ const order=[...set.keys()].sort((a,b)=>set[a].k.localeCompare(set[b].k)); let right=0;
     list.querySelectorAll(".tl-item").forEach(b=>{ const i=+b.dataset.i, pos=picked.indexOf(i), ok=order[pos]===i; if(ok) right++;
