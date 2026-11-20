@@ -238,6 +238,17 @@
   .nbi b{font-size:15px}.nbi .who{font-size:13px}
   .nbi a{font-size:12px;font-weight:700;color:var(--accent);text-decoration:none;border:1px solid var(--accent);border-radius:999px;padding:4px 10px;white-space:nowrap}
 
+  /* Phrases */
+  .ph-r{padding:9px 0;border-top:1px solid var(--line)}
+  .ph-r:first-child{border-top:none}
+  .ph-en{font-size:13px;color:var(--muted);margin-bottom:3px}
+  .ph-l{display:flex;align-items:center;gap:8px;min-height:30px}
+  .ph-c{flex:0 0 26px;font-size:10px;font-weight:700;letter-spacing:.05em;color:var(--muted);border:1px solid var(--line);border-radius:5px;text-align:center;padding:1px 0}
+  .ph-t{flex:1;font-size:16px;font-weight:700}
+  .say{flex:none;border:1px solid var(--line);background:var(--card);border-radius:999px;width:34px;height:30px;font-size:14px;cursor:pointer;transition:transform .12s}
+  .say.on{border-color:var(--link);box-shadow:0 0 0 3px color-mix(in srgb,var(--link) 25%,transparent)}
+  .say:active{transform:scale(.9)}
+  .fold.ph{margin:10px 0}
   /* Tap ink inside buttons */
   .ink{position:absolute;inset:0;border-radius:inherit;overflow:hidden;pointer-events:none;z-index:0}
   .ink i{position:absolute;border-radius:50%;background:currentColor;opacity:.5;transform:scale(0);animation:ink .75s cubic-bezier(.2,.6,.3,1) forwards}
@@ -359,7 +370,7 @@ s.classList.add("out");setTimeout(function(){s.remove()},750)},1000);</script>
       <button class="tab on" data-view="schedule">Schedule</button>
       <button class="tab" data-view="artists">Artists</button>
       <button class="tab" data-view="venues">Venues</button>
-      <button class="tab" data-view="nearby">Nearby</button>
+      <button class="tab" data-view="nearby">City</button>
       <button class="tab" data-view="info">Info</button>
     </div>
   </div>
@@ -374,7 +385,7 @@ s.classList.add("out");setTimeout(function(){s.remove()},750)},1000);</script>
 <button id="totop" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Top</button>
 
 <script>
-const UPDATED = "18 Nov 2026";
+const UPDATED = "20 Nov 2026";
 
 // Venues: name + address used for the map link.
 // g = groups rooms of the same building on the Venues tab; d = description for the Venues tab
@@ -524,7 +535,7 @@ function dayFromHash(){
   if(location.hash==="#today") return outside() ? "today" : now.date;
   if(location.hash==="#artists"||location.hash.startsWith("#artist-")) return "artists";
   if(location.hash==="#venues") return "venues";
-  if(location.hash==="#nearby") return "nearby";
+  if(location.hash==="#nearby"||location.hash==="#city") return "nearby";
   return null;
 }
 
@@ -1079,11 +1090,122 @@ const NEARBY = [
 
 // Walking minutes from Yugo / La Caldera (Google Maps, Nov 2026)
 const WALK = {"Farmàcia Miramar": 1, "Farmàcia Clapés": 12, "CAP Drassanes": 4, "Hospital del Mar – Urgències": 31, "Carrefour Market": 16, "BHG Supermercat del Món": 16, "Rincón del Raval": 7, "Que Bo Raval": 8, "The Atlas": 8, "Bocatas de Sultan": 19, "La Candelaria": 12, "Morning Glory": 9, "Lavaxpres laundromat": 8, "Mossos d'Esquadra (police)": 4, "Farmàcia Les Corts": 3, "CAP Les Corts": 6, "Hospital Clínic – Urgències": 31, "Consum": 4, "Mercadona": 5, "Restaurante Cafetería Venecia": 8, "Bar Restaurante La Concordia": 7, "Taberna Davidson": 6};
+// Everyday phrases: [English, Spanish, Catalan]
+const PHRASES = [
+ {g:"👋 Basics", items:[
+  ["Hello","Hola","Hola"],
+  ["Good morning","Buenos días","Bon dia"],
+  ["Good afternoon / evening","Buenas tardes","Bona tarda"],
+  ["Good night","Buenas noches","Bona nit"],
+  ["Bye / See you later","Adiós / Hasta luego","Adéu / Fins després"],
+  ["Please","Por favor","Si us plau"],
+  ["Thank you","Gracias","Gràcies"],
+  ["You're welcome","De nada","De res"],
+  ["Sorry / Excuse me","Perdón / Disculpe","Perdó / Disculpi"],
+  ["I don't understand","No entiendo","No ho entenc"],
+  ["Do you speak English?","¿Habla inglés?","Parla anglès?"],
+  ["Can you speak more slowly?","¿Puede hablar más despacio?","Pot parlar més a poc a poc?"]]},
+ {g:"☕ Café & food", items:[
+  ["A coffee with milk, please","Un café con leche, por favor","Un cafè amb llet, si us plau"],
+  ["A glass of water","Un vaso de agua","Un got d'aigua"],
+  ["The set lunch menu","El menú del día","El menú del dia"],
+  ["To take away","Para llevar","Per emportar"],
+  ["I'm vegetarian","Soy vegetariano / vegetariana","Sóc vegetarià / vegetariana"],
+  ["I'm vegan","Soy vegano / vegana","Sóc vegà / vegana"],
+  ["I'm allergic to…","Soy alérgico / alérgica a…","Sóc al·lèrgic / al·lèrgica a…"],
+  ["The bill, please","La cuenta, por favor","El compte, si us plau"],
+  ["Can I pay by card?","¿Puedo pagar con tarjeta?","Puc pagar amb targeta?"],
+  ["Cheers!","¡Salud!","Salut!"]]},
+ {g:"🚇 Getting around & shopping", items:[
+  ["Where is…?","¿Dónde está…?","On és…?"],
+  ["The metro station","La estación de metro","L'estació de metro"],
+  ["Left / Right","Izquierda / Derecha","Esquerra / Dreta"],
+  ["Straight ahead","Todo recto","Tot recte"],
+  ["Street (C/ on addresses)","Calle","Carrer"],
+  ["Entrance / Exit","Entrada / Salida","Entrada / Sortida"],
+  ["Open / Closed","Abierto / Cerrado","Obert / Tancat"],
+  ["Toilets","Lavabos","Lavabos"],
+  ["How much is it?","¿Cuánto cuesta?","Quant costa?"],
+  ["A bag, please","Una bolsa, por favor","Una bossa, si us plau"]]},
+ {g:"🩺 Health & help", items:[
+  ["Help!","¡Ayuda!","Ajuda!"],
+  ["I need a doctor","Necesito un médico","Necessito un metge"],
+  ["Please call an ambulance","Llame a una ambulancia, por favor","Truqui una ambulància, si us plau"],
+  ["Pharmacy","Farmacia","Farmàcia"],
+  ["Emergency room","Urgencias","Urgències"],
+  ["It hurts here","Me duele aquí","Em fa mal aquí"],
+  ["Someone stole my phone","Me han robado el móvil","M'han robat el mòbil"],
+  ["I've lost my passport","He perdido el pasaporte","He perdut el passaport"]]},
+ {g:"🩰 In the studio", items:[
+  ["Warm-up","Calentamiento","Escalfament"],
+  ["Let's start","Empezamos","Comencem"],
+  ["Again","Otra vez","Un altre cop"],
+  ["Slower / Faster","Más lento / Más rápido","Més lent / Més ràpid"],
+  ["Break","Descanso","Descans"],
+  ["Floor","Suelo","Terra"],
+  ["Rehearsal","Ensayo","Assaig"],
+  ["Show / Performance","Espectáculo / Función","Espectacle / Funció"],
+  ["Well done!","¡Muy bien!","Molt bé!"],
+  ["What time do we start?","¿A qué hora empezamos?","A quina hora comencem?"]]},
+];
+// Read a phrase aloud with the phone's built-in voice
+let VOICES=[];
+function loadVoices(){ try{ VOICES=speechSynthesis.getVoices(); }catch(_){} }
+if("speechSynthesis" in window){ loadVoices(); speechSynthesis.onvoiceschanged=loadVoices; }
+function say(text,lang){
+  if(!("speechSynthesis" in window)) return;
+  try{
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text.replace(/…/g,"").replace(/ \/ .*$/,""));
+    u.lang=lang; u.rate=.85;
+    const v=VOICES.find(v=>v.lang&&v.lang.replace("_","-").toLowerCase()===lang.toLowerCase())||VOICES.find(v=>v.lang&&v.lang.toLowerCase().startsWith(lang.slice(0,2)));
+    if(v) u.voice=v;
+    speechSynthesis.speak(u);
+  }catch(_){}
+}
+document.addEventListener("click",e=>{
+  const b=e.target.closest(".say"); if(!b) return;
+  e.preventDefault(); say(b.dataset.t,b.dataset.l); haptic(8);
+  b.classList.add("on"); setTimeout(()=>b.classList.remove("on"),700);
+});
+function renderPhrases(){
+  const canSay="speechSynthesis" in window;
+  const row=(code,lang,t)=>`<div class="ph-l"><span class="ph-c">${code}</span><span class="ph-t">${t}</span>${canSay?`<button class="say" data-l="${lang}" data-t="${t.replace(/"/g,"&quot;")}" aria-label="Listen">🔊</button>`:""}</div>`;
+  return `<h2 id="phrases">🗣️ Useful phrases</h2>
+    <div class="card">Barcelona has two official languages. Everyone understands <b>Spanish</b>, but <b>Catalan</b> is the first language of many locals and what you'll see on most signs, menus and metro announcements. A <i>bon dia</i> or <i>gràcies</i> always goes down well.${canSay?`<br><span class="who">Tap 🔊 to hear it. If your phone has no Catalan voice, it reads with a Spanish accent.</span>`:""}</div>` +
+  PHRASES.map((G,gi)=>`<details class="fold ph"${gi===0?" open":""}><summary>${G.g}</summary><div class="card">${G.items.map(([en,es,ca])=>
+    `<div class="ph-r"><div class="ph-en">${en}</div>${row("ES","es-ES",es)}${row("CA","ca-ES",ca)}</div>`).join("")}</div></details>`).join("");
+}
+
+function renderGettingAround(){
+  return `<h2 id="getting-around">🚇 Getting around: your T-usual</h2>
+    <div class="card">We'll all buy a <b>T-usual</b> when we land: a monthly pass on a T-mobilitat card with unlimited metro, bus, tram and train rides in zone 1 for 30 days from the first time you use it.<br><br>
+      📍 <b>Where:</b> at the ticket machines in the airport metro station (line L9 Sud, Terminal 1 or 2). The T-usual also covers the airport metro, so you can ride straight into the city.<br>
+      💳 <b>Cost:</b> €22.80 (about $26) for zone 1, plus €1 (about $1.15) for the cardboard T-mobilitat card. About €24 / $27 in total.<br>
+      🛂 <b>Bring your passport.</b> The card is personal: one per person, no sharing.<br>
+      🎫 <b>Keep the card</b> for the whole program, and tap it at the gates every time you enter.
+      <div class="links"><a href="https://www.tmb.cat/en" target="_blank" rel="noopener">TMB website ↗</a><a href="https://t-mobilitat.atm.cat/en/web/t-mobilitat/fares/t-usual" target="_blank" rel="noopener">T-usual info ↗</a><a href="#" onclick="jumpTo('metro-map');return false;">Metro map ↓</a></div></div>
+    <h2>✈️ Airport ↔ Yugo</h2>
+    <div class="card"><b>Metro:</b> L9 Sud from the airport to Zona Universitària, then L3 (green) to Drassanes. About 60–70 min. Covered by your T-usual.<br><br>
+      <b>Aerobús + metro:</b> Aerobús to Plaça de Catalunya, then L3 to Drassanes. About 45–55 min. The Aerobús is €7.45 one way and is not covered by the T-usual.<br><br>
+      <b>Taxi:</b> about €35–40, 25–30 min, from the official rank outside arrivals.<br><br>
+      ⏰ <b>Going home:</b> check out of Yugo by 10 AM and be at the airport 2 to 3 hours before your flight.
+      <div class="links"><a href="https://aerobusbarcelona.es/en/" target="_blank" rel="noopener">Aerobús ↗</a></div></div>
+    <h2 id="metro-map">🗺️ Metro map</h2>
+    <div class="mapbox" id="mapbox"><img src="img/metro-map.jpg" alt="Barcelona metro network map"></div>
+    <div class="links"><a href="#" onclick="document.getElementById('mapbox').classList.toggle('zoom');return false;">Zoom in / out</a></div>
+    <p class="who" style="font-size:13px">Closest metro to Yugo: Drassanes (L3, green). Pinch or tap Zoom to read station names.</p>`;
+}
+
+function jumpTo(id){ const el=document.getElementById(id); if(!el) return; const hh=document.querySelector("header").offsetHeight; window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-hh-10,behavior:"smooth"}); }
 function renderNearby(){
-  return `<div class="nb"><h1>Nearby</h1><p class="sub">Essentials around where you stay and where we work. Opening hours change, so check before you go.</p>` +
+  return `<div class="nb"><h1>City</h1><p class="sub">Getting around, everyday essentials and the words you'll need.</p>
+    <div class="links" style="margin:0 0 6px"><a href="#" onclick="jumpTo('getting-around');return false;">🚇 Getting around</a><a href="#" onclick="jumpTo('nearby-list');return false;">📍 Nearby</a><a href="#" onclick="jumpTo('phrases');return false;">🗣️ Phrases</a></div>
+    <div class="info">${renderGettingAround()}</div>
+    <h2 id="nearby-list" style="font-size:20px;margin-top:30px">📍 Nearby</h2><p class="sub">Essentials around where you stay and where we work. Opening hours change, so check before you go.</p>` +
   NEARBY.map(A=>`<h2>${A.area}</h2>`+A.groups.map(G=>`<h4>${G.g}</h4>`+G.items.map(([n,a,d])=>
     `<div class="nbi reveal-x"><div><b>${n}</b>${WALK[n]!=null?`<span class="walk">🚶 ${WALK[n]} min${WALK[n]>=25?" · taxi in an emergency":""}</span>`:""}<div class="who">${a}</div><div class="who">${d}</div></div><a href="${mapLink(n+", "+a+", Barcelona")}" target="_blank" rel="noopener">Map ↗</a></div>`).join("")).join("")).join("") +
-  `</div>`;
+  `<div class="info">${renderPhrases()}</div></div>`;
 }
 
 
@@ -1103,7 +1225,7 @@ function renderGroup(){
   const wa = WHATSAPP_GROUP
     ? `<a class="alink" href="${WHATSAPP_GROUP}" target="_blank" rel="noopener" style="font-size:15px;padding:8px 16px;margin:0">Join the group WhatsApp ↗</a>`
     : `<span class="who">The invite link will be posted here before the trip.</span>`;
-  return `<h2>💬 Group WhatsApp</h2>
+  return `<h2 id="i-group">💬 Group WhatsApp</h2>
     <div class="card">Everyday updates, meeting points and last-minute changes go here.<div style="margin-top:10px">${wa}</div></div>
     <h2>👋 Who's coming</h2>
     <div class="card">
@@ -1119,10 +1241,11 @@ function renderInfo(){
   return `<div class="info">
     <h1>Program info</h1>
     <p class="sub">BARNA ARTS Interdisciplinary Program · Barcelona, 7–18 January 2027 · Extension 18–23 January</p>
-    <h2>📄 Info doc & files</h2>
+    <div class="links jump" style="margin:0 0 6px">${[["i-sos","🚨 Emergency"],["i-contacts","📞 Contacts"],["i-stay","🏠 Stay"],["i-group","💬 Group"],["i-tips","💡 Tips"],["i-doc","📄 Docs"]].map(([id,l])=>`<a href="#" onclick="jumpTo('${id}');return false;">${l}</a>`).join("")}</div>
+    <h2 id="i-doc">📄 Info doc & files</h2>
     <div class="card">Everything to read before you travel (accommodation, food, artists, health) is in the student info doc. Upload any documents we ask for to the shared folder.
       <div class="links"><a href="https://docs.google.com/document/d/1cidZN3sWpeN-Q2N_MP-b0_8tda-y9X9g2-s0uQpeuFQ/edit" target="_blank" rel="noopener">Student info doc ↗</a><a href="https://drive.google.com/drive/folders/1fyDmH_y-SkAWy8YgRGl6vQqO_CHw8z85" target="_blank" rel="noopener">Shared folder ↗</a></div></div>
-    <h2>🏠 Where you stay</h2>
+    <h2 id="i-stay">🏠 Where you stay</h2>
     <div class="venue"><img class="vpic" src="${VPHOTOS.yugo}" alt="Yugo Barcelona Port">
       <h3>Yugo Barcelona Port</h3>
       <p>Student residence near the bottom of La Rambla, next to Arts Santa Mònica. Shared kitchens: daily meals aren't included, so you'll cook here (the welcome drink and goodbye dinner are on us).</p>
@@ -1134,16 +1257,16 @@ function renderInfo(){
       <div class="links"><a class="mapl" href="${mapLink(V.yugo.a)}" target="_blank" rel="noopener">Maps ↗</a></div>
     </div>
     ${renderGroup()}
-    <h2>🚨 Emergency</h2>
+    <h2 id="i-sos">🚨 Emergency</h2>
     <a class="card sosc" href="tel:112"><div class="sosrow"><div class="big">112</div><span class="callme">📞 Tap to call</span></div>Police, ambulance and fire anywhere in Spain. Calls work without a SIM card.</a>
-    <h2>📞 Contacts</h2>
+    <h2 id="i-contacts">📞 Contacts</h2>
     <div class="card">
       <div class="phone"><div><b>Albert Quesada</b><br><span class="num">+34 689 130 137</span></div><a href="https://wa.me/34689130137" target="_blank" rel="noopener">WhatsApp</a></div>
       <div class="phone"><div><b>Katie Vickers</b><br><span class="num">+34 696 504 487</span></div><a href="https://wa.me/34696504487" target="_blank" rel="noopener">WhatsApp</a></div>
       <div class="phone"><div><b>Ale</b> · Program assistant<br><span class="num">+1 (954) 224-3117</span></div><a href="https://wa.me/19542243117" target="_blank" rel="noopener">WhatsApp</a></div>
       <span class="who">Albert and Katie are the program directors. Call or message any time.</span>
     </div>
-    <h2>💡 Good to know</h2>
+    <h2 id="i-tips">💡 Good to know</h2>
    <div class="card">
    🆘 <b>Emergencies: 112.</b> For anything non-urgent, a pharmacist can help first: they're trained to advise on minor problems.<br><br>
    🏥 <b>Insurance:</b> bring your insurance documents (provided either by your university or by BARNA ARTS), and carry your insurance card and passport. Public hospitals can charge visitors from outside the EU, so check with your insurer what to do before you go in.<br><br>
@@ -1159,6 +1282,17 @@ function renderInfo(){
       <b>Optional</b> means it's up to you.<br>
       <b>To be confirmed</b> means the time or place may still change.<br>
       <b>Updated</b> or <b>New</b> marks a session that changed since you last opened the app, and a dot on the date shows which days changed.</div>
+    <h2>🚇 Transport & phrases</h2>
+    <div class="card">The T-usual pass, airport ↔ Yugo, the metro map and useful Spanish & Catalan phrases are on the <b>City</b> tab.<div class="links"><a href="#city">Open City ↗</a></div></div>
+    <details class="fold"><summary>🧳 What to bring</summary>
+    <div class="card">Barcelona in January is mild but cool: about 5–15 °C (40–60 °F), colder at night, with some rainy days. Studios can be chilly.<br><br>
+      🧥 Warm layers, a warm jacket and a rain jacket or umbrella<br>
+      👟 Comfortable shoes for walking a lot<br>
+      🩰 Clothes to move in, plus socks and layers for the studio<br>
+      📓 A notebook or sketchbook for your visual journal<br>
+      🔌 Adapter for European plugs (type C/F, 230V)<br>
+      🧴 Your own toiletries<br>
+      📄 Passport and insurance documents</div></details>
     <details class="fold"><summary>📱 Put it on your phone like an app</summary>
     <div class="card"><b>Android (Chrome)</b><br>
       1. Open this page in <b>Chrome</b>.<br>
@@ -1170,32 +1304,7 @@ function renderInfo(){
       2. Tap the <b>Share</b> button (square with an arrow).<br>
       3. Scroll down and tap <b>Add to Home Screen</b>, then <b>Add</b>.<br><br>
       <span class="who">Open it from the home-screen icon and it always loads the latest version.</span></div></details>
-    <h2>🚇 Getting around: your T-usual</h2>
-    <div class="card">We'll all buy a <b>T-usual</b> when we land: a monthly pass on a T-mobilitat card with unlimited metro, bus, tram and train rides in zone 1 for 30 days from the first time you use it.<br><br>
-      📍 <b>Where:</b> at the ticket machines in the airport metro station (line L9 Sud, Terminal 1 or 2). The T-usual also covers the airport metro, so you can ride straight into the city.<br>
-      💳 <b>Cost:</b> €22.80 (about $26) for zone 1, plus €1 (about $1.15) for the cardboard T-mobilitat card. About €24 / $27 in total.<br>
-      🛂 <b>Bring your passport.</b> The card is personal: one per person, no sharing.<br>
-      🎫 <b>Keep the card</b> for the whole program, and tap it at the gates every time you enter.
-      <div class="links"><a href="https://www.tmb.cat/en" target="_blank" rel="noopener">TMB website ↗</a><a href="https://t-mobilitat.atm.cat/en/web/t-mobilitat/fares/t-usual" target="_blank" rel="noopener">T-usual info ↗</a><a href="#" onclick="document.getElementById('metro-map').scrollIntoView({behavior:'smooth'});return false;">Metro map ↓</a></div></div>
-    <h2>✈️ Airport ↔ Yugo</h2>
-    <div class="card"><b>Metro:</b> L9 Sud from the airport to Zona Universitària, then L3 (green) to Drassanes. About 60–70 min. Covered by your T-usual.<br><br>
-      <b>Aerobús + metro:</b> Aerobús to Plaça de Catalunya, then L3 to Drassanes. About 45–55 min. The Aerobús is €7.45 one way and is not covered by the T-usual.<br><br>
-      <b>Taxi:</b> about €35–40, 25–30 min, from the official rank outside arrivals.<br><br>
-      ⏰ <b>Going home:</b> check out of Yugo by 10 AM and be at the airport 2 to 3 hours before your flight.
-      <div class="links"><a href="https://aerobusbarcelona.es/en/" target="_blank" rel="noopener">Aerobús ↗</a></div></div>
-    <h2>🧳 What to bring</h2>
-    <div class="card">Barcelona in January is mild but cool: about 5–15 °C (40–60 °F), colder at night, with some rainy days. Studios can be chilly.<br><br>
-      🧥 Warm layers, a warm jacket and a rain jacket or umbrella<br>
-      👟 Comfortable shoes for walking a lot<br>
-      🩰 Clothes to move in, plus socks and layers for the studio<br>
-      📓 A notebook or sketchbook for your visual journal<br>
-      🔌 Adapter for European plugs (type C/F, 230V)<br>
-      🧴 Your own toiletries<br>
-      📄 Passport and insurance documents</div>
-    <h2 id="metro-map">🗺️ Metro map</h2>
-    <div class="mapbox" id="mapbox"><img src="img/metro-map.jpg" alt="Barcelona metro network map"></div>
-    <div class="links"><a href="#" onclick="document.getElementById('mapbox').classList.toggle('zoom');return false;">Zoom in / out</a></div>
-    <p class="who" style="font-size:13px">Closest metro to Yugo: Drassanes (L3, green). Pinch or tap Zoom to read station names.</p>
+
   </div>`;
 }
 
