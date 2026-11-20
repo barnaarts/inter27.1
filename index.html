@@ -127,6 +127,8 @@
   .flip{animation:flip .45s ease}
   @keyframes flip{0%{transform:rotateX(90deg);opacity:.2}100%{transform:rotateX(0);opacity:1}}
   .confetti{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:50}
+  .tearface{position:fixed;font-size:30px;z-index:51;pointer-events:none;animation:tearface 3.2s ease forwards}
+  @keyframes tearface{0%{opacity:0;transform:scale(.4)}12%{opacity:1;transform:scale(1.1)}20%{transform:scale(1)}80%{opacity:1}100%{opacity:0;transform:translateY(-8px)}}
   #main{overflow-x:clip;min-height:100vh}
   .ev.opt{background:transparent;border:1.5px dashed var(--c,var(--c-free));box-shadow:none}
   .reveal{opacity:0;transform:translateY(18px)}
@@ -658,19 +660,27 @@ function tears(){
   const x=c.getContext("2d"), W=c.width=innerWidth*dpr, H=c.height=innerHeight*dpr;
   const r=card?card.getBoundingClientRect():null;
   const top = r && r.bottom>0 && r.bottom<innerHeight ? r.bottom-6 : 0, L0 = r?r.left+16:0, Lw = r?r.width-32:innerWidth;
-  const P=Array.from({length:34},(_,i)=>({x:(L0+Math.random()*Lw)*dpr, y:(top-Math.random()*8)*dpr, d:i*55+Math.random()*400,
-    v:0, s:(5+Math.random()*5)*dpr, w:Math.random()*6.28, grow:0}));
+  // Tears, not rain: few drops, they well up, hang, then roll slowly down leaving a wet trail
+  if(card){ const em=document.createElement("div"); em.className="tearface"; em.textContent="🥲";
+    em.style.left=(r.right-46)+"px"; em.style.top=(r.top+10)+"px"; document.body.appendChild(em); setTimeout(()=>em.remove(),3200); }
+  const P=Array.from({length:14},(_,i)=>({x:(L0+Math.random()*Lw)*dpr, y:(top-2)*dpr, y0:(top-2)*dpr, d:i*260+Math.random()*300,
+    v:0, s:(4+Math.random()*3)*dpr, hang:350+Math.random()*700, born:0, grow:0}));
   function drop(p){ const s=p.s*Math.min(1,p.grow);
-    x.save(); x.translate(p.x+Math.sin(p.w)*2*dpr,p.y);
-    const g=x.createLinearGradient(-s,-s,s,s); g.addColorStop(0,"rgba(190,225,255,.95)"); g.addColorStop(1,"rgba(60,140,230,.85)");
-    x.fillStyle=g; x.beginPath(); x.moveTo(0,-s*1.6); x.bezierCurveTo(s*.9,-s*.3,s,s,0,s); x.bezierCurveTo(-s,s,-s*.9,-s*.3,0,-s*1.6); x.fill();
-    x.fillStyle="rgba(255,255,255,.8)"; x.beginPath(); x.ellipse(-s*.35,s*.1,s*.18,s*.32,-.4,0,6.28); x.fill(); x.restore(); }
+    // wet trail
+    if(p.y>p.y0+2){ const ty=Math.max(p.y0,p.y-46*dpr), tg=x.createLinearGradient(0,ty,0,p.y); tg.addColorStop(0,"rgba(170,205,240,0)"); tg.addColorStop(1,"rgba(170,205,240,.45)");
+      x.strokeStyle=tg; x.lineWidth=s*.7; x.lineCap="round"; x.beginPath(); x.moveTo(p.x,ty); x.lineTo(p.x,p.y-s); x.stroke(); }
+    x.save(); x.translate(p.x,p.y);
+    const g=x.createRadialGradient(-s*.3,0,s*.1,0,0,s*1.4); g.addColorStop(0,"rgba(235,245,255,.75)"); g.addColorStop(1,"rgba(120,170,225,.6)");
+    x.fillStyle=g; x.beginPath(); x.moveTo(0,-s*1.8); x.bezierCurveTo(s*.8,-s*.4,s,s,0,s); x.bezierCurveTo(-s,s,-s*.8,-s*.4,0,-s*1.8); x.fill();
+    x.strokeStyle="rgba(90,140,200,.45)"; x.lineWidth=.8*dpr; x.stroke();
+    x.fillStyle="rgba(255,255,255,.9)"; x.beginPath(); x.ellipse(-s*.35,s*.05,s*.16,s*.3,-.4,0,6.28); x.fill(); x.restore(); }
   const t0=performance.now();
   (function f(t){ const el=t-t0; x.clearRect(0,0,W,H); let alive=false;
     P.forEach(p=>{ if(el<p.d){ alive=true; return; }
-      if(p.grow<1){ p.grow+=.04; } else { p.v+=.12*dpr; p.y+=p.v; p.w+=.08; }
+      if(p.grow<1){ p.grow+=.03; if(p.grow>=1) p.born=el; }
+      else if(el-p.born>p.hang){ p.v=Math.min(p.v+.035*dpr, 3.2*dpr); p.y+=p.v; }
       if(p.y<H+20*dpr){ alive=true; drop(p); } });
-    if(alive && el<6000) requestAnimationFrame(f); else c.remove(); })(t0);
+    if(alive && el<9000) requestAnimationFrame(f); else c.remove(); })(t0);
 }
 
 let navInit=false;
