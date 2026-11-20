@@ -901,7 +901,7 @@ const ARTISTS = [
    sess:[]},
 ];
 
-const PHOTOS = {"Ale": "img/a-ale.jpg", "Maria Sellarès": "img/a-maria-sellares.jpg", "Albert Quesada & Katie Vickers": "img/a-albert-quesada-katie-vickers.jpg", "Catalina Girona": "img/a-catalina-girona.jpg", "Darryl Eisden": "img/a-darryl-eisden.jpg", "Los Informalls": "img/a-los-informalls.jpg", "Joaqu\u00edn Jara": "img/a-joaquin-jara.jpg", "N\u00faria Guiu": "img/a-nuria-guiu.jpg", "Taller Estampa": "img/a-taller-estampa.jpg", "N\u00faria Andorr\u00e0": "img/a-nuria-andorra.jpg", "Frames Percussion": "img/a-frames-percussion.jpg", "Neil Lorenzo": "img/a-neil-lorenzo.jpg"};
+const PHOTOS = {"Ale": "img/a-ale.jpg", "Maria Sellarès": "img/a-maria-sellares.jpg", "Albert Quesada & Katie Vickers": "img/a-albert-quesada-katie-vickers.jpg", "Catalina Girona": "img/a-catalina-girona.jpg", "Darryl Eisden": "img/a-darryl-eisden.jpg", "Los Informalls": "img/a-los-informalls.jpg", "Joaqu\u00edn Jara": "img/a-joaquin-jara.jpg", "N\u00faria Guiu": "img/a-nuria-guiu.jpg", "Taller Estampa": "img/a-taller-estampa.jpg", "N\u00faria Andorr\u00e0": "img/a-nuria-andorra.jpg", "Frames Percussion": "img/a-frames-percussion.jpg", "Neil Lorenzo": "img/a-neil-lorenzo.jpg", "Betsy Towns": "img/a-betsy-towns.jpg", "Abigail G\u00f3mez": "img/a-abigail-gomez.jpg"};
 ARTISTS.forEach(a=>{ if(PHOTOS[a.name]) a.img = PHOTOS[a.name]; });
 
 function initials(n){ return n.split(/[ &·]+/).filter(w=>/^[A-ZÀ-Ý]/.test(w)).slice(0,2).map(w=>w[0]).join(""); }
