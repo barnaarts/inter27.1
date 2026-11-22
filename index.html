@@ -374,10 +374,12 @@
   .day small,.day.ext small,.day.we small{color:var(--hd-ink)}
   .day.we{background:color-mix(in srgb,var(--hd-ink) 12%,transparent)}
   .daysep{background:color-mix(in srgb,var(--hd-ink) 30%,transparent)}
-  .day.on,.day.we.on{border-color:var(--accent);background:var(--card);box-shadow:none}
-  .day.today,.day.we.today{border-color:var(--accent);animation:todayPulseB 2.4s ease-in-out infinite}
-  .day.today.on{border-color:var(--accent);animation:todayPulseB 2.4s ease-in-out infinite}
-  @keyframes todayPulseB{0%,100%{box-shadow:0 0 0 0 rgba(255,52,56,0)}50%{box-shadow:0 0 14px 4px var(--glow)}}
+  .day.on,.day.we.on{border:2px solid #fff;padding:5px 9px;background:var(--chip);box-shadow:inset 0 0 12px 3px rgba(255,255,255,.8)}
+  @media (prefers-color-scheme: dark){ .day.on,.day.we.on{background:rgba(255,255,255,.16);box-shadow:inset 0 0 14px 4px rgba(255,255,255,.55)} }
+  .day.today,.day.we.today{border:2px solid #ffd84a;padding:5px 9px;animation:todayGold 4.5s ease-in-out infinite}
+  .day.today.on{border-color:#fff;animation:todayGoldOn 4.5s ease-in-out infinite}
+  @keyframes todayGold{0%,100%{box-shadow:0 0 6px 1px rgba(255,210,60,.55)}50%{box-shadow:0 0 16px 6px rgba(255,210,60,1)}}
+  @keyframes todayGoldOn{0%,100%{box-shadow:inset 0 0 12px 3px rgba(255,255,255,.75),0 0 0 2px #ffd84a,0 0 6px 2px rgba(255,210,60,.55)}50%{box-shadow:inset 0 0 12px 3px rgba(255,255,255,.75),0 0 0 3px #ffd84a,0 0 18px 7px rgba(255,210,60,1)}}
   .updot{background:var(--accent);box-shadow:0 0 0 2px var(--hd)}
   .note.ovglow,.artist.now,.venue.now,.ov.today{border-color:var(--accent);box-shadow:0 0 14px 4px var(--glow)}
   .nextup{border-left-color:var(--accent)} .nextup small{color:var(--accent)}
@@ -677,13 +679,17 @@ function setFlap(t,nv){
   clearTimeout(t._tm); t._tm=setTimeout(()=>{ if(t.dataset.v===nv) t.innerHTML=flapStatic(nv); },480);
 }
 
+// Confetti origins: the top of each "Final presentation" block on screen
+function finalBursts(){ return [...document.querySelectorAll(".ev")].filter(e=>/Final presentation/.test((e.querySelector(".title")||e).textContent))
+  .map(e=>{const r=e.getBoundingClientRect(); return {x:r.left+r.width/2,y:r.top+20,w:r.width*.6};}); }
 // Lightweight confetti burst
-function confetti(){
+function confetti(from){
   if(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const c=document.createElement("canvas"); c.className="confetti"; document.body.appendChild(c);
   const x=c.getContext("2d"), W=c.width=innerWidth*devicePixelRatio, H=c.height=innerHeight*devicePixelRatio;
+  const O=(from&&from.length?from:[{x:innerWidth/2,y:innerHeight*.35,w:innerWidth*.3}]).map(o=>({x:o.x*devicePixelRatio,y:Math.min(Math.max(o.y,40),innerHeight-40)*devicePixelRatio,w:o.w*devicePixelRatio}));
   const cols=["#ff3438","#f5c518","#7b4bd1","#ffffff","#2e8b57","#ff8fb1"];
-  const P=Array.from({length:140},()=>({x:W/2+(Math.random()-.5)*W*.3,y:H*.35,vx:(Math.random()-.5)*W*.02,vy:-Math.random()*H*.022-H*.006,s:(6+Math.random()*6)*devicePixelRatio,r:Math.random()*6,vr:(Math.random()-.5)*.3,c:cols[Math.random()*cols.length|0]}));
+  const P=Array.from({length:70*O.length},(_,i)=>{const o=O[i%O.length]; return {x:o.x+(Math.random()-.5)*o.w,y:o.y,vx:(Math.random()-.5)*W*.02,vy:-Math.random()*H*.022-H*.006,s:(6+Math.random()*6)*devicePixelRatio,r:Math.random()*6,vr:(Math.random()-.5)*.3,c:cols[Math.random()*cols.length|0]};});
   let t=0; (function f(){ t++; x.clearRect(0,0,W,H);
     P.forEach(p=>{ p.vy+=H*.0006; p.vx*=.99; p.x+=p.vx; p.y+=p.vy; p.r+=p.vr; x.save(); x.translate(p.x,p.y); x.rotate(p.r); x.fillStyle=p.c; x.globalAlpha=Math.max(0,1-t/170); x.fillRect(-p.s/2,-p.s/4,p.s,p.s/2); x.restore(); });
     if(t<170) requestAnimationFrame(f); else c.remove(); })();
@@ -1435,7 +1441,7 @@ function render(){
   if(view==="artists") driftAvatars();
   if(view==="venues"){ initVenueMap(); filterVenueCards(); centerChip(false); } else if(vmap){ try{vmap.remove();}catch(_){} vmap=null; }
   window.scrollTo(0, logoHidden ? lbh : 0);
-  if(view==="schedule" && (current==="2027-01-16" || (current===dates[1] && now.date===dates[1])) && lastConfettiDay!==current){ setTimeout(confetti,300); }
+  if(view==="schedule" && (current==="2027-01-16" || (current===dates[1] && now.date===dates[1])) && lastConfettiDay!==current){ setTimeout(()=>confetti(finalBursts()),300); }
   if(view==="schedule" && S[current] && S[current].some(x=>/^Departure/.test(x.title)) && lastConfettiDay!==current){ setTimeout(tears,500); }
   lastConfettiDay = view==="schedule" ? current : null;
   const em = location.hash.match(/^#jan-(\d{1,2})-(\d+)$/);
