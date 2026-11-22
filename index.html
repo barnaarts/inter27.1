@@ -8,7 +8,8 @@
 <meta name="apple-mobile-web-app-title" content="INTER">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#d4442a">
+<meta name="theme-color" content="#C5DAE1" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1E2A2E" media="(prefers-color-scheme: dark)">
 <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
@@ -17,9 +18,9 @@
 <style>
   :root{
     --bg:#f6f4ef; --card:#ffffff; --ink:#1b1b1b; --muted:#6b6862; --line:#e4e0d8;
-    --accent:#d4442a; --accent-soft:#fbe9e5;
+    --accent:#ff3438; --accent-soft:#fbe9e5;
     --c-studio:#2f6fdb; --c-guest:#c2398a; --c-outing:#e07b1a; --c-perf:#7b4bd1;
-    --c-talk:#b38a00; --c-show:#d4442a; --c-social:#2e8b57; --c-free:#8a8780; --c-creation:#0f8b8d; --c-travel:#4b5563;
+    --c-talk:#b38a00; --c-show:#ff3438; --c-social:#2e8b57; --c-free:#8a8780; --c-creation:#0f8b8d; --c-travel:#4b5563;
   }
   @media (prefers-color-scheme: dark){
     :root{ --bg:#141413; --card:#1f1f1d; --ink:#f2f0ea; --muted:#a19e96; --line:#33322f; --accent-soft:#3a1f19; }
@@ -140,7 +141,7 @@
   @keyframes slideIn{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
   .reveal.hit,.reveal.in.hit{opacity:1;transform:none;animation:hit 6s ease-in-out 1}
   .big.sos{animation:sos 1.4s ease 1}
-  @keyframes sos{0%{text-shadow:none;transform:scale(1)}30%{text-shadow:0 0 18px rgba(212,68,42,.9);transform:scale(1.15)}100%{text-shadow:none;transform:scale(1)}}
+  @keyframes sos{0%{text-shadow:none;transform:scale(1)}30%{text-shadow:0 0 18px rgba(255,52,56,.9);transform:scale(1.15)}100%{text-shadow:none;transform:scale(1)}}
   .info .big{display:block;width:fit-content;margin-bottom:8px;transform-origin:left center}
   .ev.rise.hit{animation:hit 6s ease-in-out 1}
   @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
@@ -165,13 +166,13 @@
   .helpbox a{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;color:var(--ink);text-decoration:none;font-weight:700;font-size:14px}
   .helpbox a small{font-weight:400;color:var(--muted);font-size:12px}
   .helpbox a:active{background:var(--bg)}
-  .helpbox a.sos{color:#d4442a;border-top:1px solid var(--line);border-radius:0 0 10px 10px}
+  .helpbox a.sos{color:#ff3438;border-top:1px solid var(--line);border-radius:0 0 10px 10px}
   .walk{display:inline-block;margin-left:6px;font-size:12px;font-weight:500;color:var(--muted)}
-  a.card.sosc{display:block;color:var(--ink);text-decoration:none;border-color:#d4442a;transition:transform .12s ease}
+  a.card.sosc{display:block;color:var(--ink);text-decoration:none;border-color:#ff3438;transition:transform .12s ease}
   a.card.sosc:active{transform:scale(.97)}
   .sosrow{display:flex;align-items:center;gap:12px;margin-bottom:8px}
   .sosrow .big{margin-bottom:0}
-  .callme{display:inline-block;font-size:13px;font-weight:700;color:#d4442a}
+  .callme{display:inline-block;font-size:13px;font-weight:700;color:#ff3438}
   #splash{position:fixed;inset:0;z-index:100;background:var(--accent);display:flex;align-items:center;justify-content:center;transition:opacity .7s ease .1s}
   #splash .sp-in{text-align:center;animation:splashIn .5s ease both}
   #splash .sp-w{color:#fff;font-size:18px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;opacity:.9;margin-bottom:10px}
@@ -313,16 +314,16 @@
   .sm-pad.lit span{transform:rotate(-14deg) scale(1.2)}
   .cp-ring{width:min(100%,280px);aspect-ratio:1}
   .cp-d circle{fill:var(--card);stroke:var(--line);stroke-width:2;transition:fill .08s}
-  .cp-d.acc circle{stroke:#d4442a;stroke-width:3}
+  .cp-d.acc circle{stroke:#ff3438;stroke-width:3}
   .cp-d text{font-size:11px;text-anchor:middle;fill:var(--muted);font-weight:700;font-family:"DM Sans",sans-serif}
-  .cp-d.acc text{fill:#d4442a;font-size:13px}
+  .cp-d.acc text{fill:#ff3438;font-size:13px}
   .cp-d.on circle{fill:var(--ink)}
-  .cp-d.acc.on circle{fill:#d4442a}
+  .cp-d.acc.on circle{fill:#ff3438}
   .cp-d.on text{fill:var(--bg)}
   .cp-mid{font-size:34px;text-anchor:middle;fill:var(--ink);font-weight:700;font-family:"DM Sans",sans-serif}
   .cp-fb{font-weight:700;font-size:20px;min-height:1.4em}
-  .cp-fb.pf{color:#2e8b57}.cp-fb.gd{color:#b38a00}.cp-fb.off{color:#d4442a}
-  .cp-clap{width:min(100%,340px);height:110px;border:0;border-radius:26px;background:#d4442a;color:#fff;font-size:54px;cursor:pointer;touch-action:manipulation;position:relative}
+  .cp-fb.pf{color:#2e8b57}.cp-fb.gd{color:#b38a00}.cp-fb.off{color:#ff3438}
+  .cp-clap{width:min(100%,340px);height:110px;border:0;border-radius:26px;background:#ff3438;color:#fff;font-size:54px;cursor:pointer;touch-action:manipulation;position:relative}
   .cp-clap:active{transform:scale(.96)}
   .mm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:min(100%,360px)}
   .mm-card{aspect-ratio:3/4;border:0;padding:0;background:none;perspective:700px;cursor:pointer;touch-action:manipulation}
@@ -339,7 +340,7 @@
   .qz-opts{display:grid;gap:8px;width:100%}
   .qz-opt{border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:15px;padding:12px 14px;border-radius:12px;text-align:left;position:relative;cursor:pointer}
   .qz-opt.ok{background:#2e8b57;color:#fff;border-color:#2e8b57}
-  .qz-opt.no{background:#d4442a;color:#fff;border-color:#d4442a}
+  .qz-opt.no{background:#ff3438;color:#fff;border-color:#ff3438}
   .tv-q{display:flex;flex-direction:column;align-items:center;gap:10px;font-size:18px;line-height:1.35}
   .tv-q img{width:150px;height:150px;object-fit:cover;border-radius:50%}
   .tv-who{display:flex;align-items:center;gap:10px;text-align:left;min-height:56px}
@@ -357,12 +358,41 @@
   .tl-item small{color:var(--muted);font-size:13px}
   .tl-item small:empty{display:none}
   .tl-item.ok{border-color:#2e8b57;box-shadow:inset 3px 0 0 #2e8b57}
-  .tl-item.no{border-color:#d4442a;box-shadow:inset 3px 0 0 #d4442a}
-  .tl-item.ok i{background:#2e8b57}.tl-item.no i{background:#d4442a}
+  .tl-item.no{border-color:#ff3438;box-shadow:inset 3px 0 0 #ff3438}
+  .tl-item.ok i{background:#2e8b57}.tl-item.no i{background:#ff3438}
+  /* BARNA ARTS brand palette (from the wordmark): red #FF3438, faded #DA8184, blue-grey #C5DAE1, ink #150505 */
+  :root{--bg:#f3f7f8;--card:#fff;--ink:#150505;--muted:#6b5b5b;--line:#d6e3e8;--accent:#ff3438;--accent-soft:#ffe9ea;
+    --hd:#c5dae1;--hd-ink:#150505;--chip:rgba(255,255,255,.55);--fade:#da8184;--link:#d91e22;--link-soft:#fff;--glow:rgba(255,52,56,.55)}
+  @media (prefers-color-scheme: dark){ :root{--bg:#150505;--card:#231313;--ink:#f6ecec;--muted:#b9a6a6;--line:#3a2828;--accent-soft:#3a1a1b;
+    --hd:#1e2a2e;--hd-ink:#c5dae1;--chip:rgba(255,255,255,.07);--link:#ff8a8d;--link-soft:var(--card)} }
+  .logoband,header,#splash,.g-top{background:var(--hd);color:var(--hd-ink)}
+  .logoband .lb-sub,#splash .sp-w{color:var(--hd-ink)}
+  .tab{border-color:color-mix(in srgb,var(--hd-ink) 30%,transparent);color:var(--hd-ink)}
+  .tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .g-top button{border-color:color-mix(in srgb,var(--hd-ink) 30%,transparent);color:var(--hd-ink)}
+  .day{background:var(--chip);color:var(--hd-ink)}
+  .day small,.day.ext small,.day.we small{color:var(--hd-ink)}
+  .day.we{background:color-mix(in srgb,var(--hd-ink) 12%,transparent)}
+  .daysep{background:color-mix(in srgb,var(--hd-ink) 30%,transparent)}
+  .day.on,.day.we.on{border-color:var(--accent);background:var(--card);box-shadow:none}
+  .day.today,.day.we.today{border-color:var(--accent);animation:todayPulseB 2.4s ease-in-out infinite}
+  .day.today.on{border-color:var(--accent);animation:todayPulseB 2.4s ease-in-out infinite}
+  @keyframes todayPulseB{0%,100%{box-shadow:0 0 0 0 rgba(255,52,56,0)}50%{box-shadow:0 0 14px 4px var(--glow)}}
+  .updot{background:var(--accent);box-shadow:0 0 0 2px var(--hd)}
+  .note.ovglow,.artist.now,.venue.now,.ov.today{border-color:var(--accent);box-shadow:0 0 14px 4px var(--glow)}
+  .nextup{border-left-color:var(--accent)} .nextup small{color:var(--accent)}
+  @keyframes hit{0%,100%{box-shadow:0 0 0 0 rgba(255,52,56,0)}17%{box-shadow:0 0 22px 8px var(--glow)}}
+  .ripple{border-color:var(--glow);background:radial-gradient(circle,rgba(255,52,56,.16),rgba(255,52,56,0) 70%)}
+  .ripple.white{border-color:color-mix(in srgb,var(--accent) 60%,transparent);background:radial-gradient(circle,rgba(255,52,56,.14),rgba(255,52,56,0) 70%)}
+  .tag.upd{background:var(--accent)}
+  .tag.tbc{background:#fce4e5;color:#a8383c}
+  .tag.opt{background:transparent;color:var(--muted);box-shadow:inset 0 0 0 1px var(--muted)}
+  .tag.ext{background:var(--hd);color:var(--hd-ink)}
+  @media (prefers-color-scheme: dark){ .tag.tbc{background:#3a1a1b;color:#f2a4a6} .tag.ext{background:#2e4248;color:#c5dae1} }
 </style>
 </head>
 <body>
-<div id="splash"><div class="sp-in"><div class="sp-w">Welcome to</div><img src="img/logo.png" alt="BARNA ARTS"></div></div>
+<div id="splash"><div class="sp-in"><div class="sp-w">Welcome to</div><img src="img/logo.svg" alt="BARNA ARTS"></div></div>
 <script>setTimeout(function(){var s=document.getElementById("splash");if(!s)return;
 var a=s.querySelector("img"),b=document.querySelector(".logoband img");
 if(a&&b){var ra=a.getBoundingClientRect(),rb=b.getBoundingClientRect();
@@ -370,7 +400,7 @@ if(a&&b){var ra=a.getBoundingClientRect(),rb=b.getBoundingClientRect();
  a.style.transform="translate("+dx+"px,"+dy+"px) scale("+k+")";}}
 s.classList.add("out");setTimeout(function(){s.remove()},750)},1000);</script>
 <div class="logoband">
-  <img src="img/logo.png" alt="BARNA ARTS">
+  <img src="img/logo.svg" alt="BARNA ARTS">
   <div class="lb-sub">Interdisciplinary January'27</div>
 </div>
 <header>
@@ -652,7 +682,7 @@ function confetti(){
   if(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const c=document.createElement("canvas"); c.className="confetti"; document.body.appendChild(c);
   const x=c.getContext("2d"), W=c.width=innerWidth*devicePixelRatio, H=c.height=innerHeight*devicePixelRatio;
-  const cols=["#d4442a","#f5c518","#7b4bd1","#ffffff","#2e8b57","#ff8fb1"];
+  const cols=["#ff3438","#f5c518","#7b4bd1","#ffffff","#2e8b57","#ff8fb1"];
   const P=Array.from({length:140},()=>({x:W/2+(Math.random()-.5)*W*.3,y:H*.35,vx:(Math.random()-.5)*W*.02,vy:-Math.random()*H*.022-H*.006,s:(6+Math.random()*6)*devicePixelRatio,r:Math.random()*6,vr:(Math.random()-.5)*.3,c:cols[Math.random()*cols.length|0]}));
   let t=0; (function f(){ t++; x.clearRect(0,0,W,H);
     P.forEach(p=>{ p.vy+=H*.0006; p.vx*=.99; p.x+=p.vx; p.y+=p.vy; p.r+=p.vr; x.save(); x.translate(p.x,p.y); x.rotate(p.r); x.fillStyle=p.c; x.globalAlpha=Math.max(0,1-t/170); x.fillRect(-p.s/2,-p.s/4,p.s,p.s/2); x.restore(); });
@@ -860,7 +890,7 @@ function renderSchedule(){
 
 // Artists. img: data URI (add photos later). ig: handle without @.
 const ARTISTS = [
-  {name:"Albert Quesada & Katie Vickers", role:"Dancers, choreographers · Directors of BARNA ARTS", c:"#d4442a",
+  {name:"Albert Quesada & Katie Vickers", role:"Dancers, choreographers · Directors of BARNA ARTS", c:"#ff3438",
    bio:"Founders and directors of BARNA ARTS. They lead the Collaborating Strategies workshop and guide your creative process at La Caldera, all the way to the final presentation.",
    site:"https://www.barnaarts.com", siteLabel:"BARNA ARTS", ig:"", more:[["Albert's site","http://acmearts.xyz"],["Katie's site","http://katie-vickers.com"]],
    sess:[["2027-01-08","Collaborating Strategies workshop"],["2027-01-14","Collaborating sessions at La Caldera"],["2027-01-16","Final presentation"]]},
@@ -872,7 +902,7 @@ const ARTISTS = [
    bio:"A Dutch-Caribbean sculptor based in Barcelona. Born in Curaçao and raised in the Netherlands, he started out as a musician and now sculpts mainly in plastiline combined with traditional clay techniques, making work about movement and change.",
    site:"https://darryleisden.com", ig:"eisden_art", more:[["Interview","https://www.artistcloseup.com/blog/interview-darryl-eisden"]],
    sess:[["2027-01-11","Tour & talk"]]},
-  {name:"Frames Percussion", role:"Contemporary percussion ensemble", c:"#d4442a",
+  {name:"Frames Percussion", role:"Contemporary percussion ensemble", c:"#ff3438",
    bio:"A Barcelona percussion group devoted to new music, closely tied to L'Auditori and winner of the Ernst von Siemens ensemble prize in 2022. They also make music for stage work, including Albert Quesada's piece <i>Desert</i>. On your last night you hear them play Xenakis' <i>Pléïades</i>.",
    site:"https://framespercussion.com", ig:"framespercussion",
    sess:[["2027-01-17","Concert: Frames Percussion"]]},
@@ -1059,13 +1089,13 @@ function drawVenuePins(fit){
     keys = ["yugo",...order.filter(k=>k!=="yugo")].filter((k,i,a)=>a.indexOf(k)===i);
     route = ["yugo",...order.filter(k=>k!=="yugo"),"yugo"].map(k=>VC[k]);
   }
-  if(route && route.length>2) L.polyline(route,{color:"#d4442a",weight:3,opacity:.75,dashArray:"6 8"}).addTo(vlayer);
+  if(route && route.length>2) L.polyline(route,{color:"#ff3438",weight:3,opacity:.75,dashArray:"6 8"}).addTo(vlayer);
   let n=0;
   keys.forEach(k=>{
     const home=k==="yugo", t=first[k]||"free";
     const num = mapDay!=="all" && !home ? ++n : 0;
     const icon=L.divIcon({className:"",iconSize:home?[36,36]:[30,30],iconAnchor:home?[18,36]:[15,30],popupAnchor:[0,home?-34:-28],
-      html:`<div class="vpin${home?" home":""}" style="--pc:${home?"#d4442a":`var(${COL[t]})`}">${num?`<b>${num}</b>`:`<span>${home?"🏠":(EMO[t]||"📍")}</span>`}</div>`});
+      html:`<div class="vpin${home?" home":""}" style="--pc:${home?"#ff3438":`var(${COL[t]})`}">${num?`<b>${num}</b>`:`<span>${home?"🏠":(EMO[t]||"📍")}</span>`}</div>`});
     const m=L.marker(VC[k],{icon,title:V[k].n,zIndexOffset:home?1000:0}).bindPopup(venuePopup(k,days),{maxWidth:260});
     m.on("click",()=>haptic(8));
     m.addTo(vlayer); vmarkers[k]=m;
@@ -1598,7 +1628,7 @@ const COMPAS={title:"Flamenco compás", start(){
 
 // 3. Trencadís memory
 let TILE=null;
-function trencadis(){ if(TILE) return TILE; const C=["#1f6fb5","#3b9ad9","#f2c230","#2e8b57","#f5f1e6","#d4442a","#7fc4e8","#e8a33d"];
+function trencadis(){ if(TILE) return TILE; const C=["#1f6fb5","#3b9ad9","#f2c230","#2e8b57","#f5f1e6","#ff3438","#7fc4e8","#e8a33d"];
   const N=5, s=100/N, pt=(i,j)=>[(i*s+(i&&i<N?(Math.random()-.5)*s*.6:0)).toFixed(1),(j*s+(j&&j<N?(Math.random()-.5)*s*.6:0)).toFixed(1)];
   const G=[]; for(let i=0;i<=N;i++){ G[i]=[]; for(let j=0;j<=N;j++) G[i][j]=pt(i,j); }
   let p=""; for(let i=0;i<N;i++) for(let j=0;j<N;j++){ const a=G[i][j],b=G[i+1][j],c=G[i+1][j+1],d=G[i][j+1], f=()=>C[Math.random()*C.length|0];
