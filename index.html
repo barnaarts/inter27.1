@@ -411,10 +411,6 @@
   /* Weekends in light mode: warm yellow so Sat/Sun stand out */
   .days .day.we,.days .day.we.on{background:var(--we);color:var(--we-ink)}
   .days .day.we small{color:var(--we-ink)}
-  /* Artist circles: glued together, stretch when pulled at an end, then spring back */
-  .av{position:relative}
-  .av .glue{position:absolute;top:22px;left:-13px;width:14px;height:14px;border-radius:7px;background:var(--gc,#ccc);opacity:0;pointer-events:none;transform-origin:100% 50%}
-  .av:first-child .glue{display:none}
 </style>
 </head>
 <body>
@@ -1015,26 +1011,9 @@ function driftAvatars(){
   cancelAnimationFrame(avRAF);
   const r=document.getElementById("avrow"); if(!r) return;
   if(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  let dir=1, pausedUntil=0, pos=r.scrollLeft, lastJelly=0;
-  const jelly=side=>{ const now=performance.now(); if(now-lastJelly<1400) return; lastJelly=now;
-    const avs=[...r.querySelectorAll(".av")], n=avs.length, PULL=34, REACH=5;
-    const ease="cubic-bezier(.25,.8,.35,1)";
-    avs.forEach((a,i)=>{ const k=side>0?n-1-i:i;                 // distance from the end we hit
-      const f=Math.max(0,1-k/REACH);
-      const fPrev=Math.min(1,Math.max(0,1-(k+(side>0?1:-1))/REACH)); if(!f&&!fPrev) return;   // only the circles near that end move         // the left-hand neighbour (glue sits on the left)
-      const tx=side*PULL*f, gap=side*PULL*(f-fPrev);             // how much the glue to the left stretches
-      const opt={duration:950,easing:"linear"};
-      a.animate([{transform:"none"},{transform:`translateX(${tx}px)`,offset:.28,easing:ease},
-                 {transform:`translateX(${-tx*.28}px)`,offset:.55},{transform:`translateX(${tx*.08}px)`,offset:.75},{transform:"none"}],opt);
-      const p=a.querySelector(".avp");
-      p&&p.animate([{transform:"none"},{transform:`scale(${1+.16*f},${1-.12*f})`,offset:.28,easing:ease},
-                 {transform:`scale(${1-.05*f},${1+.05*f})`,offset:.55},{transform:"none"}],opt);
-      const g=a.querySelector(".glue"), w=14+Math.abs(gap);
-      g&&g.animate([{opacity:0,transform:"none"},{opacity:.9,transform:`scaleX(${w/14}) scaleY(.55)`,offset:.28,easing:ease},
-                 {opacity:.5,transform:`scaleX(${Math.max(.6,1-Math.abs(gap)*.28/14)}) scaleY(.9)`,offset:.55},{opacity:0,transform:"none"}],opt);
-    }); };
-  r.addEventListener("scroll",()=>{ const max=r.scrollWidth-r.clientWidth;
-    if(performance.now()<pausedUntil && max>0){ if(r.scrollLeft>=max-1) jelly(1); else if(r.scrollLeft<=0) jelly(-1); } },{passive:true});
+  let dir=1, pausedUntil=0, pos=r.scrollLeft;
+
+
   const hold=ms=>{ pausedUntil=performance.now()+ms; };
   ["touchstart","pointerdown","wheel"].forEach(ev=>r.addEventListener(ev,()=>hold(5000),{passive:true}));
   r.addEventListener("scroll",()=>{ if(performance.now()<pausedUntil) pos=r.scrollLeft; },{passive:true});
@@ -1042,7 +1021,7 @@ function driftAvatars(){
     if(!document.body.contains(r)) return;
     const max=r.scrollWidth-r.clientWidth;
     if(max>0 && t>pausedUntil){
-      pos+=dir*0.35; if(pos>=max){ pos=max; dir=-1; hold(1500); jelly(1); } else if(pos<=0){ pos=0; dir=1; hold(1500); jelly(-1); }
+      pos+=dir*0.35; if(pos>=max){ pos=max; dir=-1; hold(1500); } else if(pos<=0){ pos=0; dir=1; hold(1500); }
       r.scrollLeft=pos;
     }
     avRAF=requestAnimationFrame(f);
@@ -1053,7 +1032,7 @@ function renderArtists(){
   const SHORT={"Albert Quesada & Katie Vickers":"Albert & Katie","Los Informalls":"Informalls","Frames Percussion":"Frames","Taller Estampa":"Estampa","Núria Andorrà":"Núria A.","Núria Guiu":"Núria G."};
   const short=n=>SHORT[n]||n.split(" ")[0];
   const AV=[]; (arr=>{for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;})([...ARTISTS]).forEach(a=>{ if(a.name==="Albert Quesada & Katie Vickers"){ AV.push({to:a.name,c:a.c,img:"img/av-albert.jpg",n:"Albert"},{to:a.name,c:a.c,img:"img/av-katie.jpg",n:"Katie"}); } else AV.push({to:a.name,c:a.c,img:a.img,pos:a.pos,n:short(a.name)}); });
-  const row=`<div class="avrow" id="avrow">${AV.map(a=>`<button class="av" style="--gc:${a.c}" onclick="jumpTo('a-${slug(a.to)}')"><span class="glue"></span><span class="avp" style="--c:${a.c}">${a.img?`<img src="${a.img}" alt=""${a.pos?` style="object-position:${a.pos}"`:""}>`:initials(a.to)}</span><small>${a.n}</small></button>`).join("")}</div>`;
+  const row=`<div class="avrow" id="avrow">${AV.map(a=>`<button class="av" onclick="jumpTo('a-${slug(a.to)}')"><span class="avp" style="--c:${a.c}">${a.img?`<img src="${a.img}" alt=""${a.pos?` style="object-position:${a.pos}"`:""}>`:initials(a.to)}</span><small>${a.n}</small></button>`).join("")}</div>`;
   return `<h1>Artists</h1><p class="sub">The artists you'll work with in Barcelona. Tap a face to jump to them, or a session to see it in the schedule.</p>` + row +
   ARTISTS.map((a,ai)=>`<div class="artist reveal${artistToday(a)?" now":""}" id="a-${slug(a.name)}">${artistToday(a)?'<span class="tag now todaytag">Today</span>':''}
     <div class="pic" style="--c:${a.c}">${a.img?`<img src="${a.img}" alt="${a.name}"${a.pos?` style="object-position:${a.pos}"`:""}>`:initials(a.name)}</div>
@@ -1958,21 +1937,28 @@ logo.addEventListener("dblclick",e=>e.preventDefault());
 </script>
 <!-- ===== POP-UPS ===== -->
 <style>
-  #pp{position:fixed;inset:0;z-index:90;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.35);padding:12px;animation:ppfade .2s ease}
-  #pp .pp-c{background:var(--card);color:var(--ink);border:1px solid var(--line);border-top:5px solid var(--pc,var(--accent));border-radius:18px;width:min(100%,460px);max-height:82vh;overflow:auto;padding:16px 18px 14px;box-shadow:0 10px 40px rgba(0,0,0,.25);animation:rise .25s ease}
+  #pp{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.18);-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);animation:ppfade .3s ease;cursor:pointer}
+  #pp .pp-c{background:color-mix(in srgb,var(--card) 72%,transparent);-webkit-backdrop-filter:blur(18px) saturate(1.2);backdrop-filter:blur(18px) saturate(1.2);color:var(--ink);border:1px solid color-mix(in srgb,var(--line) 60%,transparent);border-top:4px solid var(--pc,var(--accent));border-radius:20px;width:min(100%,420px);max-height:78vh;overflow:auto;padding:18px 20px 16px;box-shadow:0 12px 50px rgba(0,0,0,.22),0 0 0 1px rgba(255,255,255,.06) inset;animation:ppin .35s cubic-bezier(.2,.9,.3,1.2)}
   #pp small.k{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--pc,var(--accent));margin-bottom:4px}
   #pp h3{margin:0 0 6px;font-size:19px;line-height:1.25}
   #pp p{margin:6px 0;font-size:15px;line-height:1.45}
   #pp .pp-m{color:var(--muted);font-size:14px}
   #pp ul{margin:8px 0;padding-left:0;list-style:none}
-  #pp li{padding:7px 0;border-bottom:1px solid var(--line);font-size:15px;line-height:1.4}
+  #pp li{padding:7px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent);font-size:15px;line-height:1.4}
   #pp li:last-child{border-bottom:0}
   #pp li.ck{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
   #pp li.ck input{width:20px;height:20px;margin:1px 0 0;flex:none;accent-color:var(--accent)}
   #pp li a{color:var(--link);text-decoration:none}
-  #pp .pp-b{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:12px}
-  #pp .pp-b a,#pp .pp-b button{font:inherit;font-size:15px;font-weight:600;padding:9px 16px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;cursor:pointer}
+  #pp .pp-b{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+  #pp .pp-b a,#pp .pp-b button{font:inherit;font-size:15px;font-weight:600;padding:9px 18px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;cursor:pointer}
   #pp .pp-b .pri{background:var(--accent);border-color:var(--accent);color:#fff}
+  #pp .pp-hint{text-align:center;font-size:11px;color:var(--muted);margin-top:8px;opacity:.8}
+  #pp.out{animation:ppfadeout .45s ease forwards}
+  #pp.out .pp-c{animation:ppimplode .45s cubic-bezier(.6,0,.9,.4) forwards}
+  @keyframes ppin{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
+  @keyframes ppimplode{0%{transform:none;opacity:1;filter:none}35%{transform:scale(1.04);opacity:1}100%{transform:scale(0) rotate(8deg);opacity:0;filter:blur(6px)}}
+  @keyframes ppfadeout{to{opacity:0;-webkit-backdrop-filter:blur(0);backdrop-filter:blur(0)}}
+  @media (prefers-reduced-motion: reduce){ #pp.out .pp-c{animation:ppfadeout .2s forwards} }
   @keyframes ppfade{from{opacity:0}to{opacity:1}}
 </style>
 <script>
@@ -2123,9 +2109,16 @@ function show(p){
   open=true;
   const btns=(p.btns||[]).filter(b=>b[1]).map(([l,u])=>`<a href="${u}" target="_blank" rel="noopener">${l} →</a>`).join("");
   const el=document.createElement("div"); el.id="pp"; el.setAttribute("role","dialog"); el.setAttribute("aria-modal","true");
-  el.innerHTML=`<div class="pp-c" style="--pc:var(${p.c})"><small class="k">${p.kicker}</small><h3>${p.title}</h3>${p.body}<div class="pp-b">${btns}<button class="pri" data-close>Got it</button></div></div>`;
-  const close=()=>{ mark(p.k); el.remove(); open=false; setTimeout(next,600); };
-  el.addEventListener("click",e=>{ if(e.target===el||e.target.closest("[data-close]")) close(); });
+  el.innerHTML=`<div class="pp-c" style="--pc:var(${p.c})"><small class="k">${p.kicker}</small><h3>${p.title}</h3>${p.body}<div class="pp-b">${btns}<button class="pri">Got it</button></div><div class="pp-hint">Tap anywhere to close</div></div>`;
+  let closing=false;
+  const close=(x,y)=>{ if(closing) return; closing=true; mark(p.k);
+    const c=el.querySelector(".pp-c"), r=c.getBoundingClientRect();
+    c.style.transformOrigin=`${x-r.left}px ${y-r.top+c.scrollTop}px`;   // implode towards the tap
+    el.classList.add("out");
+    setTimeout(()=>{ el.remove(); open=false; setTimeout(next,600); },460); };
+  el.addEventListener("click",e=>{
+    if(e.target.closest("input,label")) return;                       // ticking the departure checklist keeps it open
+    close(e.clientX||innerWidth/2, e.clientY||innerHeight/2); });
   document.body.appendChild(el);
 }
 setTimeout(next,2400);                 // after the splash
