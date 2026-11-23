@@ -469,7 +469,7 @@ const V = {
              d:"Núria Andorrà's own rehearsal space in Poble-sec, full of drums, objects and instruments. Ground floor (baixos)."},
   unmaking: {n:"Unmaking Art Studio", w:"https://www.unmaking-art.com/", ig:"unmakingartstudio", a:"Unmaking Art Studio, C/ de Lancaster 10, Barcelona",
              d:"A not-for-profit studio and artist-run gallery in the Raval, opened in 2024, supporting emerging and underrepresented artists. First stop and meeting point of Darryl Eisden's tour. Metro Liceu (L3)."},
-  taller46: {n:"Taller 46 Barcelona", w:"https://www.artprintbarcelona.com/", ig:"studio46barcelona", a:"Taller 46, Av. de la República Argentina 46, Barcelona",
+  taller46: {n:"Taller 46 Barcelona", ig:"studio46barcelona", a:"Taller 46, Av. de la República Argentina 46, Barcelona",
              d:"A historic printmaking atelier and private gallery in Gràcia, founded in 1974 by master printmaker Joan Barbarà, who printed with Miró, Picasso, Dalí and Tàpies. Metro Vallcarca (L3), 3 min walk."},
   neil:     {n:"Neil Lorenzo's studio", w:"https://www.neil-lorenzo.com", a:"Arc de Triomf, Barcelona",
              d:"The painter's studio near the Arc de Triomf. Exact address shared before the session."},
@@ -1110,8 +1110,23 @@ function venuePopup(k,days){
     <div class="links"><a href="${dir}" target="_blank" rel="noopener">${k==="yugo"?"Maps":"Directions"} ↗</a>${v.w?`<a href="${v.w}" target="_blank" rel="noopener">Web ↗</a>`:""}${v.ig?`<a href="https://instagram.com/${v.ig}" target="_blank" rel="noopener">IG ↗</a>`:""}</div></div>`;
 }
 let vmarkers={};
+// Venue keys in the order they are visited on day d (by session start time)
+function dayVenueOrder(d){
+  const order=[];
+  for(const x of [...(S[d]||[])].sort((a,b)=>(a.s||"").localeCompare(b.s||"")))
+    for(const k of [...(x.vs||[]),...(x.v?[x.v]:[])].map(vkey)) if(!order.includes(k)) order.push(k);
+  return order;
+}
 function filterVenueCards(){
-  document.querySelectorAll(".venue[data-days]").forEach(v=>v.classList.toggle("off", mapDay!=="all" && !v.dataset.days.split(" ").includes(mapDay)));
+  const cards=[...document.querySelectorAll(".venue[data-days]")];
+  cards.forEach(v=>v.classList.toggle("off", mapDay!=="all" && !v.dataset.days.split(" ").includes(mapDay)));
+  // With a day picked, list that day's cards in the order of the day; "All venues" restores first-visit order
+  if(cards.length && cards[0].parentNode){
+    const par=cards[0].parentNode, ord=mapDay==="all"?[]:dayVenueOrder(mapDay);
+    const rank=c=>{ const i=ord.indexOf(c.dataset.k); return i>=0 ? i : ord.length + (+c.dataset.i); };
+    const after=cards[cards.length-1].nextSibling;
+    [...cards].sort((a,b)=>rank(a)-rank(b)).forEach(c=>par.insertBefore(c,after));
+  }
   const n=document.getElementById("vnote");
   if(n && !n.dataset.simple) n.textContent = mapDay==="all" ? "Pick a day to see its stops in order, starting from Yugo." : `${fmt(mapDay,{weekday:"long",month:"long",day:"numeric"})}: stops in order, from Yugo and back. Only that day's venues are listed below.`;
 }
@@ -1173,7 +1188,7 @@ function renderVenues(){
   if(!VPHOTOS.upf) VPHOTOS.upf = "img/sala-reflexio.jpg";
   return `<h1>Venues</h1><p class="sub">Everywhere we go, in order of first visit. Tap a pin or a date to see what's on.</p>
   <div class="vmapwrap" id="vmapwrap"><div class="vchips">${mapChips(venueDays().days)}</div><div class="vmap" id="vmap"></div><div class="vnote" id="vnote">Pick a day to see its stops in order, starting from Yugo.</div></div>` +
-  keys.map((k,vi)=>{const v=V[k]; const tdy=days[k].has(now.date); return `<div class="venue reveal${tdy?" now":""}${mapDay!=="all"&&!days[k].has(mapDay)?" off":""}" data-days="${[...days[k]].join(" ")}">${tdy?'<span class="tag now todaytag">Today</span>':''}
+  keys.map((k,vi)=>{const v=V[k]; const tdy=days[k].has(now.date); return `<div class="venue reveal${tdy?" now":""}${mapDay!=="all"&&!days[k].has(mapDay)?" off":""}" data-k="${k}" data-i="${vi}" data-days="${[...days[k]].join(" ")}">${tdy?'<span class="tag now todaytag">Today</span>':''}
     ${VPHOTOS[k]?`<img class="vpic" src="${VPHOTOS[k]}" alt="${v.n}">`:""}
     <h3>${v.n.split(" — ")[0]}${v.home?' <span class="tag opt">Where you stay</span>':''}</h3>
     ${v.d?`<p>${v.d}</p>`:""}
