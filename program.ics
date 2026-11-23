@@ -152,9 +152,11 @@ UID:inter27-2027-01-11-1@barnaarts.com
 DTSTAMP:20261120T214750Z
 DTSTART:20270111T130000Z
 DTEND:20270111T160000Z
-SUMMARY:Tour & talk · TBC
-DESCRIPTION:with Darryl Eisden\nLatest times and changes are in the program
-  app.
+SUMMARY:Arts studios tour & talk
+LOCATION:Unmaking Art Studio\, C/ de Lancaster 10\, Barcelona
+DESCRIPTION:with Darryl Eisden. Meet at Unmaking Art Studio\, then Taller 46
+ (Av. de la República Argentina 46).\nLatest times and changes are in the
+ program app.
 END:VEVENT
 BEGIN:VEVENT
 UID:inter27-2027-01-11-2@barnaarts.com

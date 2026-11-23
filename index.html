@@ -233,6 +233,7 @@
   .venue h3{margin:0;font-size:18px}
   .venue{overflow:hidden}
   .venue .vpic{display:block;width:calc(100% + 32px);margin:-14px -16px 12px;aspect-ratio:9/5;object-fit:cover}
+  .venue .vpic2{margin:-10px -16px 12px}
   .venue p{font-size:15px;line-height:1.5;margin:6px 0 0}
   .venue .addr{font-size:14px;color:var(--muted);margin-top:6px}
   .phone{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
@@ -439,7 +440,7 @@ s.classList.add("out");setTimeout(function(){s.remove()},750)},1000);</script>
 <button id="totop" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Top</button>
 
 <script>
-const UPDATED = "20 Nov 2026";
+const UPDATED = "23 Nov 2026";
 
 // Venues: name + address used for the map link.
 // g = groups rooms of the same building on the Venues tab; d = description for the Venues tab
@@ -466,6 +467,10 @@ const V = {
              d:"The artist's home studio in the Raval neighbourhood."},
   nuriaand: {n:"Núria Andorrà's studio", a:"C/ de la Font Honrada 23, Barcelona",
              d:"Núria Andorrà's own rehearsal space in Poble-sec, full of drums, objects and instruments. Ground floor (baixos)."},
+  unmaking: {n:"Unmaking Art Studio", w:"https://www.unmaking-art.com/", a:"Unmaking Art Studio, C/ de Lancaster 10, Barcelona",
+             d:"A not-for-profit studio and artist-run gallery in the Raval, opened in 2024, supporting emerging and underrepresented artists. First stop and meeting point of Darryl Eisden's tour. Metro Liceu (L3)."},
+  taller46: {n:"Taller 46 Barcelona", w:"https://www.instagram.com/studio46barcelona", a:"Taller 46, Av. de la República Argentina 46, Barcelona",
+             d:"A historic printmaking atelier and private gallery in Gràcia, founded in 1974 by master printmaker Joan Barbarà, who printed with Miró, Picasso, Dalí and Tàpies. Metro Vallcarca (L3), 3 min walk."},
   neil:     {n:"Neil Lorenzo's studio", w:"https://www.neil-lorenzo.com", a:"Arc de Triomf, Barcelona",
              d:"The painter's studio near the Arc de Triomf. Exact address shared before the session."},
   servei:   {n:"Servei Estació", w:"https://www.serveiestacio.com", a:"Servei Estació, C/ Aragó 270, Barcelona",
@@ -509,7 +514,7 @@ const S = {
   {s:"18:00",e:"20:00",title:"Talk with Joaquín Jara",v:"joaquin",t:"talk",ar:"Joaquín Jara"}],
 "2027-01-11":[
   {s:"10:00",e:"13:00",title:"Hands-on materials workshop: clay, mud, paint",who:"Joaquín Jara",v:"joaquin",t:"guest",ar:"Joaquín Jara"},
-  {s:"14:00",e:"17:00",title:"Tour & talk",who:"with Darryl Eisden",t:"outing",tbc:1,ar:"Darryl Eisden"},
+  {s:"14:00",e:"17:00",title:"Arts studios tour & talk",who:"with Darryl Eisden · meet at Unmaking Art Studio, then metro L3 Liceu → Vallcarca to Taller 46",vs:["unmaking","taller46"],t:"outing",ar:"Darryl Eisden"},
   {s:"19:00",e:"22:00",title:"Cinema evening",v:"filmo",t:"perf",tbc:1,link:["Web","https://www.filmoteca.cat/"]}],
 "2027-01-12":[
   {s:"10:00",e:"13:00",title:"Visual artists workshop",who:"Neil Lorenzo · at his studio near Arc de Triomf",v:"neil",t:"guest",ar:"Neil Lorenzo"},
@@ -1035,7 +1040,8 @@ function renderArtists(){
     </div></div>`).join("");
 }
 
-const VPHOTOS = {"caldera": "img/v-caldera.jpg", "servei": "img/v-servei.jpg", "filmo": "img/v-filmo.jpg", "joaquin": "img/v-joaquin.jpg", "lliure": "img/v-lliure.jpg", "piconera": "img/v-piconera.jpg", "santam": "img/v-santam.jpg", "macba": "img/v-macba.jpg", "mercat": "img/v-mercat.jpg", "tapies": "img/v-tapies.jpg", "visiva": "img/v-visiva.jpg", "nuriaand": "img/v-nuriaandorra.jpg", "neil": "img/v-neil.jpg", "auditori": "img/v-auditori.jpg", "yugo": "img/v-yugo.jpg", "pedrera": "img/v-pedrera.jpg", "batllo": "img/v-batllo.jpg", "brujas": "img/v-brujas.jpg"};
+const VPHOTOS = {"caldera": "img/v-caldera.jpg", "servei": "img/v-servei.jpg", "filmo": "img/v-filmo.jpg", "joaquin": "img/v-joaquin.jpg", "lliure": "img/v-lliure.jpg", "piconera": "img/v-piconera.jpg", "santam": "img/v-santam.jpg", "macba": "img/v-macba.jpg", "mercat": "img/v-mercat.jpg", "tapies": "img/v-tapies.jpg", "visiva": "img/v-visiva.jpg", "nuriaand": "img/v-nuriaandorra.jpg", "neil": "img/v-neil.jpg", "auditori": "img/v-auditori.jpg", "yugo": "img/v-yugo.jpg", "pedrera": "img/v-pedrera.jpg", "batllo": "img/v-batllo.jpg", "brujas": "img/v-brujas.jpg", "unmaking": "img/v-unmaking.jpg", "taller46": "img/v-taller46.jpg"};
+const VPHOTOS2 = {"unmaking": "img/v-unmaking-2.jpg"};
 
 // ---------- Venues map ----------
 // Approximate coordinates for each venue (lat, lng)
@@ -1043,7 +1049,8 @@ const VC = {
   yugo:[41.3773,2.1745], pedrera:[41.3953,2.1619], batllo:[41.3916,2.1649], brujas:[41.3806,2.1801],
   caldera:[41.3832,2.1322], santam:[41.3767,2.1761], visiva:[41.3783,2.1598], piconera:[41.3721,2.1617],
   joaquin:[41.3796,2.1693], nuriaand:[41.3737,2.1590], neil:[41.3911,2.1806], auditori:[41.3984,2.1868], servei:[41.3928,2.1653], lliure:[41.3724,2.1587],
-  mercat:[41.3718,2.1574], filmo:[41.3792,2.1697], tapies:[41.3915,2.1636], upf:[41.3901,2.1912], macba:[41.3833,2.1668]
+  mercat:[41.3718,2.1574], filmo:[41.3792,2.1697], tapies:[41.3915,2.1636], upf:[41.3901,2.1912], macba:[41.3833,2.1668],
+  unmaking:[41.3787,2.1734], taller46:[41.4112,2.1437]
 };
 const vkey = k => V[k] && V[k].g ? V[k].g : k;
 function venueDays(){
@@ -1169,6 +1176,7 @@ function renderVenues(){
   <div class="vmapwrap" id="vmapwrap"><div class="vchips">${mapChips(venueDays().days)}</div><div class="vmap" id="vmap"></div><div class="vnote" id="vnote">Pick a day to see its stops in order, starting from Yugo.</div></div>` +
   keys.map((k,vi)=>{const v=V[k]; const tdy=days[k].has(now.date); return `<div class="venue reveal${tdy?" now":""}${mapDay!=="all"&&!days[k].has(mapDay)?" off":""}" data-days="${[...days[k]].join(" ")}">${tdy?'<span class="tag now todaytag">Today</span>':''}
     ${VPHOTOS[k]?`<img class="vpic" src="${VPHOTOS[k]}" alt="${v.n}">`:""}
+    ${VPHOTOS2[k]?`<img class="vpic vpic2" src="${VPHOTOS2[k]}" alt="${v.n}" loading="lazy">`:""}
     <h3>${v.n.split(" — ")[0]}${v.home?' <span class="tag opt">Where you stay</span>':''}</h3>
     ${v.d?`<p>${v.d}</p>`:""}
     ${v.a?`<div class="addr">📍 ${street(v)}</div>`:""}
