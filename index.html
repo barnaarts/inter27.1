@@ -233,7 +233,6 @@
   .venue h3{margin:0;font-size:18px}
   .venue{overflow:hidden}
   .venue .vpic{display:block;width:calc(100% + 32px);margin:-14px -16px 12px;aspect-ratio:9/5;object-fit:cover}
-  .venue .vpic2{margin:-10px -16px 12px}
   .venue p{font-size:15px;line-height:1.5;margin:6px 0 0}
   .venue .addr{font-size:14px;color:var(--muted);margin-top:6px}
   .phone{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
@@ -443,7 +442,8 @@ s.classList.add("out");setTimeout(function(){s.remove()},750)},1000);</script>
 const UPDATED = "23 Nov 2026";
 
 // Venues: name + address used for the map link.
-// g = groups rooms of the same building on the Venues tab; d = description for the Venues tab
+// g = groups rooms of the same building on the Venues tab; d = description for the Venues tab; ig = Instagram handle without @
+// The Venues tab and map always list venues in order of first visit (computed from the schedule).
 const V = {
   yugo:     {n:"Yugo Barcelona Port", a:"Yugo Barcelona Port, C/ Portal de Santa Madrona 28, Barcelona", home:1,
              d:"Your home in Barcelona: a student residence near the bottom of La Rambla, right next to Arts Santa Mònica and a short walk from the sea. Shared kitchens for cooking, plus common rooms and study spaces."},
@@ -467,9 +467,9 @@ const V = {
              d:"The artist's home studio in the Raval neighbourhood."},
   nuriaand: {n:"Núria Andorrà's studio", a:"C/ de la Font Honrada 23, Barcelona",
              d:"Núria Andorrà's own rehearsal space in Poble-sec, full of drums, objects and instruments. Ground floor (baixos)."},
-  unmaking: {n:"Unmaking Art Studio", w:"https://www.unmaking-art.com/", a:"Unmaking Art Studio, C/ de Lancaster 10, Barcelona",
+  unmaking: {n:"Unmaking Art Studio", w:"https://www.unmaking-art.com/", ig:"unmakingartstudio", a:"Unmaking Art Studio, C/ de Lancaster 10, Barcelona",
              d:"A not-for-profit studio and artist-run gallery in the Raval, opened in 2024, supporting emerging and underrepresented artists. First stop and meeting point of Darryl Eisden's tour. Metro Liceu (L3)."},
-  taller46: {n:"Taller 46 Barcelona", w:"https://www.instagram.com/studio46barcelona", a:"Taller 46, Av. de la República Argentina 46, Barcelona",
+  taller46: {n:"Taller 46 Barcelona", w:"https://www.artprintbarcelona.com/", ig:"studio46barcelona", a:"Taller 46, Av. de la República Argentina 46, Barcelona",
              d:"A historic printmaking atelier and private gallery in Gràcia, founded in 1974 by master printmaker Joan Barbarà, who printed with Miró, Picasso, Dalí and Tàpies. Metro Vallcarca (L3), 3 min walk."},
   neil:     {n:"Neil Lorenzo's studio", w:"https://www.neil-lorenzo.com", a:"Arc de Triomf, Barcelona",
              d:"The painter's studio near the Arc de Triomf. Exact address shared before the session."},
@@ -919,8 +919,8 @@ function renderSchedule(){
       <div class="body">
         <div class="title">${ico(x)} ${x.title}</div>
         ${x.who?`<div class="who">${x.who}</div>`:""}
-        ${x.vs?x.vs.map(k=>`<div class="where">${V[k].n}<br><span class="who">${street(V[k])}</span></div><a class="map" href="${mapLink(V[k].a)}" target="_blank" rel="noopener">Maps →</a>`).join(""):""}
-        ${venue?`<div class="where">${venue.n}${venue.a?`<br><span class="who">${street(venue)}</span>`:""}</div>`:x.vs?"":
+        ${x.vs?x.vs.map(k=>`<div class="where">${V[k].n}<br><span class="who">${street(V[k])}</span></div><a class="map" href="${mapLink(V[k].a)}" target="_blank" rel="noopener">Maps →</a>${V[k].ig?`<a class="map" style="margin-left:6px" href="https://instagram.com/${V[k].ig}" target="_blank" rel="noopener">IG ↗</a>`:""}`).join(""):""}
+        ${venue?`<div class="where">${venue.n}${venue.a?`<br><span class="who">${street(venue)}</span>`:""}</div>${venue.ig?`<a class="map" href="https://instagram.com/${venue.ig}" target="_blank" rel="noopener">IG ↗</a>`:""}`:x.vs?"":
           (x.t!=="travel"&&x.t!=="free"?`<div class="where who">Location to be announced</div>`:"")}
         <div class="tags">${tags}</div>
         ${venue&&venue.a?`<a class="map" href="${mapLink(venue.a)}" target="_blank" rel="noopener">Maps →</a>`:""}
@@ -1041,7 +1041,6 @@ function renderArtists(){
 }
 
 const VPHOTOS = {"caldera": "img/v-caldera.jpg", "servei": "img/v-servei.jpg", "filmo": "img/v-filmo.jpg", "joaquin": "img/v-joaquin.jpg", "lliure": "img/v-lliure.jpg", "piconera": "img/v-piconera.jpg", "santam": "img/v-santam.jpg", "macba": "img/v-macba.jpg", "mercat": "img/v-mercat.jpg", "tapies": "img/v-tapies.jpg", "visiva": "img/v-visiva.jpg", "nuriaand": "img/v-nuriaandorra.jpg", "neil": "img/v-neil.jpg", "auditori": "img/v-auditori.jpg", "yugo": "img/v-yugo.jpg", "pedrera": "img/v-pedrera.jpg", "batllo": "img/v-batllo.jpg", "brujas": "img/v-brujas.jpg", "unmaking": "img/v-unmaking.jpg", "taller46": "img/v-taller46.jpg"};
-const VPHOTOS2 = {"unmaking": "img/v-unmaking-2.jpg"};
 
 // ---------- Venues map ----------
 // Approximate coordinates for each venue (lat, lng)
@@ -1108,7 +1107,7 @@ function venuePopup(k,days){
   return `<div class="vpop">${VPHOTOS[k]?`<img src="${VPHOTOS[k]}" alt="">`:""}<h4>${v.n.split(" — ")[0]}</h4>
     <div class="addr">${k==="yugo"?"Where you stay · ":""}${street(v)}</div>
     ${ds.length?`<div class="sess">${ds.map(d=>`<a href="${evLink(d,x=>[...(x.vs||[]),...(x.v?[x.v]:[])].map(vkey).includes(k))}">${fmt(d,{weekday:"short",month:"short",day:"numeric"})}</a>`).join("")}</div>`:""}
-    <div class="links"><a href="${dir}" target="_blank" rel="noopener">${k==="yugo"?"Maps":"Directions"} ↗</a>${v.w?`<a href="${v.w}" target="_blank" rel="noopener">Web ↗</a>`:""}</div></div>`;
+    <div class="links"><a href="${dir}" target="_blank" rel="noopener">${k==="yugo"?"Maps":"Directions"} ↗</a>${v.w?`<a href="${v.w}" target="_blank" rel="noopener">Web ↗</a>`:""}${v.ig?`<a href="https://instagram.com/${v.ig}" target="_blank" rel="noopener">IG ↗</a>`:""}</div></div>`;
 }
 let vmarkers={};
 function filterVenueCards(){
@@ -1176,7 +1175,6 @@ function renderVenues(){
   <div class="vmapwrap" id="vmapwrap"><div class="vchips">${mapChips(venueDays().days)}</div><div class="vmap" id="vmap"></div><div class="vnote" id="vnote">Pick a day to see its stops in order, starting from Yugo.</div></div>` +
   keys.map((k,vi)=>{const v=V[k]; const tdy=days[k].has(now.date); return `<div class="venue reveal${tdy?" now":""}${mapDay!=="all"&&!days[k].has(mapDay)?" off":""}" data-days="${[...days[k]].join(" ")}">${tdy?'<span class="tag now todaytag">Today</span>':''}
     ${VPHOTOS[k]?`<img class="vpic" src="${VPHOTOS[k]}" alt="${v.n}">`:""}
-    ${VPHOTOS2[k]?`<img class="vpic vpic2" src="${VPHOTOS2[k]}" alt="${v.n}" loading="lazy">`:""}
     <h3>${v.n.split(" — ")[0]}${v.home?' <span class="tag opt">Where you stay</span>':''}</h3>
     ${v.d?`<p>${v.d}</p>`:""}
     ${v.a?`<div class="addr">📍 ${street(v)}</div>`:""}
@@ -1185,6 +1183,7 @@ function renderVenues(){
       ${VC[k]?`<a href="#" class="onmap" data-k="${k}">📍 On the map</a>`:""}
       ${v.a?`<a class="mapl" href="${mapLink(v.a)}" target="_blank" rel="noopener">Maps ↗</a>`:""}
       ${v.w?`<a href="${v.w}" target="_blank" rel="noopener">Web ↗</a>`:""}
+      ${v.ig?`<a href="https://instagram.com/${v.ig}" target="_blank" rel="noopener">IG ↗</a>`:""}
     </div>
   </div>`;}).join("");
 }
