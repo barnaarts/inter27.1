@@ -708,6 +708,10 @@ setTimeout(tripLogo,1300);
   ["pointerdown","pointermove","touchstart","scroll","wheel","keydown"].forEach(ev=>addEventListener(ev,arm,{passive:true}));
   arm(); })();
 
+// Useful phrases: opening one group closes the others
+document.addEventListener("toggle",e=>{ const d=e.target; if(!(d instanceof HTMLDetailsElement) || !d.open || !d.classList.contains("ph")) return;
+  document.querySelectorAll("details.ph[open]").forEach(o=>{ if(o!==d) o.open=false; }); },true);
+
 // Lightweight confetti burst
 function confetti(from){
   if(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -1401,14 +1405,14 @@ function renderInfo(){
    💧 <b>Water:</b> tap water is safe to drink. Bring a refillable bottle.<br><br>
    💶 <b>Cash machines:</b> use bank cash machines, and always choose to be charged in euros, not dollars.<br><br>
    🪙 <b>Tipping:</b> not expected. Rounding up is enough.</div>
-    <h2>📖 How to use this page</h2>
+    <h2>🚇 Transport & phrases</h2>
+    <div class="card">The T-usual pass, airport ↔ Yugo, the metro map and useful Spanish & Catalan phrases are on the <b>City</b> tab.<div class="links"><a href="#city">Open City ↗</a></div></div>
+    <details class="fold"><summary>📖 How to use this page</summary>
     <div class="card">Check it every morning. Plans can change, and this page always shows the latest version.<br><br>
       Tap <b>Maps</b> to get directions.<br>
       <b>Optional</b> means it's up to you.<br>
       <b>To be confirmed</b> means the time or place may still change.<br>
-      <b>Updated</b> or <b>New</b> marks a session that changed since you last opened the app, and a dot on the date shows which days changed.</div>
-    <h2>🚇 Transport & phrases</h2>
-    <div class="card">The T-usual pass, airport ↔ Yugo, the metro map and useful Spanish & Catalan phrases are on the <b>City</b> tab.<div class="links"><a href="#city">Open City ↗</a></div></div>
+      <b>Updated</b> or <b>New</b> marks a session that changed since you last opened the app, and a dot on the date shows which days changed.</div></details>
     <details class="fold"><summary>🧳 What to bring</summary>
     <div class="card">Barcelona in January is mild but cool: about 5–15 °C (40–60 °F), colder at night, with some rainy days. Studios can be chilly.<br><br>
       🧥 Warm layers, a warm jacket and a rain jacket or umbrella<br>
