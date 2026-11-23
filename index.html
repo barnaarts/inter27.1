@@ -710,7 +710,10 @@ setTimeout(tripLogo,1300);
 
 // Useful phrases: opening one group closes the others
 document.addEventListener("toggle",e=>{ const d=e.target; if(!(d instanceof HTMLDetailsElement) || !d.open || !d.classList.contains("ph")) return;
-  document.querySelectorAll("details.ph[open]").forEach(o=>{ if(o!==d) o.open=false; }); },true);
+  let closed=false; document.querySelectorAll("details.ph[open]").forEach(o=>{ if(o!==d){ o.open=false; closed=true; } });
+  if(!closed) return;
+  requestAnimationFrame(()=>{ const hd=document.querySelector("header"), top=hd?hd.getBoundingClientRect().bottom:0, r=d.getBoundingClientRect();
+    if(r.top<top+8 || r.top>innerHeight-80) scrollBy({top:r.top-top-10,behavior:"smooth"}); }); },true);
 
 // Lightweight confetti burst
 function confetti(from){
