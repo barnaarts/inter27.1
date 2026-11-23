@@ -408,6 +408,13 @@
   .wm .ech{opacity:0}
   .wm.trip .ech{animation:trip 15.6s cubic-bezier(.5,0,.2,1) 1}
   @keyframes trip{0%{transform:translateY(0);opacity:0}38%{transform:translateY(15.6px);opacity:1}75%{transform:translateY(-6px);opacity:1}100%{transform:translateY(0);opacity:0}}
+  /* Weekends in light mode: warm yellow so Sat/Sun stand out */
+  .days .day.we,.days .day.we.on{background:var(--we);color:var(--we-ink)}
+  .days .day.we small{color:var(--we-ink)}
+  /* Artist circles: glued together, stretch when pulled at an end, then spring back */
+  .av{position:relative}
+  .av .glue{position:absolute;top:22px;left:-13px;width:14px;height:14px;border-radius:7px;background:var(--gc,#ccc);opacity:0;pointer-events:none;transform-origin:100% 50%}
+  .av:first-child .glue{display:none}
 </style>
 </head>
 <body>
@@ -533,18 +540,18 @@ const S = {
   {s:"16:30",e:"17:30",title:"Visit: Servei Estació",v:"servei",t:"outing"},
   {s:"19:00",e:"20:00",title:"Sound & body Wednesday",v:"santambar",t:"perf",link:["Arts Santa Mònica","https://www.santamonica.cat"]}],
 "2027-01-14":[
-  {s:"10:00",e:"13:00",title:"Collaborating sessions",v:"caldera",t:"creation"},
+  {s:"10:00",e:"13:00",title:"Collaborating sessions: Instant Practice",who:"with Katie Vickers",v:"caldera",t:"creation"},
   {s:"14:00",e:"17:00",title:"Collaborating sessions",v:"caldera",t:"creation"},
   {s:"18:00",e:"20:00",title:"MACBA",who:"Free entry in the evening",v:"macba",t:"free"}],
 "2027-01-15":[
-  {s:"10:00",e:"13:00",title:"Warm-up + collaborating sessions",v:"caldera",t:"creation"},
+  {s:"10:00",e:"13:00",title:"Warm-up + collaborating sessions",who:"with Núria Guiu",v:"caldera",t:"creation",ar:"Núria Guiu"},
   {s:"14:00",e:"17:00",title:"Collaborating sessions",v:"caldera",t:"creation"},
   {s:"20:00",e:"21:30",title:"Performance: Mette Ingvartsen — RUSH",who:"Solo performed by Manon Santkin · Ages 16+",v:"mercat",t:"perf",link:["Show info","https://mercatflors.cat/espectacle/rush/"]}],
 "2027-01-16":[
   {s:"10:00",e:"13:00",title:"Final presentation",v:"caldera",t:"show"},
   {s:"14:00",e:"17:00",title:"Final presentation",v:"caldera",t:"show"}],
 "2027-01-17":[
-  {s:"10:00",e:"14:00",title:"Free morning",who:"Time to pack and relax",t:"free"},
+  {s:"10:00",e:"13:00",title:"Free morning",who:"Time to pack and relax",t:"free"},
   {s:"14:00",e:"16:30",title:"Final group practice & reflection",v:"caldera",t:"workshop"},
   {s:"16:30",e:"18:00",title:"Goodbye dinner",v:"caldera",t:"social"},
   {s:"19:00",e:"20:30",title:"Concert: Frames Percussion — Xenakis, Pléïades",who:"Six percussionists play Iannis Xenakis' landmark 1978 piece",v:"auditori",t:"perf",ar:"Frames Percussion",link:["L'Auditori","https://www.auditori.cat/en"]}],
@@ -1008,7 +1015,26 @@ function driftAvatars(){
   cancelAnimationFrame(avRAF);
   const r=document.getElementById("avrow"); if(!r) return;
   if(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  let dir=1, pausedUntil=performance.now()+1200, pos=r.scrollLeft;
+  let dir=1, pausedUntil=0, pos=r.scrollLeft, lastJelly=0;
+  const jelly=side=>{ const now=performance.now(); if(now-lastJelly<1400) return; lastJelly=now;
+    const avs=[...r.querySelectorAll(".av")], n=avs.length, PULL=34, REACH=5;
+    const ease="cubic-bezier(.25,.8,.35,1)";
+    avs.forEach((a,i)=>{ const k=side>0?n-1-i:i;                 // distance from the end we hit
+      const f=Math.max(0,1-k/REACH);
+      const fPrev=Math.min(1,Math.max(0,1-(k+(side>0?1:-1))/REACH)); if(!f&&!fPrev) return;   // only the circles near that end move         // the left-hand neighbour (glue sits on the left)
+      const tx=side*PULL*f, gap=side*PULL*(f-fPrev);             // how much the glue to the left stretches
+      const opt={duration:950,easing:"linear"};
+      a.animate([{transform:"none"},{transform:`translateX(${tx}px)`,offset:.28,easing:ease},
+                 {transform:`translateX(${-tx*.28}px)`,offset:.55},{transform:`translateX(${tx*.08}px)`,offset:.75},{transform:"none"}],opt);
+      const p=a.querySelector(".avp");
+      p&&p.animate([{transform:"none"},{transform:`scale(${1+.16*f},${1-.12*f})`,offset:.28,easing:ease},
+                 {transform:`scale(${1-.05*f},${1+.05*f})`,offset:.55},{transform:"none"}],opt);
+      const g=a.querySelector(".glue"), w=14+Math.abs(gap);
+      g&&g.animate([{opacity:0,transform:"none"},{opacity:.9,transform:`scaleX(${w/14}) scaleY(.55)`,offset:.28,easing:ease},
+                 {opacity:.5,transform:`scaleX(${Math.max(.6,1-Math.abs(gap)*.28/14)}) scaleY(.9)`,offset:.55},{opacity:0,transform:"none"}],opt);
+    }); };
+  r.addEventListener("scroll",()=>{ const max=r.scrollWidth-r.clientWidth;
+    if(performance.now()<pausedUntil && max>0){ if(r.scrollLeft>=max-1) jelly(1); else if(r.scrollLeft<=0) jelly(-1); } },{passive:true});
   const hold=ms=>{ pausedUntil=performance.now()+ms; };
   ["touchstart","pointerdown","wheel"].forEach(ev=>r.addEventListener(ev,()=>hold(5000),{passive:true}));
   r.addEventListener("scroll",()=>{ if(performance.now()<pausedUntil) pos=r.scrollLeft; },{passive:true});
@@ -1016,7 +1042,7 @@ function driftAvatars(){
     if(!document.body.contains(r)) return;
     const max=r.scrollWidth-r.clientWidth;
     if(max>0 && t>pausedUntil){
-      pos+=dir*0.35; if(pos>=max){ pos=max; dir=-1; hold(1500); } else if(pos<=0){ pos=0; dir=1; hold(1500); }
+      pos+=dir*0.35; if(pos>=max){ pos=max; dir=-1; hold(1500); jelly(1); } else if(pos<=0){ pos=0; dir=1; hold(1500); jelly(-1); }
       r.scrollLeft=pos;
     }
     avRAF=requestAnimationFrame(f);
@@ -1026,8 +1052,8 @@ function driftAvatars(){
 function renderArtists(){
   const SHORT={"Albert Quesada & Katie Vickers":"Albert & Katie","Los Informalls":"Informalls","Frames Percussion":"Frames","Taller Estampa":"Estampa","Núria Andorrà":"Núria A.","Núria Guiu":"Núria G."};
   const short=n=>SHORT[n]||n.split(" ")[0];
-  const AV=[]; ARTISTS.forEach(a=>{ if(a.name==="Albert Quesada & Katie Vickers"){ AV.push({to:a.name,c:a.c,img:"img/av-albert.jpg",n:"Albert"},{to:a.name,c:a.c,img:"img/av-katie.jpg",n:"Katie"}); } else AV.push({to:a.name,c:a.c,img:a.img,pos:a.pos,n:short(a.name)}); });
-  const row=`<div class="avrow" id="avrow">${AV.map(a=>`<button class="av" onclick="jumpTo('a-${slug(a.to)}')"><span class="avp" style="--c:${a.c}">${a.img?`<img src="${a.img}" alt=""${a.pos?` style="object-position:${a.pos}"`:""}>`:initials(a.to)}</span><small>${a.n}</small></button>`).join("")}</div>`;
+  const AV=[]; (arr=>{for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;})([...ARTISTS]).forEach(a=>{ if(a.name==="Albert Quesada & Katie Vickers"){ AV.push({to:a.name,c:a.c,img:"img/av-albert.jpg",n:"Albert"},{to:a.name,c:a.c,img:"img/av-katie.jpg",n:"Katie"}); } else AV.push({to:a.name,c:a.c,img:a.img,pos:a.pos,n:short(a.name)}); });
+  const row=`<div class="avrow" id="avrow">${AV.map(a=>`<button class="av" style="--gc:${a.c}" onclick="jumpTo('a-${slug(a.to)}')"><span class="glue"></span><span class="avp" style="--c:${a.c}">${a.img?`<img src="${a.img}" alt=""${a.pos?` style="object-position:${a.pos}"`:""}>`:initials(a.to)}</span><small>${a.n}</small></button>`).join("")}</div>`;
   return `<h1>Artists</h1><p class="sub">The artists you'll work with in Barcelona. Tap a face to jump to them, or a session to see it in the schedule.</p>` + row +
   ARTISTS.map((a,ai)=>`<div class="artist reveal${artistToday(a)?" now":""}" id="a-${slug(a.name)}">${artistToday(a)?'<span class="tag now todaytag">Today</span>':''}
     <div class="pic" style="--c:${a.c}">${a.img?`<img src="${a.img}" alt="${a.name}"${a.pos?` style="object-position:${a.pos}"`:""}>`:initials(a.name)}</div>
@@ -1930,5 +1956,183 @@ logo.addEventListener("pointerup",()=>{ clearTimeout(lp); if(lpFired) return; co
 logo.addEventListener("dblclick",e=>e.preventDefault());
 })();
 </script>
+<!-- ===== POP-UPS ===== -->
+<style>
+  #pp{position:fixed;inset:0;z-index:90;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.35);padding:12px;animation:ppfade .2s ease}
+  #pp .pp-c{background:var(--card);color:var(--ink);border:1px solid var(--line);border-top:5px solid var(--pc,var(--accent));border-radius:18px;width:min(100%,460px);max-height:82vh;overflow:auto;padding:16px 18px 14px;box-shadow:0 10px 40px rgba(0,0,0,.25);animation:rise .25s ease}
+  #pp small.k{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--pc,var(--accent));margin-bottom:4px}
+  #pp h3{margin:0 0 6px;font-size:19px;line-height:1.25}
+  #pp p{margin:6px 0;font-size:15px;line-height:1.45}
+  #pp .pp-m{color:var(--muted);font-size:14px}
+  #pp ul{margin:8px 0;padding-left:0;list-style:none}
+  #pp li{padding:7px 0;border-bottom:1px solid var(--line);font-size:15px;line-height:1.4}
+  #pp li:last-child{border-bottom:0}
+  #pp li.ck{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+  #pp li.ck input{width:20px;height:20px;margin:1px 0 0;flex:none;accent-color:var(--accent)}
+  #pp li a{color:var(--link);text-decoration:none}
+  #pp .pp-b{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:12px}
+  #pp .pp-b a,#pp .pp-b button{font:inherit;font-size:15px;font-weight:600;padding:9px 16px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;cursor:pointer}
+  #pp .pp-b .pri{background:var(--accent);border-color:var(--accent);color:#fff}
+  @keyframes ppfade{from{opacity:0}to{opacity:1}}
+</style>
+<script>
+(function(){
+/* ============================================================
+   POP-UP SETTINGS: everything you may want to edit is here.
+   Leave a field "" to hide that line. A pop-up whose main text
+   is "" is not shown at all.
+   Preview any moment: add ?popnow=2027-01-10T13:20 to the URL
+   (and ?popreset to show pop-ups you already closed again).
+   ============================================================ */
+const POP = {
+  nextUpMinutes: 40,        // "Next up" appears this long before a session in a new place
+  showMinutes: 180,         // show reminders appear this long before the performance
+  bringFrom: "18:00",       // "What to bring" appears from this time the evening before
+
+  // 3 · Arrival welcome (7 Jan, first time they open the app)
+  welcome: {
+    title: "Welcome to Barcelona!",
+    lines: [
+      "🏠 <b>Yugo Barcelona Port</b>, C/ Portal de Santa Madrona 28. Rooms are ready from <b>3 PM</b>.",
+      "🥂 <b>Welcome drink & ice-breaker games at 6 PM</b> in a private room at Yugo.",
+      "💬 Join the group WhatsApp if you haven't yet.",
+      "🚨 Emergency: <b>112</b>. Albert: +34 689 130 137 · Katie: +34 696 504 487",
+      "📲 Add this app to your home screen so it's one tap away (Info tab → How to install)."
+    ]
+  },
+
+  // 2 · What to bring. d = date, match = words in the session title
+  bring: [
+    {d:"2027-01-08", match:"Guided city tour",    text:"Comfortable walking shoes and a warm layer: the tour is about 4 hours outdoors."},
+    {d:"2027-01-09", match:"Movement",            text:"Clothes you can move in freely, socks, and a water bottle."},
+    {d:"2027-01-10", match:"Núria Andorrà",       text:""},  // TBD
+    {d:"2027-01-11", match:"materials workshop",  text:"Clothes you don't mind getting dirty: you'll work with clay, mud and paint."},
+    {d:"2027-01-12", match:"Visual artists",      text:""},  // TBD
+    {d:"2027-01-12", match:"Museu Tàpies",        text:"Read the texts and watch the video (links on the session) before the talk."},
+    {d:"2027-01-13", match:"Mixed-media",         text:""},  // TBD
+    {d:"2027-01-14", match:"Collaborating",       text:"Movement clothes, socks, layers (studios can be chilly), water, and your visual journal."},
+    {d:"2027-01-16", match:"Final presentation",  text:""}   // TBD
+  ],
+
+  // 5 · Before shows. match = words in the title. meet = where/when to meet
+  shows: [
+    {d:"2027-01-09", match:"Dimanche",        meet:"", note:"Visual theatre without words."},
+    {d:"2027-01-12", match:"Flamenco",        meet:"", note:""},
+    {d:"2027-01-15", match:"RUSH",            meet:"", note:"Ages 16+."},
+    {d:"2027-01-17", match:"Frames Percussion", meet:"", note:""}
+  ],
+
+  // 6 · Departure checklists
+  departure: {
+    core: {d:"2027-01-18", note:"Extension group: you stay until Sat 23 Jan, so this isn't for you yet."},
+    ext:  {d:"2027-01-23", note:""},
+    items: [
+      "Check out of Yugo by <b>10 AM</b>",
+      "Return your room key/card at reception",
+      "Check under the bed, in the bathroom and in the shared kitchen",
+      "Passport, phone, charger, wallet",
+      "Be at the airport <b>2–3 hours</b> before your flight",
+      "Fill in the post-trip reflection when you're home"
+    ]
+  }
+};
+/* ============================================================ */
+
+const LS="inter27-pop";
+let done={}; try{ if(/[?&]popreset/.test(location.search)) localStorage.removeItem(LS); done=JSON.parse(localStorage.getItem(LS)||"{}"); }catch(_){}
+const mark=k=>{ done[k]=1; try{ localStorage.setItem(LS,JSON.stringify(done)); }catch(_){} };
+const preview=(location.search.match(/[?&]popnow=([0-9T:\-]+)/)||[])[1];
+const startedAt=Date.now();
+function pnow(){
+  if(preview){ const t=new Date(new Date(preview+":00Z").getTime()+(Date.now()-startedAt));
+    const iso=t.toISOString(); return {date:iso.slice(0,10),time:iso.slice(11,16)}; }
+  return bcnNow();
+}
+const mins=t=>{ const [h,m]=t.split(":").map(Number); return h*60+m; };
+const prevDate=d=>{ const t=new Date(d+"T12:00:00Z"); t.setUTCDate(t.getUTCDate()-1); return t.toISOString().slice(0,10); };
+const find=(d,m)=>(S[d]||[]).find(x=>x.title.toLowerCase().includes(m.toLowerCase()));
+const anchor=(d,x)=>`#jan-${+d.slice(8)}-${S[d].indexOf(x)}`;
+const vName=x=>x.v&&V[x.v]?V[x.v].n.split(" — ")[0]:"";
+const route=x=>{ const v=x.v&&V[x.v]; return v&&v.a&&!v.home?`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(v.a)}&travelmode=transit`:""; };
+const dayLbl=d=>fmt(d,{weekday:"short",month:"short",day:"numeric"});
+
+// Each check returns a pop-up {k, c(colour var), kicker, title, body, btns} or null
+function cWelcome(n){
+  if(n.date<"2027-01-07"||n.date>"2027-01-08") return null;
+  return {k:"welcome",c:"--c-social",kicker:"Arrival day",title:POP.welcome.title,
+    body:"<ul>"+POP.welcome.lines.filter(Boolean).map(l=>`<li>${l}</li>`).join("")+"</ul>",
+    btns:[["Group WhatsApp",typeof WHATSAPP_GROUP!=="undefined"?WHATSAPP_GROUP:""]]};
+}
+function cChanges(){
+  const list=[]; for(const d of dates) for(const x of S[d]){ const s=freshState(d,x); if(s) list.push([d,x,s]); }
+  if(!list.length) return null;
+  const k="chg:"+list.map(([d,x])=>evKey(d,x)+sig(x)).join(";");
+  return {k,c:"--c-talk",kicker:"Schedule updated",title:list.length===1?"1 change since you last looked":`${list.length} changes since you last looked`,
+    body:"<ul>"+list.slice(0,8).map(([d,x,s])=>`<li><a href="${anchor(d,x)}" data-close>${dayLbl(d)} · ${x.s?t12(x.s)+" · ":""}${x.title}</a> <small class="pp-m">(${s})</small></li>`).join("")+"</ul>"+(list.length>8?`<p class="pp-m">…and ${list.length-8} more, marked on each day.</p>`:"")};
+}
+function cDeparture(n){
+  for(const [g,cfg] of [["core",POP.departure.core],["ext",POP.departure.ext]]){
+    const on = n.date===cfg.d && mins(n.time)<mins("12:00");
+    const eve = n.date===prevDate(cfg.d) && mins(n.time)>=mins("18:00");
+    if(!on&&!eve) continue;
+    return {k:"dep:"+g,c:"--c-travel",kicker:g==="core"?"Departure · core group":"Departure · extension group",
+      title:on?"Travel day checklist":"Tomorrow you fly home",
+      body:(cfg.note?`<p class="pp-m">${cfg.note}</p>`:"")+"<ul>"+POP.departure.items.filter(Boolean).map((t,i)=>`<li class="ck"><input type="checkbox" id="ppck${i}"><label for="ppck${i}">${t}</label></li>`).join("")+"</ul>"};
+  }
+  return null;
+}
+function cShow(n){
+  for(const s of POP.shows){ if(s.d!==n.date) continue; const x=find(s.d,s.match); if(!x||!x.s) continue;
+    const left=mins(x.s)-mins(n.time); if(left<0||left>POP.showMinutes) continue;
+    return {k:"show:"+s.d+s.match,c:"--c-perf",kicker:"Tonight",title:x.title,
+      body:`<p><b>${t12(x.s)}</b>${vName(x)?" · "+vName(x):""}</p>`+(s.meet?`<p>📍 <b>Meet:</b> ${s.meet}</p>`:"")+(s.note?`<p>${s.note}</p>`:""),
+      btns:[["Route",route(x)]]};
+  }
+  return null;
+}
+function cNextUp(n){
+  const its=(S[n.date]||[]).filter(x=>x.s).sort((a,b)=>a.s.localeCompare(b.s));
+  for(let i=0;i<its.length;i++){ const x=its[i]; if(!x.v||x.t==="perf") continue;
+    const prev=its[i-1]; if(prev&&prev.v===x.v) continue;           // same place as before: no pop-up
+    const left=mins(x.s)-mins(n.time); if(left<0||left>POP.nextUpMinutes) continue;
+    const b=POP.bring.find(b=>b.d===n.date&&b.text&&x.title.toLowerCase().includes(b.match.toLowerCase()));
+    return {k:"nx:"+n.date+x.s,c:"--c-guest",kicker:`Next up · in ${left} min`,title:x.title,
+      body:`<p><b>${t12(x.s)}</b>${vName(x)?" · "+vName(x):""}</p>`+(x.who?`<p class="pp-m">${x.who}</p>`:"")+(b?`<p>🎒 ${b.text}</p>`:""),
+      btns:[["Route",route(x)]]};
+  }
+  return null;
+}
+function cBring(n){
+  for(const b of POP.bring){ if(!b.text) continue; const x=find(b.d,b.match); if(!x) continue;
+    const eve=n.date===prevDate(b.d)&&mins(n.time)>=mins(POP.bringFrom);
+    const morn=n.date===b.d&&x.s&&mins(n.time)<mins(x.s)-POP.nextUpMinutes;
+    if(!eve&&!morn) continue;
+    return {k:"br:"+b.d+b.match,c:"--c-studio",kicker:eve?"For tomorrow":"For today",title:"What to bring",
+      body:`<p><b>${x.title}</b><br><span class="pp-m">${dayLbl(b.d)}${x.s?" · "+t12(x.s):""}${vName(x)?" · "+vName(x):""}</span></p><p>🎒 ${b.text}</p>`};
+  }
+  return null;
+}
+
+const CHECKS=[cWelcome,cChanges,cDeparture,cShow,cNextUp,cBring];
+let open=false;
+function next(){
+  if(open) return; const n=pnow();
+  for(const f of CHECKS){ const p=f(n); if(p&&!done[p.k]) return show(p); }
+}
+function show(p){
+  open=true;
+  const btns=(p.btns||[]).filter(b=>b[1]).map(([l,u])=>`<a href="${u}" target="_blank" rel="noopener">${l} →</a>`).join("");
+  const el=document.createElement("div"); el.id="pp"; el.setAttribute("role","dialog"); el.setAttribute("aria-modal","true");
+  el.innerHTML=`<div class="pp-c" style="--pc:var(${p.c})"><small class="k">${p.kicker}</small><h3>${p.title}</h3>${p.body}<div class="pp-b">${btns}<button class="pri" data-close>Got it</button></div></div>`;
+  const close=()=>{ mark(p.k); el.remove(); open=false; setTimeout(next,600); };
+  el.addEventListener("click",e=>{ if(e.target===el||e.target.closest("[data-close]")) close(); });
+  document.body.appendChild(el);
+}
+setTimeout(next,2400);                 // after the splash
+setInterval(next,60*1000);             // keep checking while the app is open
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden) setTimeout(next,800); });
+})();
+</script>
+
 </body>
 </html>
