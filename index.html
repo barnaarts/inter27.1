@@ -233,6 +233,10 @@
   .venue h3{margin:0;font-size:18px}
   .venue{overflow:hidden}
   .rarrow{background:none;border:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,.45))}
+  /* dashes drift slowly along the route, in the direction of travel (one 6+8px dash cycle every 1.4s) */
+  .rroute{animation:rflow 1.4s linear infinite}
+  @keyframes rflow{to{stroke-dashoffset:-14}}
+  @media (prefers-reduced-motion: reduce){ .rroute{animation:none} }
   .venue .vpic{display:block;width:calc(100% + 32px);margin:-14px -16px 12px;aspect-ratio:9/5;object-fit:cover}
   .venue p{font-size:15px;line-height:1.5;margin:6px 0 0}
   .venue .addr{font-size:14px;color:var(--muted);margin-top:6px}
@@ -1150,7 +1154,7 @@ function drawVenuePins(fit){
     keys = ["yugo",...order.filter(k=>k!=="yugo")].filter((k,i,a)=>a.indexOf(k)===i);
     route = ["yugo",...order.filter(k=>k!=="yugo"),"yugo"].map(k=>VC[k]);
   }
-  if(route && route.length>2) L.polyline(route,{color:"#ff3438",weight:3,opacity:.75,dashArray:"6 8"}).addTo(vlayer);
+  if(route && route.length>2) L.polyline(route,{color:"#ff3438",weight:3,opacity:.75,dashArray:"6 8",className:"rroute",interactive:false}).addTo(vlayer);
   // Direction arrows on each leg (placed past the midpoint so out-and-back legs don't overlap)
   if(route && route.length>2) for(let i=0;i<route.length-1;i++){
     const A=route[i], B=route[i+1]; if(L.latLng(A).distanceTo(L.latLng(B))<300) continue; // skip very short hops hidden under the pins
