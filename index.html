@@ -213,6 +213,10 @@
   .artist p{font-size:15px;line-height:1.5;margin:10px 0 0}
   .links{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
   .links a{font-size:13px;font-weight:700;color:var(--link,#7b4bd1);background:var(--link-soft,#fff);text-decoration:none;border:1px solid var(--link,#7b4bd1);border-radius:999px;padding:5px 12px}
+  .nbx{display:inline-flex;gap:0;align-items:center}
+  .nbx .nbs{max-width:0;padding-left:0;padding-right:0;margin-left:0;border-width:0;opacity:0;overflow:hidden;white-space:nowrap;transition:max-width .4s cubic-bezier(.3,.7,.2,1),opacity .3s,padding .4s,margin .4s}
+  .nbx.open .nbs{max-width:140px;padding-left:12px;padding-right:12px;margin-left:6px;border-width:1px;opacity:1}
+  .nbx.open>a:first-child{background:var(--link,#7b4bd1);color:#fff}
   .links a.mapl{color:var(--accent);background:transparent;border-color:var(--accent)}
   .sess{margin-top:12px;display:flex;flex-direction:column;gap:6px}
   .sess a{font-size:14px;color:var(--accent);text-decoration:none;font-weight:500}
@@ -281,6 +285,61 @@
   .vchip.on small{color:rgba(255,255,255,.85)}
   .vchip[data-md=all]{position:sticky;left:0;z-index:2;box-shadow:0 0 0 5px var(--bg),14px 0 10px 2px var(--bg)}
   .venue.off{display:none}
+  .vchip .vpl{display:inline-block;max-width:0;overflow:hidden;white-space:nowrap;vertical-align:bottom;opacity:0;transition:max-width .35s cubic-bezier(.3,.7,.2,1),opacity .25s,margin .35s;margin-left:0}
+  .vchip.on .vpl{max-width:90px;opacity:1;margin:-5px -11px -5px 8px;padding:5px 12px 5px 10px;border-radius:0 999px 999px 0;border-left:1px solid rgba(255,255,255,.5)}
+  .vclose{display:none}
+  .vchip.on .vpl{animation:vpulse 1.6s ease-in infinite}
+  @keyframes vpulse{0%{box-shadow:inset 0 0 0 0 rgba(255,255,255,.75)}80%,100%{box-shadow:inset 0 0 0 16px rgba(255,255,255,0)}}
+  @keyframes vbeat{0%,100%{transform:scale(1)}15%{transform:scale(1.08)}30%{transform:scale(1)}}
+  .vrun{width:30px;height:30px;display:flex;align-items:center;justify-content:center}
+  .vrun svg{overflow:visible;animation:vglow2 1.1s ease-in-out infinite alternate}
+  @keyframes vglow2{from{filter:drop-shadow(0 0 1px rgba(0,0,0,.75)) drop-shadow(0 0 3px #fff) drop-shadow(0 0 7px rgba(255,255,255,.8)) drop-shadow(0 0 10px rgba(255,52,56,.5))}to{filter:drop-shadow(0 0 1px rgba(0,0,0,.75)) drop-shadow(0 0 4px #fff) drop-shadow(0 0 11px rgba(255,255,255,.9)) drop-shadow(0 0 16px rgba(255,52,56,.65))}}
+  .vrun>span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transition:opacity .45s,transform .45s}
+  .vrun .tr{opacity:0;transform:scale(.4)}
+  .vrun.metro .tr{opacity:1;transform:none}
+  .vrun.metro .pp{opacity:0;transform:scale(.4)}
+  .vrun .tr svg{transition:transform .45s}
+  .vrun .walk{animation:vglow2 1.1s ease-in-out infinite alternate,vstep .45s steps(2) infinite}
+  @keyframes vstep{0%{transform:translateY(0)}100%{transform:translateY(-1.5px)}}
+  .vsteps{margin:14px 0 4px;padding:0;list-style:none;counter-reset:none}
+  .vsteps:empty{display:none}
+  .vsteps h3{margin:0 0 8px;font-size:16px}
+  .vstep{display:flex;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card);margin-bottom:8px;transition:box-shadow .25s,border-color .25s,transform .25s}
+  .vstep.cur{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent);transform:scale(1.01)}
+  .vstep .vsi{flex:0 0 26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+  .vstep.home .vsi{background:#ff3438}
+  .vstep b{display:block;font-size:15px}
+  .vstep .vsm{font-size:13px;color:var(--muted);margin-top:2px}
+  .vleg{font-size:13px;margin:-2px 0 8px 36px;padding:6px 10px;border-left:3px dashed var(--accent);color:var(--ink)}
+  .vleg.cur{background:rgba(255,52,56,.08);border-radius:0 8px 8px 0}
+  .vleg a{color:var(--link);font-weight:700;margin-left:6px;text-decoration:none;white-space:nowrap}
+  .vleg small{color:var(--muted)}
+  .vstick{background:var(--bg)}
+  .vmapwrap.playing .vstick{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;padding:env(safe-area-inset-top) 0 calc(env(safe-area-inset-bottom) + 10px)}
+  .vmapwrap.playing .vmapbox{flex:1;min-height:0}
+  .vmapwrap.playing .vmap{height:100%;border-radius:0;border:0}
+  .vmapwrap.playing .vchips,.vmapwrap.playing .vnote{display:none}
+  .vmapwrap.playing .vcard{margin:10px 10px 0}
+  .vmapwrap.playing .vclose{display:flex;position:absolute;top:calc(env(safe-area-inset-top) + 10px);right:10px;z-index:1000;align-items:center;gap:6px;border:0;border-radius:999px;background:var(--ink);color:var(--bg);font:inherit;font-weight:700;font-size:14px;padding:8px 14px;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.3)}
+  .vmapwrap.playing .vday{display:block;position:absolute;top:calc(env(safe-area-inset-top) + 10px);left:54px;z-index:1000;background:var(--card);color:var(--ink);border-radius:999px;padding:7px 13px;font-size:13px;font-weight:700;box-shadow:0 3px 10px rgba(0,0,0,.2)}
+  .vday{display:none}
+  .vmapbox{position:relative}
+  .vcard{display:none;position:relative;margin-top:6px;height:66px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;overflow:hidden;opacity:.35;transition:opacity .35s}
+  .vmapwrap.playing .vcard{display:flex}
+  .vcard.show{opacity:1}
+  .vcard .vcs{position:absolute;inset:0;display:flex;flex-direction:row;padding:0;transition:transform .5s cubic-bezier(.3,.7,.2,1),opacity .5s}
+  .vcard .vcs.in{transform:translateX(105%)}
+  .vcard .vcs.out{transform:translateX(-35%);opacity:0}
+  .vcard img{flex:0 0 96px;width:96px;height:100%;object-fit:cover}
+  .vcard .vcs>div{padding:6px 10px;font-size:12.5px;line-height:1.3;min-width:0;display:flex;flex-direction:column;justify-content:center}
+  .vcard b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .vcard a{color:var(--link);font-weight:700;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .vcard .vn{align-self:flex-start;background:var(--accent);color:#fff;border-radius:999px;padding:0 7px;font-size:11px;font-weight:700;margin-bottom:2px}
+  .vstep img{flex:0 0 54px;width:54px;height:54px;border-radius:9px;object-fit:cover;margin-left:auto}
+  .vstep .vev{display:block;font-size:13px;color:var(--link);font-weight:700;text-decoration:none;margin-top:3px}
+  .vball{width:14px;height:14px}
+  .vball i{display:block;width:9px;height:9px;margin:2.5px;border-radius:50%;background:#fff;animation:vglow 1.1s ease-in-out infinite alternate}
+  @keyframes vglow{from{box-shadow:0 0 3px 1px #fff,0 0 8px 3px rgba(255,255,255,.7),0 0 14px 5px rgba(255,52,56,.35)}to{box-shadow:0 0 5px 2px #fff,0 0 13px 6px rgba(255,255,255,.85),0 0 22px 9px rgba(255,52,56,.5)}}
   .vnote{font-size:12px;color:var(--muted);margin-top:6px}
   .vpin{width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--pc);border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center}
   .vpin span{transform:rotate(45deg);font-size:14px;line-height:1}
@@ -1083,10 +1142,11 @@ function loadLeaflet(){
 function mapChips(days){
   const ds = dates.filter(d=>Object.keys(days).some(k=>VC[k]&&k!=="yugo"&&days[k].has(d)));
   return `<button class="vchip${mapDay==="all"?" on":""}" data-md="all">All venues</button>` +
-    ds.map(d=>`<button class="vchip${mapDay===d?" on":""}" data-md="${d}"><small>${fmt(d,{weekday:"short"})}</small>${+d.slice(8)}</button>`).join("");
+    ds.map(d=>`<button class="vchip${mapDay===d?" on":""}" data-md="${d}"><small>${fmt(d,{weekday:"short"})}</small>${+d.slice(8)}<span class="vpl" data-play="1">▶ Play</span></button>`).join("");
 }
 function initVenueMap(){
   const el=document.getElementById("vmap"); if(!el) return;
+  stopTour();
   if(vmap){ try{vmap.remove();}catch(_){} vmap=null; }
   loadLeaflet().then(()=>{
     if(!document.getElementById("vmap")) return;
@@ -1108,7 +1168,7 @@ function initVenueMap(){
     tiles.on("tileerror",()=>{ if(!loaded && vmap && vmap.hasLayer(tiles)){ vmap.removeLayer(tiles); vmap.attributionControl.setPrefix(false); const n=document.getElementById("vnote"); if(n){ n.dataset.simple=1; n.textContent="Simplified map: the full street map needs an internet connection."; } } });
     tiles.addTo(vmap);
     vlayer=L.layerGroup().addTo(vmap);
-    drawVenuePins(true);
+    drawVenuePins(true); renderSteps();
     setTimeout(()=>vmap&&vmap.invalidateSize(),350);
   }).catch(()=>{ el.innerHTML='<p class="vnote" style="padding:14px">The map couldn\'t load. Use the Maps links below.</p>'; });
 }
@@ -1139,7 +1199,7 @@ function filterVenueCards(){
     [...cards].sort((a,b)=>rank(a)-rank(b)).forEach(c=>par.insertBefore(c,after));
   }
   const n=document.getElementById("vnote");
-  if(n && !n.dataset.simple) n.textContent = mapDay==="all" ? "Pick a day to see its stops in order, starting from Yugo." : `${fmt(mapDay,{weekday:"long",month:"long",day:"numeric"})}: stops in order, from Yugo and back. Only that day's venues are listed below.`;
+  if(n && !n.dataset.simple) n.textContent = mapDay==="all" ? "Pick a day to see its stops in order, starting from the hostel." : `${fmt(mapDay,{weekday:"long",month:"long",day:"numeric"})}: stops in order, from the hostel and back. Only that day's venues are listed below.`;
 }
 function centerChip(smooth){
   const row=document.querySelector(".vchips"), c=row&&row.querySelector(".vchip.on"); if(!c) return;
@@ -1182,8 +1242,122 @@ function drawVenuePins(fit){
   });
   if(fit){ const b=L.latLngBounds(keys.map(k=>VC[k])); vmap.fitBounds(b,{padding:[30,30],maxZoom:15}); }
 }
+// ---------- Day route: step list + animated presentation ----------
+// Nearest metro station per venue (used for public-transport legs)
+const STN = {yugo:"Drassanes (L3)", caldera:"Les Corts (L3)", taller46:"Vallcarca (L3)", pedrera:"Diagonal (L3)", batllo:"Passeig de Gràcia (L3)",
+  tapies:"Passeig de Gràcia (L3)", servei:"Passeig de Gràcia (L3)", auditori:"Marina (L1)", neil:"Arc de Triomf (L1)", upf:"Ciutadella | Vila Olímpica (L4)",
+  brujas:"Jaume I (L4)", mercat:"Poble Sec (L3)", lliure:"Poble Sec (L3)", nuriaand:"Poble Sec (L3)", piconera:"Paral·lel (L2/L3)",
+  visiva:"Poble Sec (L3) or Sant Antoni (L2)", macba:"Liceu (L3)", filmo:"Liceu (L3)", joaquin:"Liceu (L3)", unmaking:"Liceu (L3)", santam:"Drassanes (L3)"};
+const WALK_MAX = 25; // minutes; longer than this → public transport
+function walkMin(A,B){ return Math.max(1, Math.round(L.latLng(A).distanceTo(L.latLng(B))*1.35/80)); }
+function dayPlan(d){
+  // Stops in order with the first session time at each
+  const stops=[];
+  for(const x of [...(S[d]||[])].sort((a,b)=>(a.s||"").localeCompare(b.s||"")))
+    for(const k of [...(x.vs||[]),...(x.v?[x.v]:[])].map(vkey)) if(VC[k]){
+      const last=stops[stops.length-1];
+      if(last && last.k===k){ if(!last.evs.includes(x)) last.evs.push(x); }
+      else stops.push({k,s:x.s,title:x.title,evs:[x]});
+    }
+  const seq=[{k:"yugo",start:1,evs:stops[0]&&stops[0].k==="yugo"?stops[0].evs:[]}, ...stops.filter((p,i)=>!(i===0&&p.k==="yugo")), {k:"yugo",end:1,evs:[]}];
+  // drop a trailing duplicate yugo if the day already ends there
+  if(seq.length>2 && seq[seq.length-2].k==="yugo") seq.splice(seq.length-2,1);
+  return seq;
+}
+function legInfo(a,b){
+  const A=VC[a], B=VC[b], m=walkMin(A,B), walk=m<=WALK_MAX;
+  const url=`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(V[a].a)}&destination=${encodeURIComponent(V[b].a)}&travelmode=${walk?"walking":"transit"}`;
+  let how = walk ? `🚶 Walk · about ${m} min` : `🚇 Metro${STN[a]&&STN[b]&&STN[a]!==STN[b]?` · ${STN[a]} → ${STN[b]}`:""} <small>· ${(L.latLng(A).distanceTo(L.latLng(B))*1.35/1000).toFixed(1)} km on foot (about ${m} min)</small>`;
+  return {walk,m,url,how};
+}
+function renderSteps(){
+  const box=document.getElementById("vsteps"), btn=null; if(!box) return;
+  if(mapDay==="all"||!window.L){ box.innerHTML=""; if(btn) btn.classList.remove("show"); return; }
+  const seq=dayPlan(mapDay); if(seq.length<3){ box.innerHTML=""; btn&&btn.classList.remove("show"); return; }
+  btn&&btn.classList.add("show");
+  let n=0, h=`<h3>Step by step · ${fmt(mapDay,{weekday:"long",month:"short",day:"numeric"})}</h3>`;
+  seq.forEach((p,i)=>{
+    const home=p.k==="yugo", v=V[p.k];
+    p.n = home ? 0 : ++n;
+    const evs=(p.evs||[]).map(x=>`<a class="vev" href="${evLink(mapDay,y=>y===x)}">${x.s?t12(x.s)+" · ":""}${x.title} →</a>`).join("");
+    h+=`<div class="vstep${home?" home":""}" data-st="${i}"><span class="vsi">${home?"🏠":p.n}</span><div><b>${home?(p.start?"Start at the hostel":"Back to the hostel"):v.n.split(" — ")[0]}</b><div class="vsm">${street(v)}</div>${evs}</div>${VPHOTOS[p.k]?`<img src="${VPHOTOS[p.k]}" alt="">`:""}</div>`;
+    if(i<seq.length-1){ const g=legInfo(p.k,seq[i+1].k); h+=`<div class="vleg" data-lg="${i}">${g.how}<a href="${g.url}" target="_blank" rel="noopener">Directions ↗</a></div>`; }
+  });
+  box.innerHTML=h+`<p class="vnote">Walking times are estimates. Over ${WALK_MAX} min on foot, take the metro: the Directions link opens the live route.</p>`;
+}
+let tourOn=false, tourRun=0, tourMk=null;
+function showCard(p,d){
+  const c=document.getElementById("vcard"); if(!c) return;
+  if(!p){ c.classList.remove("show"); c.innerHTML=""; return; }
+  const v=V[p.k], home=p.k==="yugo";
+  const ev=(p.evs||[])[0];
+  const html=`${VPHOTOS[p.k]?`<img src="${VPHOTOS[p.k]}" alt="">`:""}<div>${home?'<span class="vn">🏠 Hostel</span>':`<span class="vn">Stop ${p.n}</span>`}<b>${home?(p.start?"Start at the hostel":"Back to the hostel"):v.n.split(" — ")[0]}</b>${ev?`<a href="${evLink(d,y=>y===ev)}">${ev.s?t12(ev.s)+" · ":""}${ev.title} →</a>`:street(v)}</div>`;
+  const old=[...c.querySelectorAll(".vcs:not(.out)")];
+  const n=document.createElement("div"); n.className="vcs"+(old.length?" in":""); n.innerHTML=html; c.appendChild(n);
+  if(old.length){ n.offsetWidth; n.classList.remove("in"); old.forEach(o=>{ o.classList.add("out"); setTimeout(()=>o.remove(),550); }); }
+  c.classList.add("show");
+}
+function stopTour(){
+  const was=tourOn; tourOn=false; tourRun++;
+  if(tourMk&&vmap){ try{vmap.removeLayer(tourMk);}catch(_){} } tourMk=null;
+  document.querySelectorAll(".vstep.cur,.vleg.cur").forEach(e=>e.classList.remove("cur"));
+  showCard(null);
+  const w=document.getElementById("vmapwrap");
+  if(was && w && w.classList.contains("playing")){ w.classList.remove("playing"); if(vmap) vmap.options.zoomSnap=1; document.documentElement.style.overflow=""; if(vmap){ vmap.invalidateSize(); drawVenuePins(true); } }
+}
+function tourMark(sel){
+  document.querySelectorAll(".vstep.cur,.vleg.cur").forEach(e=>e.classList.remove("cur"));
+  const el=document.querySelector(sel); if(el) el.classList.add("cur");
+}
+function playTour(){
+  if(!vmap||mapDay==="all") return;
+  stopTour(); tourOn=true; const run=++tourRun, d=mapDay;
+  const seq=dayPlan(d), wrap=document.getElementById("vmapwrap"), st=document.getElementById("vstick");
+  wrap.classList.add("playing"); document.documentElement.style.overflow="hidden";
+  const dl=document.getElementById("vday"); if(dl) dl.textContent=fmt(d,{weekday:"long",month:"short",day:"numeric"});
+  vmap.closePopup(); vmap.invalidateSize();
+  // One fixed bird's-eye view of the whole day, as big as the screen allows: no zooming during the presentation
+  vmap.options.zoomSnap=0.05;
+  vmap.fitBounds(L.latLngBounds(seq.map(p=>VC[p.k])),{paddingTopLeft:[18,84],paddingBottomRight:[18,10],maxZoom:17,animate:false});
+  const alive=()=>tourOn&&run===tourRun&&!!vmap&&!!document.getElementById("vmap");
+  const wait=ms=>new Promise(r=>setTimeout(r,ms));
+  const PERSON=flip=>`<svg class="walk" viewBox="0 0 20 26" width="19" height="25"${flip?' style="transform:scaleX(-1)"':''}><g fill="#fff" stroke="#fff" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="3.2" r="2.6" stroke="none"/><path d="M10 7.5 L8.6 15" stroke-width="3.6" fill="none"/><path d="M9.6 9 L5.5 12.5 M9.8 9 L13.8 11.8" stroke-width="2.2" fill="none"/><path d="M8.6 15 L5.2 23.5 M8.6 15 L12.6 19 L13.4 24" stroke-width="2.4" fill="none"/></g></svg>`;
+  const TRAIN=ang=>`<svg viewBox="0 0 30 12" width="30" height="12" style="transform:rotate(${ang.toFixed(1)}deg)"><rect x="1" y="1" width="28" height="10" rx="3" fill="#fff"/><rect x="5" y="3.4" width="5" height="5.2" rx="1" fill="#ff3438" opacity=".55"/><rect x="12.5" y="3.4" width="5" height="5.2" rx="1" fill="#ff3438" opacity=".55"/><rect x="20" y="3.4" width="5" height="5.2" rx="1" fill="#ff3438" opacity=".55"/></svg>`;
+  const angle=(A,B)=>{ const pa=L.CRS.EPSG3857.project(L.latLng(A)), pb=L.CRS.EPSG3857.project(L.latLng(B)); return Math.atan2(-(pb.y-pa.y), pb.x-pa.x)*180/Math.PI; };
+  const icon=L.divIcon({className:"vrun",iconSize:[30,30],iconAnchor:[15,15],html:`<span class="pp"><i class="pf" style="display:flex;transition:transform .3s">${PERSON(false)}</i></span><span class="tr">${TRAIN(0)}</span>`});
+  // Morph between walker and metro instead of swapping the icon
+  const setMode=(walk,A,B)=>{ const el=tourMk&&tourMk.getElement(); if(!el) return;
+    el.classList.toggle("metro",!walk);
+    const ps=el.querySelector(".pf"); if(ps) ps.style.transform=B[1]<A[1]?"scaleX(-1)":"";
+    const ts=el.querySelector(".tr svg"); if(ts) ts.style.transform=`rotate(${angle(A,B).toFixed(1)}deg)`; };
+  // n numbers for the card
+  let n=0; seq.forEach(p=>{ p.n=p.k==="yugo"?0:++n; });
+  (async()=>{
+    tourMk=L.marker(VC.yugo,{icon,interactive:false,keyboard:false,zIndexOffset:3000}).addTo(vmap);
+    tourMark('.vstep[data-st="0"]'); showCard(seq[0],d);
+    await wait(1600);
+    for(let i=0;i<seq.length-1;i++){
+      if(!alive()) return;
+      const A=VC[seq[i].k], B=VC[seq[i+1].k];
+      tourMark(`.vleg[data-lg="${i}"]`);
+      setMode(legInfo(seq[i].k,seq[i+1].k).walk,A,B);
+      await wait(500); if(!alive()) return;
+      const dur=Math.min(3400,Math.max(1500,L.latLng(A).distanceTo(L.latLng(B))*0.9));
+      await new Promise(res=>{ const t0=performance.now(); const step=t=>{ if(!alive()) return res();
+        const k=Math.min(1,(t-t0)/dur), e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+        tourMk.setLatLng([A[0]+(B[0]-A[0])*e, A[1]+(B[1]-A[1])*e]); k<1?requestAnimationFrame(step):res(); }; requestAnimationFrame(step); });
+      if(!alive()) return;
+      tourMark(`.vstep[data-st="${i+1}"]`); showCard(seq[i+1],d); haptic(8);
+      await wait(2200);
+    }
+    if(!alive()) return;
+    await wait(600); stopTour();
+  })();
+}
 document.addEventListener("click",e=>{
-  const c=e.target.closest(".vchip"); if(c){ mapDay=c.dataset.md; document.querySelectorAll(".vchip").forEach(b=>b.classList.toggle("on",b===c)); drawVenuePins(true); filterVenueCards(); centerChip(true); return; }
+  const pl=e.target.closest(".vchip.on .vpl"); if(pl){ e.preventDefault(); playTour(); return; }
+  const c=e.target.closest(".vchip"); if(c){ mapDay=c.dataset.md; document.querySelectorAll(".vchip").forEach(b=>b.classList.toggle("on",b===c)); stopTour(); drawVenuePins(true); filterVenueCards(); renderSteps(); centerChip(true); return; }
+  if(e.target.closest("#vclose")){ e.preventDefault(); stopTour(); return; }
   const o=e.target.closest(".onmap"); if(o){ e.preventDefault();
     const k=o.dataset.k, wrap=document.getElementById("vmapwrap"); if(!wrap||!vmap) return;
     if(mapDay!=="all" && !vmarkers[k]){ mapDay="all"; document.querySelectorAll(".vchip").forEach(b=>b.classList.toggle("on",b.dataset.md==="all")); drawVenuePins(true); }
@@ -1207,7 +1381,7 @@ function renderVenues(){
   Object.keys(V).forEach(k=>{ if(V[k].show && !days[k]){ keys.push(k); days[k]=new Set(); } });
   if(!VPHOTOS.upf) VPHOTOS.upf = "img/sala-reflexio.jpg";
   return `<h1>Venues</h1><p class="sub">Everywhere we go, in order of first visit. Tap a pin or a date to see what's on.</p>
-  <div class="vmapwrap" id="vmapwrap"><div class="vchips">${mapChips(venueDays().days)}</div><div class="vmap" id="vmap"></div><div class="vnote" id="vnote">Pick a day to see its stops in order, starting from Yugo.</div></div>` +
+  <div class="vmapwrap" id="vmapwrap"><div class="vstick" id="vstick"><div class="vchips">${mapChips(venueDays().days)}</div><div class="vmapbox"><div class="vmap" id="vmap"></div><div class="vday" id="vday"></div><button class="vclose" id="vclose" type="button">✕ Close</button></div><div class="vcard" id="vcard"></div><div class="vnote" id="vnote">Pick a day to see its stops in order, starting from the hostel.</div></div><div class="vsteps" id="vsteps"></div></div>` +
   keys.map((k,vi)=>{const v=V[k]; const tdy=days[k].has(now.date); return `<div class="venue reveal${tdy?" now":""}${mapDay!=="all"&&!days[k].has(mapDay)?" off":""}" data-k="${k}" data-i="${vi}" data-days="${[...days[k]].join(" ")}">${tdy?'<span class="tag now todaytag">Today</span>':''}
     ${VPHOTOS[k]?`<img class="vpic" src="${VPHOTOS[k]}" alt="${v.n}">`:""}
     <h3>${v.n.split(" — ")[0]}${v.home?' <span class="tag opt">Where you stay</span>':''}</h3>
@@ -1381,10 +1555,10 @@ function renderGettingAround(){
 function jumpTo(id){ const el=document.getElementById(id); if(!el) return; const hh=document.querySelector("header").offsetHeight; window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-hh-10,behavior:"smooth"}); }
 function renderNearby(){
   return `<div class="nb"><h1>City</h1><p class="sub">Getting around, everyday essentials and the words you'll need.</p>
-    <div class="links" style="margin:0 0 6px"><a href="#" onclick="jumpTo('getting-around');return false;">🚇 Getting around</a><a href="#" onclick="jumpTo('nearby-list');return false;">📍 Nearby</a><a href="#" onclick="jumpTo('phrases');return false;">🗣️ Phrases</a></div>
+    <div class="links" style="margin:0 0 6px"><a href="#" onclick="jumpTo('getting-around');return false;">🚇 Getting around</a><span class="nbx"><a href="#" onclick="this.parentNode.classList.toggle('open');return false;">📍 Nearby</a><a class="nbs" href="#" onclick="jumpTo('nb-0');return false;">🏠 Yugo</a><a class="nbs" href="#" onclick="jumpTo('nb-1');return false;">🩰 La Caldera</a></span><a href="#" onclick="jumpTo('phrases');return false;">🗣️ Phrases</a></div>
     <div class="info">${renderGettingAround()}</div>
     <h2 id="nearby-list" style="font-size:20px;margin-top:30px">📍 Nearby</h2><p class="sub">Essentials around where you stay and where we work. Opening hours change, so check before you go.</p>` +
-  NEARBY.map(A=>`<h2>${A.area}</h2>`+A.groups.map(G=>`<h4>${G.g}</h4>`+G.items.map(([n,a,d,w])=>
+  NEARBY.map((A,ai)=>`<h2 id="nb-${ai}">${A.area}</h2>`+A.groups.map(G=>`<h4>${G.g}</h4>`+G.items.map(([n,a,d,w])=>
     `<div class="nbi reveal-x"><div><b>${n}</b>${WALK[n]!=null?`<span class="walk">🚶 ${WALK[n]} min${WALK[n]>=25?" · taxi in an emergency":""}</span>`:""}<div class="who">${a}</div><div class="who">${d}</div></div><div class="nbl">${w?`<a href="${w}" target="_blank" rel="noopener">Web ↗</a>`:""}<a href="${mapLink(n+", "+a+", Barcelona")}" target="_blank" rel="noopener">Map ↗</a></div></div>`).join("")).join("")).join("") +
   `<div class="info">${renderPhrases()}</div></div>`;
 }
