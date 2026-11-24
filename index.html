@@ -251,6 +251,7 @@
   .nb h4{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:16px 0 6px}
   .nbi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;display:flex;justify-content:space-between;gap:10px;align-items:center}
   .nbi b{font-size:15px}.nbi .who{font-size:13px}
+  .nbl{display:flex;flex-direction:column;gap:6px;align-items:stretch;text-align:center}
   .nbi a{font-size:12px;font-weight:700;color:var(--accent);text-decoration:none;border:1px solid var(--accent);border-radius:999px;padding:4px 10px;white-space:nowrap}
 
   /* Phrases */
@@ -447,7 +448,7 @@ s.classList.add("out");setTimeout(function(){s.remove()},750)},1000);</script>
 <button id="totop" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Top</button>
 
 <script>
-const UPDATED = "23 Nov 2026";
+const UPDATED = "24 Nov 2026";
 
 // Venues: name + address used for the map link.
 // g = groups rooms of the same building on the Venues tab; d = description for the Venues tab; ig = Instagram handle without @
@@ -1230,7 +1231,7 @@ const NEARBY = [
    ["Farmàcia Miramar","C/ Peracamps 13, corner of Portal de Santa Madrona","Pharmacy right next to Yugo. Mon–Fri 8 AM–8 PM, Sat–Sun mornings"],
    ["Farmàcia Clapés","La Rambla 98","Pharmacy open 24 hours"],
    ["CAP Drassanes","Av. de les Drassanes 17-21","Public primary-care clinic for non-urgent problems. Mon–Fri 8 AM–8 PM"],
-   ["Hospital del Mar – Urgències","Pg. Marítim de la Barceloneta 25-29","24-hour emergency room"]]},
+   ["Hospital del Mar – Urgències","Pg. Marítim de la Barceloneta 25-29","24-hour emergency room","https://www.hospitaldelmar.cat"]]},
   {g:"🛒 Groceries", items:[
    ["Carrefour Market","La Rambla 113","Big supermarket on two floors, up La Rambla"],
    ["BHG Supermercat del Món","C/ del Parlament 21","International supermarket in Sant Antoni, open every day"]]},
@@ -1241,28 +1242,35 @@ const NEARBY = [
    ["Bocatas de Sultan","C/ de Joaquín Costa 56","Falafel sandwiches and €1 fries"]]},
   {g:"☕ Breakfast & coffee", items:[
    ["La Candelaria","C/ de l'Hospital 81","Coffee and empanadas, opens 8 AM"],
-   ["Morning Glory","C/ de la Riereta 15","Brunch spot, closed Mondays"]]},
+   ["Morning Glory","C/ de la Riereta 15","Brunch spot, closed early in the week (check hours)"]]},
+  {g:"🎨 Art supplies", items:[
+   ["Casa Piera","C/ del Pintor Fortuny 21","Big art supply shop, no lunch break. Mon–Fri 9:30 AM–8 PM, Sat 10 AM–8 PM","https://www.casapiera.com"]]},
   {g:"🧺 Other", items:[
    ["Lavaxpres laundromat","C/ Nou de Sant Francesc 5","Self-service laundry, every day 8 AM–10 PM, cards accepted"],
-   ["Mossos d'Esquadra (police)","C/ Nou de la Rambla 76-78","24-hour police station, for theft or lost passport reports"]]}
+   ["Mossos d'Esquadra (police)","C/ Nou de la Rambla 76-78","24-hour police station, for theft or lost passport reports","https://mossos.gencat.cat"]]}
  ]},
  {area:"Around La Caldera (studio)", groups:[
   {g:"🩺 Health", items:[
    ["Farmàcia Les Corts","Travessera de les Corts 194","Pharmacy, every day 9 AM–9 PM"],
    ["CAP Les Corts","C/ de Mejía Lequerica 1","Public primary-care clinic. Mon–Fri 8 AM–8 PM"],
-   ["Hospital Clínic – Urgències","C/ de Villarroel 170","24-hour emergency room"]]},
+   ["Hospital Clínic – Urgències","C/ de Villarroel 170","24-hour emergency room","https://www.clinicbarcelona.org"]]},
   {g:"🛒 Groceries", items:[
-   ["Consum","C/ de Llucà 19","Supermarket a few minutes' walk from La Caldera"],
+   ["Consum","C/ de Lluçà 19","Supermarket a few minutes' walk from La Caldera"],
    ["Mercadona","Travessera de les Corts 142","Supermarket, good ready-made food"]]},
   {g:"🍽️ Lunch", items:[
    ["Restaurante Cafetería Venecia","C/ de Sabino Arana 32","Classic menú del día (set lunch)"],
    ["Bar Restaurante La Concordia","C/ de Cabestany 21","Tapas on Plaça de la Concòrdia"],
-   ["Taberna Davidson","C/ de Joan Güell 207","Set lunch menu, closed Sundays"]]}
+   ["Taberna Davidson","C/ de Joan Güell 207","Set lunch menu, closed Sundays"]]},
+  {g:"🎨 Art supplies & stationery", items:[
+   ["Papelería Dalby","Plaça de Comas 13-14","Stationery, printing and copies, around the corner. Mon–Fri 9 AM–2 PM & 4:30–8 PM, Sat 10:30 AM–2 PM"],
+   ["Punt Paper","Gran Via de Carles III 61 bis","Stationery, school and art basics, printing. Mon–Fri 9:30 AM–1:30 PM & 4:30–8 PM, Sat 10 AM–1:30 PM"],
+   ["Copisteria Les Corts","Av. de Madrid 198","Printing and copies"],
+   ["Vicenç Piera (UB Fine Arts shop)","C/ de Pau Gargallo 4","Proper art supply shop, first floor of the Fine Arts faculty. Mon–Fri only, closed at lunch. Metro Palau Reial (L3)","https://www.vpiera.com"]]}
  ]}
 ];
 
 // Walking minutes from Yugo / La Caldera (Google Maps, Nov 2026)
-const WALK = {"Farmàcia Miramar": 1, "Farmàcia Clapés": 12, "CAP Drassanes": 4, "Hospital del Mar – Urgències": 31, "Carrefour Market": 16, "BHG Supermercat del Món": 16, "Rincón del Raval": 7, "Que Bo Raval": 8, "The Atlas": 8, "Bocatas de Sultan": 19, "La Candelaria": 12, "Morning Glory": 9, "Lavaxpres laundromat": 8, "Mossos d'Esquadra (police)": 4, "Farmàcia Les Corts": 3, "CAP Les Corts": 6, "Hospital Clínic – Urgències": 31, "Consum": 4, "Mercadona": 5, "Restaurante Cafetería Venecia": 8, "Bar Restaurante La Concordia": 7, "Taberna Davidson": 6};
+const WALK = {"Farmàcia Miramar": 1, "Farmàcia Clapés": 12, "CAP Drassanes": 4, "Hospital del Mar – Urgències": 31, "Carrefour Market": 16, "BHG Supermercat del Món": 16, "Rincón del Raval": 7, "Que Bo Raval": 8, "The Atlas": 8, "Bocatas de Sultan": 19, "La Candelaria": 12, "Morning Glory": 9, "Lavaxpres laundromat": 8, "Mossos d'Esquadra (police)": 4, "Farmàcia Les Corts": 3, "CAP Les Corts": 6, "Hospital Clínic – Urgències": 31, "Consum": 4, "Mercadona": 5, "Restaurante Cafetería Venecia": 8, "Bar Restaurante La Concordia": 7, "Taberna Davidson": 6, "Casa Piera": 14, "Papelería Dalby": 4, "Punt Paper": 2, "Copisteria Les Corts": 9, "Vicenç Piera (UB Fine Arts shop)": 20};
 // Everyday phrases: [English, Spanish, Catalan]
 const PHRASES = [
  {g:"👋 Basics", items:[
@@ -1376,8 +1384,8 @@ function renderNearby(){
     <div class="links" style="margin:0 0 6px"><a href="#" onclick="jumpTo('getting-around');return false;">🚇 Getting around</a><a href="#" onclick="jumpTo('nearby-list');return false;">📍 Nearby</a><a href="#" onclick="jumpTo('phrases');return false;">🗣️ Phrases</a></div>
     <div class="info">${renderGettingAround()}</div>
     <h2 id="nearby-list" style="font-size:20px;margin-top:30px">📍 Nearby</h2><p class="sub">Essentials around where you stay and where we work. Opening hours change, so check before you go.</p>` +
-  NEARBY.map(A=>`<h2>${A.area}</h2>`+A.groups.map(G=>`<h4>${G.g}</h4>`+G.items.map(([n,a,d])=>
-    `<div class="nbi reveal-x"><div><b>${n}</b>${WALK[n]!=null?`<span class="walk">🚶 ${WALK[n]} min${WALK[n]>=25?" · taxi in an emergency":""}</span>`:""}<div class="who">${a}</div><div class="who">${d}</div></div><a href="${mapLink(n+", "+a+", Barcelona")}" target="_blank" rel="noopener">Map ↗</a></div>`).join("")).join("")).join("") +
+  NEARBY.map(A=>`<h2>${A.area}</h2>`+A.groups.map(G=>`<h4>${G.g}</h4>`+G.items.map(([n,a,d,w])=>
+    `<div class="nbi reveal-x"><div><b>${n}</b>${WALK[n]!=null?`<span class="walk">🚶 ${WALK[n]} min${WALK[n]>=25?" · taxi in an emergency":""}</span>`:""}<div class="who">${a}</div><div class="who">${d}</div></div><div class="nbl">${w?`<a href="${w}" target="_blank" rel="noopener">Web ↗</a>`:""}<a href="${mapLink(n+", "+a+", Barcelona")}" target="_blank" rel="noopener">Map ↗</a></div></div>`).join("")).join("")).join("") +
   `<div class="info">${renderPhrases()}</div></div>`;
 }
 
