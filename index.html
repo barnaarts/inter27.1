@@ -340,9 +340,12 @@
   .tsheet.open{transform:none;visibility:visible;transition:transform .4s cubic-bezier(.3,.7,.2,1)}
   .tsheet .vsteps{margin:0}
   .routebar{margin:10px 0 16px}
-  .rpill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--accent);background:var(--card);color:var(--ink);font:inherit;font-size:14px;font-weight:700;padding:4px 4px 4px 13px;border-radius:999px;cursor:pointer}
-  .rpill span{display:inline-block;background:var(--accent);color:#fff;border-radius:999px;padding:4px 11px}
-  .rpill span b{display:inline-block;animation:vbeat 1.4s ease-in-out infinite}
+  .rpill{display:inline-flex;align-items:center;gap:4px;flex-wrap:nowrap;border:1px solid var(--accent);background:var(--card);color:var(--ink);font-size:13px;font-weight:700;padding:3px 3px 3px 10px;border-radius:999px;white-space:nowrap;max-width:100%}
+  .rpill button{border:0;font:inherit;font-size:12.5px;font-weight:700;border-radius:999px;padding:5px 9px;cursor:pointer}
+  .rpill .rp{background:var(--accent);color:#fff;margin-left:3px}
+  .rpill .rp b{display:inline-block;animation:vbeat 1.4s ease-in-out infinite}
+  .rpill .rs{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  @media (max-width:370px){ .rpill{font-size:12px;padding-left:8px} .rpill button{font-size:11.5px;padding:4px 7px} }
   .vmapbox{position:relative}
   .vcard{display:none;position:relative;margin-top:6px;height:66px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;overflow:hidden;opacity:.35;transition:opacity .35s}
   .vmapwrap.playing .vcard{display:flex}
@@ -987,7 +990,7 @@ function renderSchedule(){
   const isToday = d===now.date;
   let html = `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h1 style="margin-bottom:0">${fmt(d,{weekday:"long",month:"long",day:"numeric"})}</h1><a class="alink" style="margin:0;white-space:nowrap" href="#overview">All days</a></div>`;
   html += isToday ? `<p class="sub">Today</p>` : `<div style="height:14px"></div>`;
-  if(dayPlan(d).length>2) html += `<div class="routebar"><button class="rpill" type="button" data-route="${d}">🗺️ How to get around today <span><b>▶ Play</b></span></button></div>`;
+  if(dayPlan(d).length>2) html += `<div class="routebar"><span class="rpill">🗺️ How to get around <button type="button" class="rp" data-route="${d}"><b>▶ Play</b></button><button type="button" class="rs" data-route="${d}" data-steps="1">☰ Step by step</button></span></div>`;
   if(extOnly(d)) html += `<div class="note">This day is for the <b>extension group</b> only.</div>`;
   if(isToday) html += nextUp();
   const brk = breaksFor(items);
@@ -1331,13 +1334,13 @@ function drawDayRoute(d){
       html:`<div class="vpin${home?" home":""}" style="--pc:${home?"#ff3438":`var(${COL[t]})`}">${num?`<b>${num}</b>`:`<span>🏠</span>`}</div>`})}).bindPopup(venuePopup(p.k,days),{maxWidth:260}).addTo(tlayer);
   });
 }
-function openRoute(d){
+function openRoute(d,steps){
   loadLeaflet().then(()=>{
     ensureTour(); tourDay=d;
     const t=document.getElementById("tour"); t.classList.add("open");
     document.documentElement.style.overflow="hidden";
     document.getElementById("tday").textContent=fmt(d,{weekday:"long",month:"short",day:"numeric"});
-    document.getElementById("tsheet").classList.remove("open"); document.getElementById("tstepsbtn").classList.remove("on");
+    document.getElementById("tsheet").classList.toggle("open",!!steps); document.getElementById("tstepsbtn").classList.toggle("on",!!steps);
     renderSteps(d);
     if(!tmap){
       tmap=L.map("tmap",{zoomSnap:0.05,scrollWheelZoom:false,attributionControl:true});
@@ -1345,7 +1348,9 @@ function openRoute(d){
       tlayer=L.layerGroup().addTo(tmap);
     }
     tmap.invalidateSize(); drawDayRoute(d);
-    requestAnimationFrame(()=>{ tmap.invalidateSize(); playTour(); });
+    requestAnimationFrame(()=>{ tmap.invalidateSize();
+      if(steps){ stopTour(); showCard(Object.assign({},dayPlan(d)[0],{n:0}),d); tmap.fitBounds(L.latLngBounds(dayPlan(d).map(p=>VC[p.k])),{paddingTopLeft:[18,84],paddingBottomRight:[18,10],maxZoom:17,animate:false}); }
+      else playTour(); });
   }).catch(()=>{});
 }
 function closeRoute(){
@@ -1420,7 +1425,7 @@ function playTour(){
   })();
 }
 document.addEventListener("click",e=>{
-  const r=e.target.closest("[data-route]"); if(r){ e.preventDefault(); openRoute(r.dataset.route); return; }
+  const r=e.target.closest("[data-route]"); if(r){ e.preventDefault(); openRoute(r.dataset.route, !!r.dataset.steps); return; }
   if(e.target.closest("#tclose")){ e.preventDefault(); closeRoute(); return; }
   if(e.target.closest("#treplay")){ e.preventDefault(); playTour(); return; }
   if(e.target.closest("#tstepsbtn")){ e.preventDefault(); const sh=document.getElementById("tsheet"), on=!sh.classList.contains("open"); sh.classList.toggle("open",on); e.target.closest("#tstepsbtn").classList.toggle("on",on); return; }
@@ -1622,7 +1627,7 @@ function renderGettingAround(){
 function jumpTo(id){ const el=document.getElementById(id); if(!el) return; const hh=document.querySelector("header").offsetHeight; window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-hh-10,behavior:"smooth"}); }
 function renderNearby(){
   return `<div class="nb"><h1>City</h1><p class="sub">Getting around, everyday essentials and the words you'll need.</p>
-    <div class="links" style="margin:0 0 6px"><a href="#" onclick="jumpTo('getting-around');return false;">🚇 Getting around</a><span class="nbx"><a href="#" onclick="this.parentNode.classList.toggle('open');return false;">📍 Nearby</a><a class="nbs" href="#" onclick="jumpTo('nb-0');return false;">🏠 Yugo</a><a class="nbs" href="#" onclick="jumpTo('nb-1');return false;">🩰 La Caldera</a></span><a href="#" onclick="jumpTo('phrases');return false;">🗣️ Phrases</a></div>
+    <div class="links" style="margin:0 0 6px"><span class="nbx"><a href="#" onclick="this.parentNode.classList.toggle('open');return false;">📍 Nearby</a><a class="nbs" href="#" onclick="jumpTo('nb-0');return false;">🏠 Yugo</a><a class="nbs" href="#" onclick="jumpTo('nb-1');return false;">🩰 La Caldera</a></span><a href="#" onclick="jumpTo('phrases');return false;">🗣️ Phrases</a></div>
     <div class="info">${renderGettingAround()}</div>
     <h2 id="nearby-list" style="font-size:20px;margin-top:30px">📍 Nearby</h2><p class="sub">Essentials around where you stay and where we work. Opening hours change, so check before you go.</p>` +
   NEARBY.map((A,ai)=>`<h2 id="nb-${ai}">${A.area}</h2>`+A.groups.map(G=>`<h4>${G.g}</h4>`+G.items.map(([n,a,d,w])=>
