@@ -325,6 +325,24 @@
   .vmapwrap.playing .vclose{display:flex;position:absolute;top:calc(env(safe-area-inset-top) + 10px);right:10px;z-index:1000;align-items:center;gap:6px;border:0;border-radius:999px;background:var(--ink);color:var(--bg);font:inherit;font-weight:700;font-size:14px;padding:8px 14px;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.3)}
   .vmapwrap.playing .vday{display:block;position:absolute;top:calc(env(safe-area-inset-top) + 10px);left:54px;z-index:1000;background:var(--card);color:var(--ink);border-radius:999px;padding:7px 13px;font-size:13px;font-weight:700;box-shadow:0 3px 10px rgba(0,0,0,.2)}
   .vday{display:none}
+  .tour{position:fixed;inset:0;z-index:9999;display:none;flex-direction:column;background:var(--bg);padding:env(safe-area-inset-top) 0 calc(2*env(safe-area-inset-bottom) + 20px)}
+  .tour.open{display:flex}
+  .tmapbox{position:relative;flex:1;min-height:0;overflow:hidden}
+  #tmap{position:absolute;inset:0;background:#dfe7ec}
+  @media (prefers-color-scheme: dark){ #tmap{background:#1b2226} #tmap .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.9) contrast(.9)} }
+  .tday{position:absolute;top:10px;left:54px;z-index:1000;background:var(--card);color:var(--ink);border-radius:999px;padding:7px 13px;font-size:13px;font-weight:700;box-shadow:0 3px 10px rgba(0,0,0,.2)}
+  .tclose{position:absolute;top:10px;right:10px;z-index:1000;border:0;border-radius:999px;background:var(--ink);color:var(--bg);font:inherit;font-weight:700;font-size:14px;padding:8px 14px;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.3)}
+  .tour .vcard{display:flex;margin:10px 10px 0}
+  .tbar{display:flex;gap:8px;justify-content:center;margin:10px 10px 0}
+  .tbtn{border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:13px;font-weight:700;padding:7px 14px;border-radius:999px;cursor:pointer}
+  .tbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .tsheet{position:absolute;left:0;right:0;bottom:0;z-index:1001;max-height:62%;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg);border-radius:18px 18px 0 0;box-shadow:0 -8px 24px rgba(0,0,0,.25);padding:14px 14px 18px;transform:translateY(105%);visibility:hidden;transition:transform .4s cubic-bezier(.3,.7,.2,1),visibility 0s .4s}
+  .tsheet.open{transform:none;visibility:visible;transition:transform .4s cubic-bezier(.3,.7,.2,1)}
+  .tsheet .vsteps{margin:0}
+  .routebar{margin:10px 0 16px}
+  .rpill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--accent);background:var(--card);color:var(--ink);font:inherit;font-size:14px;font-weight:700;padding:4px 4px 4px 13px;border-radius:999px;cursor:pointer}
+  .rpill span{display:inline-block;background:var(--accent);color:#fff;border-radius:999px;padding:4px 11px}
+  .rpill span b{display:inline-block;animation:vbeat 1.4s ease-in-out infinite}
   .vmapbox{position:relative}
   .vcard{display:none;position:relative;margin-top:6px;height:66px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;overflow:hidden;opacity:.35;transition:opacity .35s}
   .vmapwrap.playing .vcard{display:flex}
@@ -969,6 +987,7 @@ function renderSchedule(){
   const isToday = d===now.date;
   let html = `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h1 style="margin-bottom:0">${fmt(d,{weekday:"long",month:"long",day:"numeric"})}</h1><a class="alink" style="margin:0;white-space:nowrap" href="#overview">All days</a></div>`;
   html += isToday ? `<p class="sub">Today</p>` : `<div style="height:14px"></div>`;
+  if(dayPlan(d).length>2) html += `<div class="routebar"><button class="rpill" type="button" data-route="${d}">🗺️ How to get around today <span><b>▶ Play</b></span></button></div>`;
   if(extOnly(d)) html += `<div class="note">This day is for the <b>extension group</b> only.</div>`;
   if(isToday) html += nextUp();
   const brk = breaksFor(items);
@@ -1144,11 +1163,10 @@ function loadLeaflet(){
 function mapChips(days){
   const ds = dates.filter(d=>Object.keys(days).some(k=>VC[k]&&k!=="yugo"&&days[k].has(d)));
   return `<button class="vchip${mapDay==="all"?" on":""}" data-md="all">All venues</button>` +
-    ds.map(d=>`<button class="vchip${mapDay===d?" on":""}" data-md="${d}"><small>${fmt(d,{weekday:"short"})}</small>${+d.slice(8)}<span class="vpl" data-play="1"><b>▶ Play</b></span></button>`).join("");
+    ds.map(d=>`<button class="vchip${mapDay===d?" on":""}" data-md="${d}"><small>${fmt(d,{weekday:"short"})}</small>${+d.slice(8)}</button>`).join("");
 }
 function initVenueMap(){
   const el=document.getElementById("vmap"); if(!el) return;
-  stopTour();
   if(vmap){ try{vmap.remove();}catch(_){} vmap=null; }
   loadLeaflet().then(()=>{
     if(!document.getElementById("vmap")) return;
@@ -1170,7 +1188,7 @@ function initVenueMap(){
     tiles.on("tileerror",()=>{ if(!loaded && vmap && vmap.hasLayer(tiles)){ vmap.removeLayer(tiles); vmap.attributionControl.setPrefix(false); const n=document.getElementById("vnote"); if(n){ n.dataset.simple=1; n.textContent="Simplified map: the full street map needs an internet connection."; } } });
     tiles.addTo(vmap);
     vlayer=L.layerGroup().addTo(vmap);
-    drawVenuePins(true); renderSteps();
+    drawVenuePins(true);
     setTimeout(()=>vmap&&vmap.invalidateSize(),350);
   }).catch(()=>{ el.innerHTML='<p class="vnote" style="padding:14px">The map couldn\'t load. Use the Maps links below.</p>'; });
 }
@@ -1272,22 +1290,69 @@ function legInfo(a,b){
   let how = walk ? `🚶 Walk · about ${m} min` : `🚇 Metro${STN[a]&&STN[b]&&STN[a]!==STN[b]?` · ${STN[a]} → ${STN[b]}`:""} <small>· ${(L.latLng(A).distanceTo(L.latLng(B))*1.35/1000).toFixed(1)} km on foot (about ${m} min)</small>`;
   return {walk,m,url,how};
 }
-function renderSteps(){
-  const box=document.getElementById("vsteps"), btn=null; if(!box) return;
-  if(mapDay==="all"||!window.L){ box.innerHTML=""; if(btn) btn.classList.remove("show"); return; }
-  const seq=dayPlan(mapDay); if(seq.length<3){ box.innerHTML=""; btn&&btn.classList.remove("show"); return; }
-  btn&&btn.classList.add("show");
-  let n=0, h=`<h3>Step by step · ${fmt(mapDay,{weekday:"long",month:"short",day:"numeric"})}</h3>`;
+function renderSteps(d){
+  const box=document.getElementById("vsteps"); if(!box) return;
+  const seq=dayPlan(d);
+  let n=0, h=`<h3>Step by step · ${fmt(d,{weekday:"long",month:"short",day:"numeric"})}</h3>`;
   seq.forEach((p,i)=>{
     const home=p.k==="yugo", v=V[p.k];
     p.n = home ? 0 : ++n;
-    const evs=(p.evs||[]).map(x=>`<a class="vev" href="${evLink(mapDay,y=>y===x)}">${x.s?t12(x.s)+" · ":""}${x.title} →</a>`).join("");
+    const evs=(p.evs||[]).map(x=>`<a class="vev" data-close="1" href="${evLink(d,y=>y===x)}">${x.s?t12(x.s)+" · ":""}${x.title} →</a>`).join("");
     h+=`<div class="vstep${home?" home":""}" data-st="${i}"><span class="vsi">${home?"🏠":p.n}</span><div><b>${home?(p.start?"Start at the hostel":"Back to the hostel"):v.n.split(" — ")[0]}</b><div class="vsm">${street(v)}</div>${evs}</div>${VPHOTOS[p.k]?`<img src="${VPHOTOS[p.k]}" alt="">`:""}</div>`;
     if(i<seq.length-1){ const g=legInfo(p.k,seq[i+1].k); h+=`<div class="vleg" data-lg="${i}">${g.how}<a href="${g.url}" target="_blank" rel="noopener">Directions ↗</a></div>`; }
   });
   box.innerHTML=h+`<p class="vnote">Walking times are estimates. Over ${WALK_MAX} min on foot, take the metro: the Directions link opens the live route.</p>`;
 }
-let tourOn=false, tourRun=0, tourMk=null;
+let tourOn=false, tourRun=0, tourMk=null, tmap=null, tlayer=null, tourDay=null;
+function ensureTour(){
+  if(document.getElementById("tour")) return;
+  const t=document.createElement("div"); t.id="tour"; t.className="tour";
+  t.innerHTML=`<div class="tmapbox"><div id="tmap"></div><div class="tday" id="tday"></div><button class="tclose" id="tclose" type="button">✕ Close</button><div class="tsheet" id="tsheet"><div class="vsteps" id="vsteps"></div></div></div><div class="vcard" id="vcard"></div><div class="tbar"><button class="tbtn" id="treplay" type="button">↻ Replay</button><button class="tbtn" id="tstepsbtn" type="button">☰ Step by step</button></div>`;
+  document.body.appendChild(t);
+  // links inside the overlay (events) close it first
+  t.addEventListener("click",e=>{ const a=e.target.closest("a[href^='#']"); if(a) closeRoute(); });
+}
+function drawDayRoute(d){
+  tlayer.clearLayers();
+  const seq=dayPlan(d), {days, first}=venueDays();
+  const route=seq.map(p=>VC[p.k]);
+  L.polyline(route,{color:"#ff3438",weight:3,opacity:.75,dashArray:"6 8",interactive:false}).addTo(tlayer);
+  for(let i=0;i<route.length-1;i++){
+    const A=route[i], B=route[i+1]; if(L.latLng(A).distanceTo(L.latLng(B))<300) continue;
+    const pa=L.CRS.EPSG3857.project(L.latLng(A)), pb=L.CRS.EPSG3857.project(L.latLng(B));
+    const ang=Math.atan2(-(pb.y-pa.y), pb.x-pa.x)*180/Math.PI, t=.6;
+    L.marker([A[0]+(B[0]-A[0])*t, A[1]+(B[1]-A[1])*t],{interactive:false,keyboard:false,icon:L.divIcon({className:"rarrow",iconSize:[30,30],iconAnchor:[15,15],
+      html:`<svg viewBox="0 0 30 30" width="30" height="30"><path d="M5 6 L26 15 L5 24 L11 15 Z" fill="#fff" stroke="#ff3438" stroke-width="2.2" stroke-linejoin="round" transform="rotate(${ang.toFixed(1)} 15 15)"/></svg>`})}).addTo(tlayer);
+  }
+  let n=0; const seen=new Set();
+  seq.forEach(p=>{ if(seen.has(p.k)) return; seen.add(p.k);
+    const home=p.k==="yugo", t=first[p.k]||"free", num=home?0:++n;
+    L.marker(VC[p.k],{zIndexOffset:home?1000:0,icon:L.divIcon({className:"",iconSize:home?[36,36]:[30,30],iconAnchor:home?[18,36]:[15,30],popupAnchor:[0,home?-34:-28],
+      html:`<div class="vpin${home?" home":""}" style="--pc:${home?"#ff3438":`var(${COL[t]})`}">${num?`<b>${num}</b>`:`<span>🏠</span>`}</div>`})}).bindPopup(venuePopup(p.k,days),{maxWidth:260}).addTo(tlayer);
+  });
+}
+function openRoute(d){
+  loadLeaflet().then(()=>{
+    ensureTour(); tourDay=d;
+    const t=document.getElementById("tour"); t.classList.add("open");
+    document.documentElement.style.overflow="hidden";
+    document.getElementById("tday").textContent=fmt(d,{weekday:"long",month:"short",day:"numeric"});
+    document.getElementById("tsheet").classList.remove("open"); document.getElementById("tstepsbtn").classList.remove("on");
+    renderSteps(d);
+    if(!tmap){
+      tmap=L.map("tmap",{zoomSnap:0.05,scrollWheelZoom:false,attributionControl:true});
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(tmap);
+      tlayer=L.layerGroup().addTo(tmap);
+    }
+    tmap.invalidateSize(); drawDayRoute(d);
+    requestAnimationFrame(()=>{ tmap.invalidateSize(); playTour(); });
+  }).catch(()=>{});
+}
+function closeRoute(){
+  stopTour();
+  const t=document.getElementById("tour"); if(t) t.classList.remove("open");
+  document.documentElement.style.overflow="";
+}
 function showCard(p,d,dur){
   const c=document.getElementById("vcard"); if(!c) return;
   if(!p){ c.classList.remove("show"); c.innerHTML=""; return; }
@@ -1302,27 +1367,22 @@ function showCard(p,d,dur){
 }
 function stopTour(){
   const was=tourOn; tourOn=false; tourRun++;
-  if(tourMk&&vmap){ try{vmap.removeLayer(tourMk);}catch(_){} } tourMk=null;
+  if(tourMk&&tmap){ try{tmap.removeLayer(tourMk);}catch(_){} } tourMk=null;
   document.querySelectorAll(".vstep.cur,.vleg.cur").forEach(e=>e.classList.remove("cur"));
   showCard(null);
-  const w=document.getElementById("vmapwrap");
-  if(was && w && w.classList.contains("playing")){ w.classList.remove("playing"); if(vmap) vmap.options.zoomSnap=1; document.documentElement.style.overflow=""; if(vmap){ vmap.invalidateSize(); drawVenuePins(true); } }
 }
 function tourMark(sel){
   document.querySelectorAll(".vstep.cur,.vleg.cur").forEach(e=>e.classList.remove("cur"));
   const el=document.querySelector(sel); if(el) el.classList.add("cur");
 }
 function playTour(){
-  if(!vmap||mapDay==="all") return;
-  stopTour(); tourOn=true; const run=++tourRun, d=mapDay;
-  const seq=dayPlan(d), wrap=document.getElementById("vmapwrap"), st=document.getElementById("vstick");
-  wrap.classList.add("playing"); document.documentElement.style.overflow="hidden";
-  const dl=document.getElementById("vday"); if(dl) dl.textContent=fmt(d,{weekday:"long",month:"short",day:"numeric"});
-  vmap.closePopup(); vmap.invalidateSize();
+  if(!tmap||!tourDay) return;
+  stopTour(); tourOn=true; const run=++tourRun, d=tourDay;
+  const seq=dayPlan(d);
+  tmap.closePopup(); tmap.invalidateSize();
   // One fixed bird's-eye view of the whole day, as big as the screen allows: no zooming during the presentation
-  vmap.options.zoomSnap=0.05;
-  vmap.fitBounds(L.latLngBounds(seq.map(p=>VC[p.k])),{paddingTopLeft:[18,84],paddingBottomRight:[18,10],maxZoom:17,animate:false});
-  const alive=()=>tourOn&&run===tourRun&&!!vmap&&!!document.getElementById("vmap");
+  tmap.fitBounds(L.latLngBounds(seq.map(p=>VC[p.k])),{paddingTopLeft:[18,84],paddingBottomRight:[18,10],maxZoom:17,animate:false});
+  const alive=()=>tourOn&&run===tourRun&&!!tmap&&document.getElementById("tour").classList.contains("open");
   const wait=ms=>new Promise(r=>setTimeout(r,ms));
   const PERSON=flip=>`<svg class="walk" viewBox="0 0 20 26" width="19" height="25"${flip?' style="transform:scaleX(-1)"':''}><g fill="#fff" stroke="#fff" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="3.2" r="2.6" stroke="none"/><path d="M10 7.5 L8.6 15" stroke-width="3.6" fill="none"/><path d="M9.6 9 L5.5 12.5 M9.8 9 L13.8 11.8" stroke-width="2.2" fill="none"/><path d="M8.6 15 L5.2 23.5 M8.6 15 L12.6 19 L13.4 24" stroke-width="2.4" fill="none"/></g></svg>`;
   const TRAIN=ang=>`<svg viewBox="0 0 30 12" width="30" height="12" style="transform:rotate(${ang.toFixed(1)}deg)"><rect x="1" y="1" width="28" height="10" rx="3" fill="#fff"/><rect x="5" y="3.4" width="5" height="5.2" rx="1" fill="#ff3438" opacity=".55"/><rect x="12.5" y="3.4" width="5" height="5.2" rx="1" fill="#ff3438" opacity=".55"/><rect x="20" y="3.4" width="5" height="5.2" rx="1" fill="#ff3438" opacity=".55"/></svg>`;
@@ -1336,7 +1396,7 @@ function playTour(){
   // n numbers for the card
   let n=0; seq.forEach(p=>{ p.n=p.k==="yugo"?0:++n; });
   (async()=>{
-    tourMk=L.marker(VC.yugo,{icon,interactive:false,keyboard:false,zIndexOffset:3000}).addTo(vmap);
+    tourMk=L.marker(VC.yugo,{icon,interactive:false,keyboard:false,zIndexOffset:3000}).addTo(tmap);
     tourMark('.vstep[data-st="0"]'); showCard(seq[0],d);
     if(seq.length>1) setMode(legInfo(seq[0].k,seq[1].k).walk,VC[seq[0].k],VC[seq[1].k]);
     await wait(1400);
@@ -1356,13 +1416,15 @@ function playTour(){
       await wait(1100);
     }
     if(!alive()) return;
-    await wait(600); stopTour();
+    tourOn=false;
   })();
 }
 document.addEventListener("click",e=>{
-  const pl=e.target.closest(".vchip.on .vpl"); if(pl){ e.preventDefault(); playTour(); return; }
-  const c=e.target.closest(".vchip"); if(c){ mapDay=c.dataset.md; document.querySelectorAll(".vchip").forEach(b=>b.classList.toggle("on",b===c)); stopTour(); drawVenuePins(true); filterVenueCards(); renderSteps(); centerChip(true); return; }
-  if(e.target.closest("#vclose")){ e.preventDefault(); stopTour(); return; }
+  const r=e.target.closest("[data-route]"); if(r){ e.preventDefault(); openRoute(r.dataset.route); return; }
+  if(e.target.closest("#tclose")){ e.preventDefault(); closeRoute(); return; }
+  if(e.target.closest("#treplay")){ e.preventDefault(); playTour(); return; }
+  if(e.target.closest("#tstepsbtn")){ e.preventDefault(); const sh=document.getElementById("tsheet"), on=!sh.classList.contains("open"); sh.classList.toggle("open",on); e.target.closest("#tstepsbtn").classList.toggle("on",on); return; }
+  const c=e.target.closest(".vchip"); if(c){ mapDay=c.dataset.md; document.querySelectorAll(".vchip").forEach(b=>b.classList.toggle("on",b===c)); drawVenuePins(true); filterVenueCards(); centerChip(true); return; }
   const o=e.target.closest(".onmap"); if(o){ e.preventDefault();
     const k=o.dataset.k, wrap=document.getElementById("vmapwrap"); if(!wrap||!vmap) return;
     if(mapDay!=="all" && !vmarkers[k]){ mapDay="all"; document.querySelectorAll(".vchip").forEach(b=>b.classList.toggle("on",b.dataset.md==="all")); drawVenuePins(true); }
@@ -1386,7 +1448,7 @@ function renderVenues(){
   Object.keys(V).forEach(k=>{ if(V[k].show && !days[k]){ keys.push(k); days[k]=new Set(); } });
   if(!VPHOTOS.upf) VPHOTOS.upf = "img/sala-reflexio.jpg";
   return `<h1>Venues</h1><p class="sub">Everywhere we go, in order of first visit. Tap a pin or a date to see what's on.</p>
-  <div class="vmapwrap" id="vmapwrap"><div class="vstick" id="vstick"><div class="vchips">${mapChips(venueDays().days)}</div><div class="vmapbox"><div class="vmap" id="vmap"></div><div class="vday" id="vday"></div><button class="vclose" id="vclose" type="button">✕ Close</button></div><div class="vcard" id="vcard"></div><div class="vnote" id="vnote">Pick a day to see its stops in order, starting from the hostel.</div></div><div class="vsteps" id="vsteps"></div></div>` +
+  <div class="vmapwrap" id="vmapwrap"><div class="vstick" id="vstick"><div class="vchips">${mapChips(venueDays().days)}</div><div class="vmapbox"><div class="vmap" id="vmap"></div></div><div class="vnote" id="vnote">Pick a day to see its stops in order, starting from the hostel.</div></div></div>` +
   keys.map((k,vi)=>{const v=V[k]; const tdy=days[k].has(now.date); return `<div class="venue reveal${tdy?" now":""}${mapDay!=="all"&&!days[k].has(mapDay)?" off":""}" data-k="${k}" data-i="${vi}" data-days="${[...days[k]].join(" ")}">${tdy?'<span class="tag now todaytag">Today</span>':''}
     ${VPHOTOS[k]?`<img class="vpic" src="${VPHOTOS[k]}" alt="${v.n}">`:""}
     <h3>${v.n.split(" — ")[0]}${v.home?' <span class="tag opt">Where you stay</span>':''}</h3>
