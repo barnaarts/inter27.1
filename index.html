@@ -336,15 +336,17 @@
   .tbar{display:flex;gap:8px;justify-content:center;margin:10px 10px 0}
   .tbtn{border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:13px;font-weight:700;padding:7px 14px;border-radius:999px;cursor:pointer}
   .tbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
-  .tsheet{position:absolute;left:0;right:0;bottom:0;z-index:1001;max-height:62%;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg);border-radius:18px 18px 0 0;box-shadow:0 -8px 24px rgba(0,0,0,.25);padding:14px 14px 18px;transform:translateY(105%);visibility:hidden;transition:transform .4s cubic-bezier(.3,.7,.2,1),visibility 0s .4s}
+  .tbar{position:relative;z-index:1002}
+  .tsheet{position:absolute;left:0;right:0;top:0;bottom:calc(2*env(safe-area-inset-bottom) + 20px + 44px);z-index:1001;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg);padding:calc(env(safe-area-inset-top) + 16px) 14px 18px;transform:translateY(105%);visibility:hidden;transition:transform .4s cubic-bezier(.3,.7,.2,1),visibility 0s .4s}
   .tsheet.open{transform:none;visibility:visible;transition:transform .4s cubic-bezier(.3,.7,.2,1)}
   .tsheet .vsteps{margin:0}
   .routebar{margin:10px 0 16px}
   .rpill{display:inline-flex;align-items:center;gap:4px;flex-wrap:nowrap;border:1px solid var(--accent);background:var(--card);color:var(--ink);font-size:13px;font-weight:700;padding:3px 3px 3px 10px;border-radius:999px;white-space:nowrap;max-width:100%}
   .rpill button{border:0;font:inherit;font-size:12.5px;font-weight:700;border-radius:999px;padding:5px 9px;cursor:pointer}
-  .rpill .rp{background:var(--accent);color:#fff;margin-left:3px}
-  .rpill .rp b{display:inline-block;animation:vbeat 1.4s ease-in-out infinite}
-  .rpill .rs{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  .rpill .rp,.rpill .rs{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+  .rpill .rp{margin-left:3px;color:var(--accent)}
+  .rpill .rp b{display:inline-block;animation:vglowtxt 1.4s ease-in-out infinite}
+  @keyframes vglowtxt{0%,100%{text-shadow:0 0 0 rgba(255,52,56,0);opacity:.85}50%{text-shadow:0 0 6px rgba(255,52,56,.9),0 0 14px rgba(255,52,56,.6);opacity:1}}
   @media (max-width:370px){ .rpill{font-size:12px;padding-left:8px} .rpill button{font-size:11.5px;padding:4px 7px} }
   .vmapbox{position:relative}
   .vcard{display:none;position:relative;margin-top:6px;height:66px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;overflow:hidden;opacity:.35;transition:opacity .35s}
@@ -1310,7 +1312,7 @@ let tourOn=false, tourRun=0, tourMk=null, tmap=null, tlayer=null, tourDay=null;
 function ensureTour(){
   if(document.getElementById("tour")) return;
   const t=document.createElement("div"); t.id="tour"; t.className="tour";
-  t.innerHTML=`<div class="tmapbox"><div id="tmap"></div><div class="tday" id="tday"></div><button class="tclose" id="tclose" type="button">✕ Close</button><div class="tsheet" id="tsheet"><div class="vsteps" id="vsteps"></div></div></div><div class="vcard" id="vcard"></div><div class="tbar"><button class="tbtn" id="treplay" type="button">↻ Replay</button><button class="tbtn" id="tstepsbtn" type="button">☰ Step by step</button></div>`;
+  t.innerHTML=`<div class="tmapbox"><div id="tmap"></div><div class="tday" id="tday"></div><button class="tclose" id="tclose" type="button">✕ Close</button></div><div class="vcard" id="vcard"></div><div class="tsheet" id="tsheet"><div class="vsteps" id="vsteps"></div></div><div class="tbar"><button class="tbtn" id="treplay" type="button">↻ Replay</button><button class="tbtn" id="tstepsbtn" type="button">☰ Step by step</button></div>`;
   document.body.appendChild(t);
   // links inside the overlay (events) close it first
   t.addEventListener("click",e=>{ const a=e.target.closest("a[href^='#']"); if(a) closeRoute(); });
@@ -1427,7 +1429,7 @@ function playTour(){
 document.addEventListener("click",e=>{
   const r=e.target.closest("[data-route]"); if(r){ e.preventDefault(); openRoute(r.dataset.route, !!r.dataset.steps); return; }
   if(e.target.closest("#tclose")){ e.preventDefault(); closeRoute(); return; }
-  if(e.target.closest("#treplay")){ e.preventDefault(); playTour(); return; }
+  if(e.target.closest("#treplay")){ e.preventDefault(); document.getElementById("tsheet").classList.remove("open"); document.getElementById("tstepsbtn").classList.remove("on"); playTour(); return; }
   if(e.target.closest("#tstepsbtn")){ e.preventDefault(); const sh=document.getElementById("tsheet"), on=!sh.classList.contains("open"); sh.classList.toggle("open",on); e.target.closest("#tstepsbtn").classList.toggle("on",on); return; }
   const c=e.target.closest(".vchip"); if(c){ mapDay=c.dataset.md; document.querySelectorAll(".vchip").forEach(b=>b.classList.toggle("on",b===c)); drawVenuePins(true); filterVenueCards(); centerChip(true); return; }
   const o=e.target.closest(".onmap"); if(o){ e.preventDefault();
@@ -1627,7 +1629,7 @@ function renderGettingAround(){
 function jumpTo(id){ const el=document.getElementById(id); if(!el) return; const hh=document.querySelector("header").offsetHeight; window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-hh-10,behavior:"smooth"}); }
 function renderNearby(){
   return `<div class="nb"><h1>City</h1><p class="sub">Getting around, everyday essentials and the words you'll need.</p>
-    <div class="links" style="margin:0 0 6px"><span class="nbx"><a href="#" onclick="this.parentNode.classList.toggle('open');return false;">📍 Nearby</a><a class="nbs" href="#" onclick="jumpTo('nb-0');return false;">🏠 Yugo</a><a class="nbs" href="#" onclick="jumpTo('nb-1');return false;">🩰 La Caldera</a></span><a href="#" onclick="jumpTo('phrases');return false;">🗣️ Phrases</a></div>
+    <div class="links" style="margin:0 0 6px;flex-wrap:nowrap;white-space:nowrap"><a href="#" onclick="jumpTo('phrases');return false;">Phrases</a><span class="nbx"><a href="#" onclick="this.parentNode.classList.toggle('open');return false;">Nearby</a><a class="nbs" href="#" onclick="jumpTo('nb-0');return false;">Yugo</a><a class="nbs" href="#" onclick="jumpTo('nb-1');return false;">La Caldera</a></span></div>
     <div class="info">${renderGettingAround()}</div>
     <h2 id="nearby-list" style="font-size:20px;margin-top:30px">📍 Nearby</h2><p class="sub">Essentials around where you stay and where we work. Opening hours change, so check before you go.</p>` +
   NEARBY.map((A,ai)=>`<h2 id="nb-${ai}">${A.area}</h2>`+A.groups.map(G=>`<h4>${G.g}</h4>`+G.items.map(([n,a,d,w])=>
