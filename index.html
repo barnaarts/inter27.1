@@ -511,6 +511,37 @@
   /* Weekends in light mode: warm yellow so Sat/Sun stand out */
   .days .day.we,.days .day.we.on{background:var(--we);color:var(--we-ink)}
   .days .day.we small{color:var(--we-ink)}
+  /* ---- Softness pass (Nov 2026) ---- */
+  /* 3. Softer type colours; the strong red stays for the logo, tabs and buttons */
+  :root{--c-studio:#6f93d6;--c-guest:#c97aa6;--c-outing:#e3a468;--c-perf:#9b80d6;--c-talk:#c9ab4e;--c-show:#f28e90;--c-social:#66a883;--c-free:#aaa69e;--c-creation:#56a9ab;--c-travel:#868e99;
+    --soft-line:color-mix(in srgb,var(--line) 55%,transparent);
+    --soft-sh:0 1px 2px rgba(21,5,5,.04),0 8px 24px -6px rgba(21,5,5,.09)}
+  @media (prefers-color-scheme: dark){ :root{--soft-sh:0 1px 2px rgba(0,0,0,.3),0 10px 28px -8px rgba(0,0,0,.55)} }
+  /* 1. Gentle shadows instead of hard lines  ·  2. Rounder corners */
+  .ev,.ov,.venue,.artist,.nextup,.info .card,.nbi,.cdbox,.fold summary,.vstep,.qz-opt,.tl-item{border-color:var(--soft-line);box-shadow:var(--soft-sh)}
+  .ev{border-radius:20px;border-left-width:4px;border-left-color:var(--c,var(--c-free))}
+  .nextup{border-radius:20px;border-left-color:var(--accent)}
+  .ov,.venue,.info .card,.cdbox,.fold summary,.vstep{border-radius:20px}
+  .artist{border-radius:22px}
+  .nbi{border-radius:16px}
+  .fold[open] summary{border-radius:20px 20px 0 0;box-shadow:none}
+  .fold[open] .card{border-radius:0 0 20px 20px}
+  .ev.opt{box-shadow:none;border-color:var(--c,var(--c-free))}
+  .tag{border-radius:999px;padding:2px 9px}
+  .mapbox,.vmap,.qz-pic{border-radius:20px}
+  .ev.now{outline:none;box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 55%,transparent),var(--soft-sh)}
+  /* 4. Calmer motion: slower, easing out at the end */
+  .reveal.in{animation:rise .8s cubic-bezier(.22,.61,.36,1) both;animation-delay:var(--d,0ms)}
+  .reveal-x.in{animation:slideIn .7s cubic-bezier(.22,.61,.36,1) both;animation-delay:var(--d,0ms)}
+  .slide-l{animation:slideL .5s cubic-bezier(.22,.61,.36,1)}
+  .slide-r{animation:slideR .5s cubic-bezier(.22,.61,.36,1)}
+  .fold[open] .card{animation:unfold .45s cubic-bezier(.22,.61,.36,1)}
+  @keyframes slideL{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+  @keyframes slideR{from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:none}}
+  /* 5. Soft cross-fade when switching days or tabs */
+  #main.xf{animation:xf .45s ease-out}
+  @keyframes xf{from{opacity:0}to{opacity:1}}
+  @media (prefers-reduced-motion: reduce){ #main.xf,.slide-l,.slide-r{animation:none!important} }
 </style>
 </head>
 <body>
@@ -638,7 +669,7 @@ const S = {
 "2027-01-14":[
   {s:"10:00",e:"13:00",title:"Collaborating sessions: Instant Practice",who:"with Katie Vickers",v:"caldera",t:"creation"},
   {s:"14:00",e:"17:00",title:"Collaborating sessions",v:"caldera",t:"creation"},
-  {s:"18:00",e:"20:00",title:"MACBA",who:"Free entry in the evening",v:"macba",t:"free"}],
+  {s:"18:00",e:"20:00",title:"MACBA",who:"Evening visit",v:"macba",t:"free"}],
 "2027-01-15":[
   {s:"10:00",e:"13:00",title:"Warm-up + collaborating sessions",who:"with Núria Guiu",v:"caldera",t:"creation",ar:"Núria Guiu"},
   {s:"14:00",e:"17:00",title:"Collaborating sessions",v:"caldera",t:"creation"},
@@ -1669,7 +1700,7 @@ const WHATSAPP_GROUP = "https://chat.whatsapp.com/EJSfqA0xi3H3Pyi5Pe9Qmn?s=cl&p=
 const GROUP_PEOPLE = [
   {uni:"Colby College", people:[["Caleb A.","Creative writing"],["Clara G.","Music & mixed media"],["Freya H.","Painting, film, mixed media"],["James O.","Performance, theater, dance"]], ext:true},
   {uni:"Shenandoah University", people:[["Allee C.","Art education, visual arts"],["Andrew S.","Writing, acting"],["Elijah R.","Photography, visual arts"]]},
-  {uni:"UNC School of the Arts", people:[["Hattie","Design & production"],["Natalia","Dance"],["Ryan",""]]},
+  {uni:"UNC School of the Arts", people:[["Hattie","Design & production"],["Natalia","Dance"],["Ryan F.","Filmmaking, screenwriting"]]},
   {uni:"UNC Greensboro", people:[["Bernice T.",""]]},
 ];
 const FACULTY = [["Abigail Gómez","Shenandoah University"],["Betsy Towns","UNC School of the Arts"]];
@@ -1788,7 +1819,7 @@ function render(){
   document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",t.dataset.view===view||((view==="overview"||view==="today")&&t.dataset.view==="schedule")));
   renderDays();
   const main = document.getElementById("main");
-  main.classList.remove("slide-l","slide-r"); if(swipeDir){ void main.offsetWidth; main.classList.add(swipeDir>0?"slide-l":"slide-r"); } swipeDir=0;
+  main.classList.remove("slide-l","slide-r","xf"); void main.offsetWidth; main.classList.add(swipeDir? (swipeDir>0?"slide-l":"slide-r") : "xf"); swipeDir=0;
   main.innerHTML = (view==="today"?renderToday():view==="overview"?renderOverview():view==="info"?renderInfo():view==="artists"?renderArtists():view==="venues"?renderVenues():view==="nearby"?renderNearby():renderSchedule()) + (view==="today" ? "" : `<div class="foot">${countdownText()}Last updated ${UPDATED}</div>`);
   // Keep the logo hidden if it was already scrolled away
   setupReveal();
