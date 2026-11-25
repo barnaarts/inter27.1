@@ -193,7 +193,7 @@
   .empty{color:var(--muted);text-align:center;padding:30px 0}
   .tabs{flex-wrap:wrap;justify-content:center;width:100%}
   .top{justify-content:center}
-  html,body{overscroll-behavior-y:none}
+  html,body{overscroll-behavior-y:none;overflow-x:clip}
   .logoband{background:var(--accent);text-align:center;padding:22px 16px 6px}
   .logoband .lb-sub{color:#fff;font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;opacity:.9;margin-top:8px}
   .logoband .wm{display:block;overflow:visible;width:min(340px,80%);height:auto;margin:0 auto}
@@ -538,15 +538,6 @@
   .fold[open] .card{animation:unfold .45s cubic-bezier(.22,.61,.36,1)}
   @keyframes slideL{from{opacity:0;transform:translateX(38%)}to{opacity:1;transform:none}}
   @keyframes slideR{from{opacity:0;transform:translateX(-38%)}to{opacity:1;transform:none}}
-  /* Date bar: a plain bar under the selected day that slides in like the cards */
-  .days .day.on,.days .day.we.on{box-shadow:inset 0 0 4px rgba(255,255,255,.45)}
-  @keyframes todayGoldOnR{0%,100%{box-shadow:0 0 0 2px #ffd84a,0 0 6px 2px rgba(255,210,60,.55)}50%{box-shadow:0 0 0 3px #ffd84a,0 0 18px 7px rgba(255,210,60,1)}}
-  .days .day.on::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:var(--accent);border-radius:0 0 9px 9px;pointer-events:none}
-  .days .day.bar-l::after{animation:barL .42s cubic-bezier(.22,.61,.36,1)}
-  .days .day.bar-r::after{animation:barR .42s cubic-bezier(.22,.61,.36,1)}
-  @keyframes barL{from{opacity:0;transform:translateX(-38%)}to{opacity:1;transform:none}}
-  @keyframes barR{from{opacity:0;transform:translateX(38%)}to{opacity:1;transform:none}}
-  @media (prefers-reduced-motion: reduce){ .days .day.on::after{animation:none!important} }
   /* 5. Soft cross-fade when switching days or tabs */
   #main.xf{animation:xf .45s ease-out}
   @keyframes xf{from{opacity:0}to{opacity:1}}
@@ -912,12 +903,6 @@ function tears(){
 }
 
 let navInit=false;
-// The red bar under the selected date: gone from the old day, slides in on the new one
-function flyBar(nav, from){
-  const to = nav.querySelector(".day.on[data-d]");
-  if(!from || !to || from.d===to.dataset.d) return;
-  to.classList.add(to.dataset.d>from.d ? "bar-l" : "bar-r");
-}
 function renderDays(){
   const nav = document.getElementById("days");
   const showBar = view==="schedule"||view==="today";
@@ -937,9 +922,7 @@ function renderDays(){
     html = before ? chip+sep+html : html+sep+chip;
   }
   const keepX = nav.scrollLeft;
-  const was = nav.querySelector(".day.on[data-d]"), from = was ? {x:was.offsetLeft, w:was.offsetWidth, y:was.offsetTop+was.offsetHeight, d:was.dataset.d} : null;
   nav.innerHTML = html;
-  flyBar(nav, from);
   nav.scrollLeft = keepX;
   const tc = nav.querySelector(".day.out"); if(tc) tc.onclick=()=>{ location.hash="today"; };
   nav.querySelectorAll(".day[data-d]").forEach(b=>b.onclick=()=>{location.hash="jan-"+(+b.dataset.d.slice(8));});
@@ -1835,10 +1818,11 @@ function render(){
   document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",t.dataset.view===view||((view==="overview"||view==="today")&&t.dataset.view==="schedule")));
   renderDays();
   const main = document.getElementById("main");
-  main.classList.remove("slide-l","slide-r","xf"); main.style.transition="none"; main.style.transform=""; main.style.opacity=""; void main.offsetWidth; main.classList.add(swipeDir? (swipeDir>0?"slide-l":"slide-r") : "xf"); swipeDir=0;
+  main.classList.remove("slide-l","slide-r","xf"); main.style.transition="none"; main.style.transform=""; main.style.opacity=""; void main.offsetWidth; if(!peekLanded) main.classList.add(swipeDir? (swipeDir>0?"slide-l":"slide-r") : "xf"); swipeDir=0;
   main.innerHTML = (view==="today"?renderToday():view==="overview"?renderOverview():view==="info"?renderInfo():view==="artists"?renderArtists():view==="venues"?renderVenues():view==="nearby"?renderNearby():renderSchedule()) + (view==="today" ? "" : `<div class="foot">${countdownText()}Last updated ${UPDATED}</div>`);
   // Keep the logo hidden if it was already scrolled away
   setupReveal();
+  if(peekLanded){ main.querySelectorAll(".reveal,.reveal-x").forEach(e=>e.classList.remove("reveal","reveal-x")); peekLanded=false; }
   if(view==="artists") driftAvatars();
   if(view==="venues"){ initVenueMap(); filterVenueCards(); centerChip(false); } else if(vmap){ try{vmap.remove();}catch(_){} vmap=null; }
   window.scrollTo(0, logoHidden ? lbh : 0);
@@ -1936,32 +1920,63 @@ function swipeTarget(dir){
   if(k<0||k>=order.length) return null;
   return k===0 ? "jan-"+(+(current||closestDay()).slice(8)) : order[k];
 }
-// The page follows your finger, then glides out and the next day glides in
+// Swipe like a carousel: the next page is already coming in beside the current one, following your finger
+var peekLanded=false;
+function pageHTML(h){
+  const sv=view, sc=current; let html="";
+  try{
+    if(/^jan-/.test(h)){ view="schedule"; current=`2027-01-${h.slice(4).padStart(2,"0")}`; html=renderSchedule(); }
+    else { view=h; html = h==="today"?renderToday():h==="overview"?renderOverview():h==="info"?renderInfo():h==="artists"?renderArtists():h==="venues"?renderVenues():renderNearby(); }
+    if(view!=="today") html += `<div class="foot">${countdownText()}Last updated ${UPDATED}</div>`;
+  } finally { view=sv; current=sc; }
+  return html;
+}
 (function(){
-  const main = document.getElementById("main"); let x0=null, y0=null, lock=null, dx=0;
+  const main = document.getElementById("main"); let x0=null, y0=null, lock=null, peek=null, pdir=0, pto=null, busy=false;
   const calm = ()=>window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const setX = (x,tr)=>{ main.style.transition = tr||"none"; main.style.transform = x?`translateX(${x}px)`:""; main.style.opacity = x?String(Math.max(.35,1-Math.abs(x)/innerWidth*.9)):""; };
-  main.addEventListener("touchstart",e=>{ if(e.touches.length>1||e.target.closest(".mapbox,.vmapwrap,.leaflet-container,.avrow")){x0=null;return;} x0=e.touches[0].clientX; y0=e.touches[0].clientY; lock=null; dx=0; },{passive:true});
+  const W = ()=>innerWidth;
+  // Where the page will sit once it's shown (render keeps the logo hidden if it was scrolled away)
+  const landY = ()=>{ const lb=document.querySelector(".logoband"), h=lb?lb.offsetHeight:0; return h>0 && scrollY>=h-2 ? h : 0; };
+  function dropPeek(){ if(peek){ peek.parentNode.remove(); peek=null; } pdir=0; pto=null; }
+  function makePeek(dir){
+    dropPeek(); const to=swipeTarget(dir); if(!to) return;
+    peek=document.createElement("main"); peek.className="peek"; peek.setAttribute("aria-hidden","true");
+    peek.innerHTML=pageHTML(to);
+    peek.querySelectorAll(".reveal,.reveal-x").forEach(e=>e.classList.remove("reveal","reveal-x"));
+    peek.querySelectorAll("[id]").forEach(e=>e.removeAttribute("id"));
+    // A fixed, clipped frame so the incoming page never widens the screen; placed where it will land
+    const frame=document.createElement("div"); frame.style.cssText="position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:1";
+    peek.style.cssText=`position:absolute;left:${main.offsetLeft}px;top:${main.offsetTop-landY()}px;width:${main.offsetWidth}px`;
+    frame.appendChild(peek); document.body.appendChild(frame); pdir=dir; pto=to;
+  }
+  const place=(dx,tr)=>{
+    main.style.transition=peek&&tr?tr:(tr||"none"); main.style.transform=dx?`translateX(${dx}px)`:""; main.style.opacity="";
+    if(peek){ peek.style.transition=tr||"none"; peek.style.transform=`translateX(${pdir*W()+dx}px)`; }
+  };
+  main.addEventListener("touchstart",e=>{ if(busy||e.touches.length>1||e.target.closest(".mapbox,.vmapwrap,.leaflet-container,.avrow")){x0=null;return;} x0=e.touches[0].clientX; y0=e.touches[0].clientY; lock=null; },{passive:true});
   main.addEventListener("touchmove",e=>{
     if(x0===null) return;
     const mx=e.touches[0].clientX-x0, my=e.touches[0].clientY-y0;
     if(lock===null && (Math.abs(mx)>10||Math.abs(my)>10)) lock = Math.abs(mx)>Math.abs(my)*1.2 ? "x" : "y";
     if(lock!=="x" || calm()) return;
-    dx=mx; const has=!!swipeTarget(dx<0?1:-1);
-    setX(has ? dx*.85 : dx*.25);   // rubber band at the first and last day
+    const dir = mx<0?1:-1;
+    if(dir!==pdir) makePeek(dir);
+    place(peek ? mx : mx*.25);   // no next page: just a little rubber band
   },{passive:true});
-  const settle=()=>{ if(main.style.transform) setX(0,"transform .45s cubic-bezier(.22,.61,.36,1),opacity .45s ease"); };
+  const settle=()=>{ const tr="transform .35s cubic-bezier(.22,.61,.36,1)"; place(0,tr); const p=peek; setTimeout(()=>{ if(p===peek) dropPeek(); main.style.transition=""; },360); };
   main.addEventListener("touchcancel",()=>{ x0=null; settle(); },{passive:true});
   main.addEventListener("touchend",e=>{
     if(x0===null) return;
     const ex=e.changedTouches[0].clientX-x0, ey=e.changedTouches[0].clientY-y0; x0=null;
-    if(Math.abs(ex)<60 || Math.abs(ex)<Math.abs(ey)*1.5){ settle(); return; }
     const dir = ex<0?1:-1, to = swipeTarget(dir);
-    if(!to){ settle(); return; }
-    swipeDir = dir; haptic(6);
-    if(calm()){ location.hash=to; return; }
-    setX(-dir*innerWidth*.45, "transform .22s cubic-bezier(.4,0,1,1),opacity .22s ease-in");
-    setTimeout(()=>{ location.hash=to; }, 200);
+    if(Math.abs(ex)<60 || Math.abs(ex)<Math.abs(ey)*1.5 || !to){ settle(); return; }
+    haptic(6);
+    if(calm() || !peek || pto!==to){ dropPeek(); main.style.transform=""; swipeDir=dir; location.hash=to; return; }
+    busy=true;
+    const ms=Math.round(Math.max(180, Math.min(340, (W()-Math.abs(ex))*.9)));
+    place(-dir*W(), `transform ${ms}ms cubic-bezier(.25,.6,.3,1)`);
+    peek.style.transform="translateX(0)";
+    setTimeout(()=>{ peekLanded=true; addEventListener("hashchange",()=>{ dropPeek(); busy=false; },{once:true}); location.hash=to; }, ms+10);
   },{passive:true});
 })();
 render();
