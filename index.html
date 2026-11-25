@@ -538,9 +538,15 @@
   .fold[open] .card{animation:unfold .45s cubic-bezier(.22,.61,.36,1)}
   @keyframes slideL{from{opacity:0;transform:translateX(38%)}to{opacity:1;transform:none}}
   @keyframes slideR{from{opacity:0;transform:translateX(-38%)}to{opacity:1;transform:none}}
-  /* Flying date bar */
-  .flybar{position:absolute;z-index:4;height:4px;background:var(--accent);pointer-events:none;box-shadow:0 2px 8px rgba(255,52,56,.45)}
-  .days.flying .day.on{--accent:transparent}
+  /* Date bar: a plain bar under the selected day that slides in like the cards */
+  .days .day.on,.days .day.we.on{box-shadow:inset 0 0 4px rgba(255,255,255,.45)}
+  @keyframes todayGoldOnR{0%,100%{box-shadow:0 0 0 2px #ffd84a,0 0 6px 2px rgba(255,210,60,.55)}50%{box-shadow:0 0 0 3px #ffd84a,0 0 18px 7px rgba(255,210,60,1)}}
+  .days .day.on::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:var(--accent);border-radius:0 0 9px 9px;pointer-events:none}
+  .days .day.bar-l::after{animation:barL .42s cubic-bezier(.22,.61,.36,1)}
+  .days .day.bar-r::after{animation:barR .42s cubic-bezier(.22,.61,.36,1)}
+  @keyframes barL{from{opacity:0;transform:translateX(-38%)}to{opacity:1;transform:none}}
+  @keyframes barR{from{opacity:0;transform:translateX(38%)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion: reduce){ .days .day.on::after{animation:none!important} }
   /* 5. Soft cross-fade when switching days or tabs */
   #main.xf{animation:xf .45s ease-out}
   @keyframes xf{from{opacity:0}to{opacity:1}}
@@ -906,23 +912,11 @@ function tears(){
 }
 
 let navInit=false;
-// The red bar under the selected date lifts off and lands on the new one
+// The red bar under the selected date: gone from the old day, slides in on the new one
 function flyBar(nav, from){
   const to = nav.querySelector(".day.on[data-d]");
-  if(!from || !to || from.d===to.dataset.d || !nav.animate) return;
-  if(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const t = {x:to.offsetLeft, w:to.offsetWidth, y:to.offsetTop+to.offsetHeight};
-  const b = document.createElement("i"); b.className="flybar"; nav.appendChild(b);
-  nav.classList.add("flying");
-  const dist = Math.abs(t.x-from.x), lift = Math.min(34, 14+dist*.08), mid = (from.x+t.x)/2;
-  const f = (x,w,y,r)=>({left:(x+4)+"px", width:(w-8)+"px", top:(y-6)+"px", borderRadius:r});
-  const a = b.animate([
-    Object.assign(f(from.x,from.w,from.y,"0 0 9px 9px"),{offset:0}),
-    Object.assign(f(mid-14,28+0,from.y-lift,"999px"),{offset:.5}),
-    Object.assign(f(t.x,t.w,t.y,"0 0 9px 9px"),{offset:1})
-  ],{duration:Math.min(620, 380+dist*.5), easing:"cubic-bezier(.45,0,.25,1)", fill:"forwards"});
-  const done=()=>{ b.remove(); nav.classList.remove("flying"); };
-  a.onfinish=done; a.oncancel=done;
+  if(!from || !to || from.d===to.dataset.d) return;
+  to.classList.add(to.dataset.d>from.d ? "bar-l" : "bar-r");
 }
 function renderDays(){
   const nav = document.getElementById("days");
