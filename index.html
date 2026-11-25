@@ -533,11 +533,14 @@
   /* 4. Calmer motion: slower, easing out at the end */
   .reveal.in{animation:rise .8s cubic-bezier(.22,.61,.36,1) both;animation-delay:var(--d,0ms)}
   .reveal-x.in{animation:slideIn .7s cubic-bezier(.22,.61,.36,1) both;animation-delay:var(--d,0ms)}
-  .slide-l{animation:slideL .5s cubic-bezier(.22,.61,.36,1)}
-  .slide-r{animation:slideR .5s cubic-bezier(.22,.61,.36,1)}
+  .slide-l{animation:slideL .42s cubic-bezier(.22,.61,.36,1)}
+  .slide-r{animation:slideR .42s cubic-bezier(.22,.61,.36,1)}
   .fold[open] .card{animation:unfold .45s cubic-bezier(.22,.61,.36,1)}
-  @keyframes slideL{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
-  @keyframes slideR{from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:none}}
+  @keyframes slideL{from{opacity:0;transform:translateX(38%)}to{opacity:1;transform:none}}
+  @keyframes slideR{from{opacity:0;transform:translateX(-38%)}to{opacity:1;transform:none}}
+  /* Flying date bar */
+  .flybar{position:absolute;z-index:4;height:4px;background:var(--accent);pointer-events:none;box-shadow:0 2px 8px rgba(255,52,56,.45)}
+  .days.flying .day.on{--accent:transparent}
   /* 5. Soft cross-fade when switching days or tabs */
   #main.xf{animation:xf .45s ease-out}
   @keyframes xf{from{opacity:0}to{opacity:1}}
@@ -578,7 +581,7 @@ s.classList.add("out");setTimeout(function(){s.remove()},750)},1000);</script>
 <button id="totop" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Top</button>
 
 <script>
-const UPDATED = "24 Nov 2026";
+const UPDATED = "25 Nov 2026";
 
 // Venues: name + address used for the map link.
 // g = groups rooms of the same building on the Venues tab; d = description for the Venues tab; ig = Instagram handle without @
@@ -654,13 +657,12 @@ const S = {
 "2027-01-11":[
   {s:"10:00",e:"13:00",title:"Hands-on materials workshop: clay, mud, paint",who:"Joaquín Jara",v:"joaquin",t:"guest",ar:"Joaquín Jara"},
   {s:"14:00",e:"17:00",title:"Arts studios tour & talk",who:"with Darryl Eisden · meet at Unmaking Art Studio, then metro L3 Liceu → Vallcarca to Taller 46",vs:["unmaking","taller46"],t:"outing",ar:"Darryl Eisden"},
-  {s:"19:00",e:"22:00",title:"Cinema evening",v:"filmo",t:"perf",tbc:1,link:["Web","https://www.filmoteca.cat/"]}],
+  {s:"19:30",e:"20:30",title:"Flamenco at Las Brujas",who:"Live flamenco in a 17th-century cellar in the Gothic Quarter",v:"brujas",t:"perf",link:["Las Brujas","https://lasbrujasflamenco.com/"]}],
 "2027-01-12":[
   {s:"10:00",e:"13:00",title:"Visual artists workshop",who:"Neil Lorenzo · at his studio near Arc de Triomf",v:"neil",t:"guest",ar:"Neil Lorenzo"},
   {s:"14:00",e:"15:00",title:"Museu Tàpies session: talk",who:"With Maria Sellarès (Museu Tàpies), while the museum is closed for works",v:"upf",t:"talk",ar:"Maria Sellarès",links:[["Texts (4)","https://museutapies.org/en/blog/lectures/"],["Video (1h)","https://www.youtube.com/watch?v=9Z2GhLfCpDE"]]},
   {s:"15:00",e:"17:00",title:"Workshop on Tàpies",v:"upf",t:"workshop"},
-  {s:"19:00",e:"20:00",title:"Video Tuesday",v:"santambar",t:"perf",opt:1,link:["Arts Santa Mònica","https://www.santamonica.cat"]},
-  {s:"19:30",e:"20:30",title:"Flamenco at Las Brujas",who:"Live flamenco in a 17th-century cellar in the Gothic Quarter",v:"brujas",t:"perf",link:["Las Brujas","https://lasbrujasflamenco.com/"]}],
+  {s:"19:00",e:"20:00",title:"Video Tuesday",v:"santambar",t:"perf",opt:1,link:["Arts Santa Mònica","https://www.santamonica.cat"]}],
 "2027-01-13":[
   {s:"11:00",e:"12:00",title:"Guided exhibition visit",v:"santam",t:"outing"},
   {s:"13:00",e:"16:00",title:"Mixed-media collaboration workshop",who:"Núria Guiu",v:"santamact",t:"workshop",ar:"Núria Guiu"},
@@ -904,6 +906,24 @@ function tears(){
 }
 
 let navInit=false;
+// The red bar under the selected date lifts off and lands on the new one
+function flyBar(nav, from){
+  const to = nav.querySelector(".day.on[data-d]");
+  if(!from || !to || from.d===to.dataset.d || !nav.animate) return;
+  if(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const t = {x:to.offsetLeft, w:to.offsetWidth, y:to.offsetTop+to.offsetHeight};
+  const b = document.createElement("i"); b.className="flybar"; nav.appendChild(b);
+  nav.classList.add("flying");
+  const dist = Math.abs(t.x-from.x), lift = Math.min(34, 14+dist*.08), mid = (from.x+t.x)/2;
+  const f = (x,w,y,r)=>({left:(x+4)+"px", width:(w-8)+"px", top:(y-6)+"px", borderRadius:r});
+  const a = b.animate([
+    Object.assign(f(from.x,from.w,from.y,"0 0 9px 9px"),{offset:0}),
+    Object.assign(f(mid-14,28+0,from.y-lift,"999px"),{offset:.5}),
+    Object.assign(f(t.x,t.w,t.y,"0 0 9px 9px"),{offset:1})
+  ],{duration:Math.min(620, 380+dist*.5), easing:"cubic-bezier(.45,0,.25,1)", fill:"forwards"});
+  const done=()=>{ b.remove(); nav.classList.remove("flying"); };
+  a.onfinish=done; a.oncancel=done;
+}
 function renderDays(){
   const nav = document.getElementById("days");
   const showBar = view==="schedule"||view==="today";
@@ -923,7 +943,9 @@ function renderDays(){
     html = before ? chip+sep+html : html+sep+chip;
   }
   const keepX = nav.scrollLeft;
+  const was = nav.querySelector(".day.on[data-d]"), from = was ? {x:was.offsetLeft, w:was.offsetWidth, y:was.offsetTop+was.offsetHeight, d:was.dataset.d} : null;
   nav.innerHTML = html;
+  flyBar(nav, from);
   nav.scrollLeft = keepX;
   const tc = nav.querySelector(".day.out"); if(tc) tc.onclick=()=>{ location.hash="today"; };
   nav.querySelectorAll(".day[data-d]").forEach(b=>b.onclick=()=>{location.hash="jan-"+(+b.dataset.d.slice(8));});
@@ -1819,7 +1841,7 @@ function render(){
   document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",t.dataset.view===view||((view==="overview"||view==="today")&&t.dataset.view==="schedule")));
   renderDays();
   const main = document.getElementById("main");
-  main.classList.remove("slide-l","slide-r","xf"); void main.offsetWidth; main.classList.add(swipeDir? (swipeDir>0?"slide-l":"slide-r") : "xf"); swipeDir=0;
+  main.classList.remove("slide-l","slide-r","xf"); main.style.transition="none"; main.style.transform=""; main.style.opacity=""; void main.offsetWidth; main.classList.add(swipeDir? (swipeDir>0?"slide-l":"slide-r") : "xf"); swipeDir=0;
   main.innerHTML = (view==="today"?renderToday():view==="overview"?renderOverview():view==="info"?renderInfo():view==="artists"?renderArtists():view==="venues"?renderVenues():view==="nearby"?renderNearby():renderSchedule()) + (view==="today" ? "" : `<div class="foot">${countdownText()}Last updated ${UPDATED}</div>`);
   // Keep the logo hidden if it was already scrolled away
   setupReveal();
@@ -1901,32 +1923,51 @@ window.addEventListener("hashchange",()=>setTimeout(updateTop,50));
 
 // Swipe left/right on the schedule to change day
 let swipeDir = 0;
+// Where a swipe goes: dir 1 = next (swipe left), -1 = previous. Returns a hash, or null at the ends.
+function swipeTarget(dir){
+  if(view==="today"){
+    if(now.date<dates[0] && dir>0) return "jan-"+(+dates[0].slice(8));
+    if(now.date>dates[dates.length-1] && dir<0) return "jan-"+(+dates[dates.length-1].slice(8));
+    return null;
+  }
+  if(view==="schedule"){
+    const i=dates.indexOf(current), j=i+dir;
+    if((j<0 && now.date<dates[0]) || (j>=dates.length && now.date>dates[dates.length-1])) return "today";
+    if(j<0||j>=dates.length) return null;
+    return "jan-"+(+dates[j].slice(8));
+  }
+  // Other tabs: Artists ↔ Venues ↔ City ↔ Info (swipe right from Artists or All days goes back to the day)
+  if(view==="overview") return dir<0 ? "jan-"+(+(current||closestDay()).slice(8)) : "artists";
+  const order=["overview","artists","venues","nearby","info"], k=order.indexOf(view)+dir;
+  if(k<0||k>=order.length) return null;
+  return k===0 ? "jan-"+(+(current||closestDay()).slice(8)) : order[k];
+}
+// The page follows your finger, then glides out and the next day glides in
 (function(){
-  const main = document.getElementById("main"); let x0=null, y0=null;
-  main.addEventListener("touchstart",e=>{ if(e.touches.length>1||e.target.closest(".mapbox,.vmapwrap,.leaflet-container,.avrow")){x0=null;return;} x0=e.touches[0].clientX; y0=e.touches[0].clientY; },{passive:true});
+  const main = document.getElementById("main"); let x0=null, y0=null, lock=null, dx=0;
+  const calm = ()=>window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const setX = (x,tr)=>{ main.style.transition = tr||"none"; main.style.transform = x?`translateX(${x}px)`:""; main.style.opacity = x?String(Math.max(.35,1-Math.abs(x)/innerWidth*.9)):""; };
+  main.addEventListener("touchstart",e=>{ if(e.touches.length>1||e.target.closest(".mapbox,.vmapwrap,.leaflet-container,.avrow")){x0=null;return;} x0=e.touches[0].clientX; y0=e.touches[0].clientY; lock=null; dx=0; },{passive:true});
+  main.addEventListener("touchmove",e=>{
+    if(x0===null) return;
+    const mx=e.touches[0].clientX-x0, my=e.touches[0].clientY-y0;
+    if(lock===null && (Math.abs(mx)>10||Math.abs(my)>10)) lock = Math.abs(mx)>Math.abs(my)*1.2 ? "x" : "y";
+    if(lock!=="x" || calm()) return;
+    dx=mx; const has=!!swipeTarget(dx<0?1:-1);
+    setX(has ? dx*.85 : dx*.25);   // rubber band at the first and last day
+  },{passive:true});
+  const settle=()=>{ if(main.style.transform) setX(0,"transform .45s cubic-bezier(.22,.61,.36,1),opacity .45s ease"); };
+  main.addEventListener("touchcancel",()=>{ x0=null; settle(); },{passive:true});
   main.addEventListener("touchend",e=>{
     if(x0===null) return;
-    const dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0; x0=null;
-    if(Math.abs(dx)<60 || Math.abs(dx)<Math.abs(dy)*1.5) return;
-    const dir = dx<0?1:-1;
-    if(view==="today"){
-      if(now.date<dates[0] && dir>0){ swipeDir=dir; location.hash="jan-"+(+dates[0].slice(8)); }
-      if(now.date>dates[dates.length-1] && dir<0){ swipeDir=dir; location.hash="jan-"+(+dates[dates.length-1].slice(8)); }
-      return;
-    }
-    if(view==="schedule"){
-      const i=dates.indexOf(current), j=i+dir;
-      if((j<0 && now.date<dates[0]) || (j>=dates.length && now.date>dates[dates.length-1])){ swipeDir=dir; location.hash="today"; return; }
-      if(j<0||j>=dates.length) return;
-      swipeDir = dir; location.hash="jan-"+(+dates[j].slice(8)); return;
-    }
-    // Other tabs: Artists ↔ Venues ↔ Nearby ↔ Info (swipe right from Artists or All days goes back to the day)
-    if(view==="overview"){ swipeDir=dir; location.hash = dir<0 ? "jan-"+(+(current||closestDay()).slice(8)) : "artists"; return; }
-    const order=["overview","artists","venues","nearby","info"];
-    const k=order.indexOf(view)+dir;
-    if(k<0||k>=order.length) return;
-    swipeDir = dir;
-    location.hash = k===0 ? "jan-"+(+(current||closestDay()).slice(8)) : order[k];
+    const ex=e.changedTouches[0].clientX-x0, ey=e.changedTouches[0].clientY-y0; x0=null;
+    if(Math.abs(ex)<60 || Math.abs(ex)<Math.abs(ey)*1.5){ settle(); return; }
+    const dir = ex<0?1:-1, to = swipeTarget(dir);
+    if(!to){ settle(); return; }
+    swipeDir = dir; haptic(6);
+    if(calm()){ location.hash=to; return; }
+    setX(-dir*innerWidth*.45, "transform .22s cubic-bezier(.4,0,1,1),opacity .22s ease-in");
+    setTimeout(()=>{ location.hash=to; }, 200);
   },{passive:true});
 })();
 render();
@@ -2314,7 +2355,7 @@ const POP = {
   // 5 · Before shows. match = words in the title. meet = where/when to meet
   shows: [
     {d:"2027-01-09", match:"Dimanche",        meet:"", note:"Visual theatre without words."},
-    {d:"2027-01-12", match:"Flamenco",        meet:"", note:""},
+    {d:"2027-01-11", match:"Flamenco",        meet:"", note:""},
     {d:"2027-01-15", match:"RUSH",            meet:"", note:"Ages 16+."},
     {d:"2027-01-17", match:"Frames Percussion", meet:"", note:""}
   ],

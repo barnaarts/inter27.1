@@ -162,11 +162,12 @@ END:VEVENT
 BEGIN:VEVENT
 UID:inter27-2027-01-11-2@barnaarts.com
 DTSTAMP:20261120T214750Z
-DTSTART:20270111T180000Z
-DTEND:20270111T210000Z
-SUMMARY:Cinema evening · TBC
-LOCATION:Filmoteca de Catalunya\, Pl. de Salvador Seguí 1\, Barcelona
-DESCRIPTION:Latest times and changes are in the program app.
+DTSTART:20270111T183000Z
+DTEND:20270111T193000Z
+SUMMARY:Flamenco at Las Brujas
+LOCATION:Las Brujas Flamenco Club\, C/ de la Mercè 31\, Barcelona
+DESCRIPTION:Live flamenco in a 17th-century cellar in the Gothic Quarter\nL
+ atest times and changes are in the program app.
 END:VEVENT
 BEGIN:VEVENT
 UID:inter27-2027-01-12-0@barnaarts.com
@@ -207,16 +208,6 @@ DTEND:20270112T190000Z
 SUMMARY:Video Tuesday (optional)
 LOCATION:Arts Santa Mònica\, La Rambla 7\, Barcelona
 DESCRIPTION:Latest times and changes are in the program app.
-END:VEVENT
-BEGIN:VEVENT
-UID:inter27-2027-01-12-4@barnaarts.com
-DTSTAMP:20261120T214750Z
-DTSTART:20270112T190000Z
-DTEND:20270112T200000Z
-SUMMARY:Flamenco at Las Brujas
-LOCATION:Las Brujas Flamenco Club\, C/ de la Mercè 31\, Barcelona
-DESCRIPTION:Live flamenco in a 17th-century cellar in the Gothic Quarter\nL
- atest times and changes are in the program app.
 END:VEVENT
 BEGIN:VEVENT
 UID:inter27-2027-01-13-0@barnaarts.com
