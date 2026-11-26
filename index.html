@@ -404,6 +404,17 @@
   /* Hidden games */
   .logoband .wm{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;touch-action:manipulation;cursor:pointer}
   body.g-open{overflow:hidden}
+  .gt{position:fixed;inset:0;z-index:101;display:flex;align-items:center;justify-content:center;background:rgba(21,5,5,.35);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);animation:gtIn .3s ease both;transition:opacity .6s ease,-webkit-backdrop-filter .6s,backdrop-filter .6s;pointer-events:none}
+  .gt.out{opacity:0}
+  @keyframes gtIn{from{opacity:0}to{opacity:1}}
+  .gt-b{display:flex;align-items:center;gap:10px;padding:16px 24px;max-width:92vw;background:#ff3438;color:#fff;border:4px solid #fff;border-radius:18px;transform:rotate(-4deg);box-shadow:0 0 0 6px #ffd84a,0 18px 50px rgba(0,0,0,.45),0 0 60px 10px rgba(255,52,56,.7);font-family:"Oswald","Arial Narrow",sans-serif;animation:gtSlam .55s cubic-bezier(.2,1.6,.4,1) both,gtFlash .3s steps(2) .55s 3}
+  .gt-w{font-size:clamp(38px,11vw,84px);font-weight:500;letter-spacing:.04em;line-height:1;text-shadow:3px 3px 0 #150505;animation:gtPop .5s ease .15s both}
+  .gt-w2{color:#ffd84a;animation-delay:.3s}
+  .gt-s{font-size:22px;color:#ffd84a;animation:gtSpin 1.2s linear infinite}
+  @keyframes gtSlam{0%{transform:scale(3) rotate(-14deg);opacity:0}60%{opacity:1}100%{transform:scale(1) rotate(-4deg);opacity:1}}
+  @keyframes gtPop{0%{transform:translateY(30px) scale(.5);opacity:0}100%{transform:none;opacity:1}}
+  @keyframes gtFlash{0%{background:#ff3438;box-shadow:0 0 0 6px #ffd84a,0 18px 50px rgba(0,0,0,.45),0 0 60px 10px rgba(255,52,56,.7)}100%{background:#7b4bd1;box-shadow:0 0 0 6px #fff,0 18px 50px rgba(0,0,0,.45),0 0 90px 22px rgba(255,216,74,.9)}}
+  @keyframes gtSpin{to{transform:rotate(360deg)}}
   #game{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;flex-direction:column}
   #game[hidden]{display:none}
   .g-top{display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;background:var(--accent);color:#fff}
@@ -2022,6 +2033,17 @@ const clock=()=> AC ? AC.currentTime : performance.now()/1000;
 function tone(f,dur,type,vol,at){ const a=ac(); if(!a) return; const t=at||a.currentTime; const o=a.createOscillator(), g=a.createGain();
   o.type=type||"triangle"; o.frequency.value=f; g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol||.25,t+.01); g.gain.exponentialRampToValueAtTime(.0001,t+(dur||.25));
   o.connect(g); g.connect(a.destination); o.start(t); o.stop(t+(dur||.25)+.05); }
+// Sparkly chime for a good answer: a quick rising arpeggio with a few shimmering pings on top
+function sparkle(vol){ const a=ac(); if(!a) return; const t=a.currentTime, v=vol||.14;
+  [1319,1568,1976,2637].forEach((f,i)=>tone(f,.35,"sine",v,t+i*.05));
+  for(let i=0;i<5;i++) tone(2600+Math.random()*2200,.18,"sine",v*.45,t+.18+i*.045+Math.random()*.03); }
+// Horn for a wrong answer: two detuned brassy tones that sag in pitch
+function horn(vol){ const a=ac(); if(!a) return; const t=a.currentTime, v=vol||.16, d=.55;
+  const lp=a.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=1400; lp.connect(a.destination);
+  [[233,0],[220,.004]].forEach(([f,dt])=>{ const o=a.createOscillator(), g=a.createGain(); o.type="sawtooth";
+    o.frequency.setValueAtTime(f,t+dt); o.frequency.linearRampToValueAtTime(f*.86,t+d);
+    g.gain.setValueAtTime(.0001,t+dt); g.gain.exponentialRampToValueAtTime(v,t+dt+.03); g.gain.setValueAtTime(v,t+d-.12); g.gain.exponentialRampToValueAtTime(.0001,t+d);
+    o.connect(g); g.connect(lp); o.start(t+dt); o.stop(t+d+.05); }); }
 function clap(at,vol){ const a=ac(); if(!a) return; const t=at||a.currentTime;
   if(!NB){ NB=a.createBuffer(1,a.sampleRate*.2,a.sampleRate); const d=NB.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3); }
   const s=a.createBufferSource(), f=a.createBiquadFilter(), g=a.createGain(); s.buffer=NB; f.type="bandpass"; f.frequency.value=1400; f.Q.value=.9;
@@ -2044,10 +2066,10 @@ const SIMON={title:"Copy the choreography", start(){
     later(()=>{ on=true; idx=0; msg.textContent="Your turn!"; },500+seq.length*gap); }
   go.onclick=()=>{ ac(); seq=[]; go.hidden=true; next(); };
   pads.forEach(p=>p.onpointerdown=()=>{ if(!on) return; const i=+p.dataset.i; flash(i);
-    if(i!==seq[idx]){ on=false; tone(110,.5,"sawtooth",.2); tick([40,40,40]); const r=seq.length-1;
+    if(i!==seq[idx]){ on=false; horn(); tick([40,40,40]); const r=seq.length-1;
       const nb=setBest("simon",r); body.querySelector("#sm-b").textContent=getBest("simon");
       msg.textContent=`Out of step! You remembered ${r} move${r===1?"":"s"}.${nb&&r?" New best!":""}`; go.textContent="Play again"; go.hidden=false; return; }
-    if(++idx===seq.length){ on=false; msg.textContent="Nice! Next round…"; later(next,800); } });
+    if(++idx===seq.length){ on=false; later(()=>sparkle(.1),250); msg.textContent="Nice! Next round…"; later(next,800); } });
 }};
 
 // 2. Flamenco compás: clap on the accents of the 12-beat cycle
@@ -2081,8 +2103,8 @@ const COMPAS={title:"Flamenco compás", start(){
   body.querySelector("#cp-clap").onpointerdown=e=>{ e.preventDefault(); ac(); clap(0,.7); tick(10);
     if(!running) return; const tt=clock(), k=Math.round((tt-t0)/BEAT), dt=Math.abs(tt-(t0+k*BEAT));
     if(k<scoredFrom||k>=total) return;
-    if(ACC.includes(k%12) && !hit[k] && dt<.17){ const p=dt<.075?3:1; hit[k]=1; pts+=p; fb.textContent=p===3?"Perfect!":"Good"; fb.className="cp-fb "+(p===3?"pf":"gd"); }
-    else { offs++; fb.textContent="Off the beat"; fb.className="cp-fb off"; } };
+    if(ACC.includes(k%12) && !hit[k] && dt<.17){ const p=dt<.075?3:1; hit[k]=1; pts+=p; fb.textContent=p===3?"Perfect!":"Good"; fb.className="cp-fb "+(p===3?"pf":"gd"); if(p===3) sparkle(.08); }
+    else { offs++; fb.textContent="Off the beat"; fb.className="cp-fb off"; horn(.07); } };
 }};
 
 // 3. Trencadís memory
@@ -2103,7 +2125,7 @@ const MEMORY={title:"Trencadís memory", start(){
   body.querySelectorAll(".mm-card").forEach(c=>c.onclick=()=>{ if(lock||c.classList.contains("up")||c.classList.contains("done")) return;
     c.classList.add("up"); tone(520,.12,"sine",.15); tick(6); open.push(c);
     if(open.length<2) return; moves++; body.querySelector("#mm-m").textContent=moves; const [a,b]=open; open=[];
-    if(a.dataset.k===b.dataset.k){ later(()=>{ a.classList.add("done"); b.classList.add("done"); tone(784,.25,"triangle",.2); done++;
+    if(a.dataset.k===b.dataset.k){ later(()=>{ a.classList.add("done"); b.classList.add("done"); sparkle(); done++;
         if(done===6){ const s=Math.round((Date.now()-t0)/1000), nb=setBest("memory",moves,true); body.querySelector("#mm-b").textContent=getBest("memory");
           body.querySelector("#mm-msg").textContent=`All pairs found in ${moves} moves and ${s} seconds.${nb?" New best!":""}`; const g=body.querySelector("#mm-go"); g.hidden=false; g.onclick=()=>MEMORY.start(); } },350); }
     else { lock=true; later(()=>{ a.classList.remove("up"); b.classList.remove("up"); lock=false; },850); } });
@@ -2126,8 +2148,8 @@ const QUIZ={title:"Which venue is this?", start(){
     const f=Math.max(0,1-(performance.now()-start)/T), ok=b&&b.dataset.k===q.k;
     img.style.transition="transform .7s ease"; img.style.transform="none";
     opts.querySelectorAll(".qz-opt").forEach(x=>{ if(x.dataset.k===q.k) x.classList.add("ok"); else if(x===b) x.classList.add("no"); });
-    if(ok){ const p=50+Math.round(f*50); score+=p; tone(660,.15,"triangle",.2); later(()=>tone(880,.2,"triangle",.2),120); msg.textContent=`Yes! +${p}`; tick(10); }
-    else { tone(150,.35,"sawtooth",.15); msg.textContent= b?`It's ${q.n}.`:`Time's up! It's ${q.n}.`; tick([30,30,30]); }
+    if(ok){ const p=50+Math.round(f*50); score+=p; sparkle(); msg.textContent=`Yes! +${p}`; tick(10); }
+    else { horn(); msg.textContent= b?`It's ${q.n}.`:`Time's up! It's ${q.n}.`; tick([30,30,30]); }
     body.querySelector("#qz-s").textContent=score;
     later(()=>{ if(++r<R) round(); else { const nb=setBest("quiz",score); body.querySelector("#qz-b").textContent=getBest("quiz");
       msg.textContent=`You scored ${score} out of ${R*100}.${nb&&score?" New best!":""}`; opts.innerHTML=""; const g=body.querySelector("#qz-go"); g.hidden=false; g.onclick=()=>QUIZ.start(); } },1700); }
@@ -2169,8 +2191,8 @@ const TRIVIA={title:"Artists trivia", start(){
     opts.querySelectorAll(".qz-opt").forEach(b=>b.onclick=()=>answer(b)); }
   function answer(b){ if(answered) return; answered=true; const q=qs[r], ok=b.dataset.o===q[1];
     opts.querySelectorAll(".qz-opt").forEach(x=>{ if(x.dataset.o===q[1]) x.classList.add("ok"); else if(x===b) x.classList.add("no"); });
-    if(ok){ streak++; const p=100+(streak>1?25*(streak-1):0); score+=p; msg.textContent=streak>1?`Right! ${streak} in a row: +${p}`:`Right! +${p}`; tone(660,.15,"triangle",.2); later(()=>tone(880,.2,"triangle",.2),120); tick(10); }
-    else { streak=0; msg.textContent=`It's ${q[1]}.`; tone(150,.35,"sawtooth",.15); tick([30,30,30]); }
+    if(ok){ streak++; const p=100+(streak>1?25*(streak-1):0); score+=p; msg.textContent=streak>1?`Right! ${streak} in a row: +${p}`:`Right! +${p}`; sparkle(); tick(10); }
+    else { streak=0; msg.textContent=`It's ${q[1]}.`; horn(); tick([30,30,30]); }
     const a=ARTISTS.find(x=>x.name===q[1]); if(a && a.img && !q[3]) who.innerHTML=`<img src="${a.img}" alt=""><span>${a.name}<small>${a.role}</small></span>`;
     body.querySelector("#tv-s").textContent=score;
     later(()=>{ if(++r<R) round(); else { const nb=setBest("trivia",score); body.querySelector("#tv-b").textContent=getBest("trivia");
@@ -2192,8 +2214,8 @@ function mcGame(key,title,intro,items,R,optsFn){ const G={title, start(){
     opts.className="qz-opts"+(o.length===2?" two":""); opts.querySelectorAll(".qz-opt").forEach(b=>b.onclick=()=>answer(b)); }
   function answer(b){ if(answered) return; answered=true; const q=qs[r], ok=b.dataset.o===q.a;
     opts.querySelectorAll(".qz-opt").forEach(x=>{ if(x.dataset.o===q.a) x.classList.add("ok"); else if(x===b) x.classList.add("no"); });
-    if(ok){ streak++; const p=100+(streak>1?25*(streak-1):0); score+=p; msg.textContent=streak>1?`Right! ${streak} in a row: +${p}`:`Right! +${p}`; tone(660,.15,"triangle",.2); later(()=>tone(880,.2,"triangle",.2),120); tick(10); }
-    else { streak=0; msg.textContent=`Not quite. The answer is: ${q.a}`; tone(150,.35,"sawtooth",.15); tick([30,30,30]); }
+    if(ok){ streak++; const p=100+(streak>1?25*(streak-1):0); score+=p; msg.textContent=streak>1?`Right! ${streak} in a row: +${p}`:`Right! +${p}`; sparkle(); tick(10); }
+    else { streak=0; msg.textContent=`Not quite. The answer is: ${q.a}`; horn(); tick([30,30,30]); }
     body.querySelector("#mc-s").textContent=score;
     if(q.note){ note.textContent=q.note; nx.hidden=false; nx.onclick=next; } else later(next,1700); }
   function next(){ if(++r<qs.length) return round(); const nb=setBest(key,score); body.querySelector("#mc-b").textContent=getBest(key);
@@ -2241,7 +2263,7 @@ const TIMELINE={title:"Program timeline", start(){
     list.querySelectorAll(".tl-item").forEach(b=>{ const i=+b.dataset.i, pos=picked.indexOf(i), ok=order[pos]===i; if(ok) right++;
       b.classList.add(ok?"ok":"no"); b.querySelector("small").textContent=`${fmt(set[i].d,{weekday:"short",month:"short",day:"numeric"})} · ${t12(set[i].x.s)}`; b.style.order=order.indexOf(i); });
     const p=right*40+(right===5?100:0); score+=p; body.querySelector("#tl-s").textContent=score;
-    msg.textContent= right===5?`Perfect order! +${p}`:`${right} of 5 in the right place. +${p}`; right===5?(tone(660,.15),later(()=>tone(880,.2),120)):tone(300,.2);
+    msg.textContent= right===5?`Perfect order! +${p}`:`${right} of 5 in the right place. +${p}`; right===5?sparkle():horn();
     note.textContent="Now in the real order, with dates."; nx.hidden=false; nx.textContent= r+1<R?"Next →":"See score";
     nx.onclick=()=>{ if(++r<R) return round(); const nb=setBest("timeline",score); body.querySelector("#tl-b").textContent=getBest("timeline");
       list.innerHTML=""; note.textContent=""; nx.hidden=true; msg.textContent=`You scored ${score} out of ${R*300}.${nb&&score?" New best!":""}`; const g=body.querySelector("#tl-go"); g.hidden=false; g.onclick=()=>TIMELINE.start(); }; }
@@ -2298,7 +2320,18 @@ const VOCAB=mcGame("vocab","Dance & art vocabulary","Words you'll hear from the 
 const GAMES=[SIMON,COMPAS,MEMORY,QUIZ,TRIVIA,CATALAN,METROG,TIMELINE,GAUDIG,MANNERSG,VOCAB];
 function play(g){ clearAll(); cur=g; ttl.textContent=g.title; body.scrollTop=0; g.start(); }
 function nextGame(){ if(!bag.length){ bag=shuffle(GAMES); if(bag[0]===cur && bag.length>1) bag.push(bag.shift()); } play(bag.shift()); }
-function openGames(){ if(!box.hidden) return; box.hidden=false; document.body.classList.add("g-open"); tick([10,30,10]); nextGame(); }
+function startGames(){ box.hidden=false; document.body.classList.add("g-open"); tick([10,30,10]); nextGame(); }
+// GAME TIME banner: blurs the page, flashes, then fades into the game
+let gtOn=false;
+function openGames(){ if(!box.hidden || gtOn) return;
+  if(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches){ startGames(); return; }
+  gtOn=true; tick([15,40,15,40,30]);
+  const o=document.createElement("div"); o.className="gt";
+  o.innerHTML=`<div class="gt-b"><span class="gt-s">✦</span><span class="gt-w">GAME</span><span class="gt-w gt-w2">TIME</span><span class="gt-s">✦</span></div>`;
+  document.body.appendChild(o);
+  setTimeout(()=>{ startGames(); o.classList.add("out"); },1500);
+  setTimeout(()=>{ o.remove(); gtOn=false; },2100);
+}
 function closeGames(){ clearAll(); box.hidden=true; document.body.classList.remove("g-open"); body.innerHTML=""; }
 box.querySelector(".g-x").onclick=closeGames;
 document.addEventListener("keydown",e=>{ if(e.key==="Escape" && !box.hidden) closeGames(); });
