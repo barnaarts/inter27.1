@@ -1515,7 +1515,7 @@ function renderVenues(){
   if(!VPHOTOS.upf) VPHOTOS.upf = "img/sala-reflexio.jpg";
   return `<h1>Venues</h1><p class="sub">Everywhere we go, in order of first visit. Tap a pin or a date to see what's on.</p>
   <div class="vmapwrap" id="vmapwrap"><div class="vstick" id="vstick"><div class="vchips">${mapChips(venueDays().days)}</div><div class="vmapbox"><div class="vmap" id="vmap"></div></div><div class="vnote" id="vnote">Pick a day to see its stops in order, starting from the hostel.</div></div></div>` +
-  keys.map((k,vi)=>{const v=V[k]; const tdy=days[k].has(now.date); return `<div class="venue reveal${tdy?" now":""}${mapDay!=="all"&&!days[k].has(mapDay)?" off":""}" data-k="${k}" data-i="${vi}" data-days="${[...days[k]].join(" ")}">${tdy?'<span class="tag now todaytag">Today</span>':''}
+  keys.map((k,vi)=>{const v=V[k]; const tdy=days[k].has(now.date); return `<div class="venue reveal${tdy?" now":""}${mapDay!=="all"&&!days[k].has(mapDay)?" off":""}" id="v-${k}" data-k="${k}" data-i="${vi}" data-days="${[...days[k]].join(" ")}">${tdy?'<span class="tag now todaytag">Today</span>':''}
     ${VPHOTOS[k]?`<img class="vpic" src="${VPHOTOS[k]}" alt="${v.n}">`:""}
     <h3>${v.n.split(" — ")[0]}${v.home?' <span class="tag opt">Where you stay</span>':''}</h3>
     ${v.d?`<p>${v.d}</p>`:""}
@@ -1661,8 +1661,8 @@ function renderPhrases(){
   const row=(code,lang,t)=>`<div class="ph-l"><span class="ph-c">${code}</span><span class="ph-t">${t}</span>${canSay?`<button class="say" data-l="${lang}" data-t="${t.replace(/"/g,"&quot;")}" aria-label="Listen">🔊</button>`:""}</div>`;
   return `<h2 id="phrases">🗣️ Useful phrases</h2>
     <div class="card">Barcelona has two official languages. Everyone understands <b>Spanish</b>, but <b>Catalan</b> is the first language of many locals and what you'll see on most signs, menus and metro announcements. A <i>bon dia</i> or <i>gràcies</i> always goes down well.${canSay?`<br><span class="who">Tap 🔊 to hear it. If your phone has no Catalan voice, it reads with a Spanish accent.</span>`:""}</div>` +
-  PHRASES.map((G,gi)=>`<details class="fold ph"${gi===0?" open":""}><summary>${G.g}</summary><div class="card">${G.items.map(([en,es,ca])=>
-    `<div class="ph-r"><div class="ph-en">${en}</div>${row("ES","es-ES",es)}${row("CA","ca-ES",ca)}</div>`).join("")}</div></details>`).join("");
+  PHRASES.map((G,gi)=>`<details class="fold ph"${gi===0?" open":""}><summary>${G.g}</summary><div class="card">${G.items.map(([en,es,ca],ii)=>
+    `<div class="ph-r" id="ph-${gi}-${ii}"><div class="ph-en">${en}</div>${row("ES","es-ES",es)}${row("CA","ca-ES",ca)}</div>`).join("")}</div></details>`).join("");
 }
 
 function renderGettingAround(){
@@ -1699,11 +1699,11 @@ function renderNearby(){
     <div class="card"><b>Antoni Gaudí</b> <span class="who">· Architect (1852–1926)</span><br>The best-known name of Catalan modernisme. He built with curves, light, colour and forms taken from nature, and many of his buildings line the streets of Cerdà's Eixample.
       <div class="links"><a href="#jan-10-0">Sun Jan 10 · La Pedrera & Casa Batlló →</a><a href="https://en.wikipedia.org/wiki/Antoni_Gaud%C3%AD" target="_blank" rel="noopener">Read more ↗</a></div></div>
     <div class="card"><b>Antoni Tàpies</b> <span class="who">· Painter, sculptor (1923–2012)</span><br>One of the great artists of post-war Europe. He painted with matter: sand, earth, varnish, everyday objects, scratches and signs. The quiet room where we meet the Museu Tàpies team was designed with him.
-      <div class="links"><a href="#jan-12-1">Tue Jan 12 · Tàpies session →</a><a href="https://museutapies.org" target="_blank" rel="noopener">Museu Tàpies ↗</a></div></div>
+      <div class="links"><a href="#jan-12-1">Tue Jan 12 · Tàpies session →</a><a href="https://www.youtube.com/watch?v=9Z2GhLfCpDE" target="_blank" rel="noopener">🎬 Film ↗</a><a href="https://museutapies.org" target="_blank" rel="noopener">Museu Tàpies ↗</a></div></div>
     ${renderGettingAround()}</div>
     <h2 id="nearby-list" style="font-size:20px;margin-top:30px">📍 Nearby</h2><p class="sub">Essentials around where you stay and where we work. Opening hours change, so check before you go.</p>` +
   NEARBY.map((A,ai)=>`<h2 id="nb-${ai}">${A.area}</h2>`+A.groups.map(G=>`<h4>${G.g}</h4>`+G.items.map(([n,a,d,w])=>
-    `<div class="nbi reveal-x"><div><b>${n}</b>${WALK[n]!=null?`<span class="walk">🚶 ${WALK[n]} min${WALK[n]>=25?" · taxi in an emergency":""}</span>`:""}<div class="who">${a}</div><div class="who">${d}</div></div><div class="nbl">${w?`<a href="${w}" target="_blank" rel="noopener">Web ↗</a>`:""}<a href="${mapLink(n+", "+a+", Barcelona")}" target="_blank" rel="noopener">Map ↗</a></div></div>`).join("")).join("")).join("") +
+    `<div class="nbi reveal-x" id="nb-${slug(n)}"><div><b>${n}</b>${WALK[n]!=null?`<span class="walk">🚶 ${WALK[n]} min${WALK[n]>=25?" · taxi in an emergency":""}</span>`:""}<div class="who">${a}</div><div class="who">${d}</div></div><div class="nbl">${w?`<a href="${w}" target="_blank" rel="noopener">Web ↗</a>`:""}<a href="${mapLink(n+", "+a+", Barcelona")}" target="_blank" rel="noopener">Map ↗</a></div></div>`).join("")).join("")).join("") +
   `<div class="info">${renderPhrases()}</div></div>`;
 }
 
@@ -2506,5 +2506,97 @@ document.addEventListener("visibilitychange",()=>{ if(!document.hidden) setTimeo
 })();
 </script>
 
+<button id="srch" type="button" aria-label="Search">🔍 Search</button>
+<div id="sbox" hidden><div class="sb-in" role="dialog" aria-label="Search">
+  <div class="sb-top"><input id="sq" type="search" placeholder="Search sessions, artists, places, phrases…" autocomplete="off" enterkeyhint="search"><button id="sx" type="button" aria-label="Close">✕</button></div>
+  <div id="sres" class="sb-res"></div></div></div>
+<style>
+  #srch{position:fixed;left:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:6;font:inherit;font-size:13px;font-weight:700;color:#fff;background:rgba(21,5,5,.45);border:1px solid #fff;border-radius:999px;padding:8px 14px;box-shadow:0 2px 10px rgba(0,0,0,.18);cursor:pointer;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);transition:transform .12s ease}
+  #srch:active{transform:scale(.92)}
+  body.g-open #srch{display:none}
+  #sbox{position:fixed;inset:0;z-index:60;background:rgba(21,5,5,.45);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);display:flex;justify-content:center;align-items:flex-start;padding:calc(12px + env(safe-area-inset-top)) 12px 12px;animation:dimIn .2s ease both}
+  #sbox[hidden]{display:none}
+  .sb-in{width:100%;max-width:560px;max-height:100%;display:flex;flex-direction:column;background:var(--card);border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,.3);overflow:hidden;animation:rise .25s ease}
+  .sb-top{display:flex;gap:8px;padding:12px;border-bottom:1px solid var(--line)}
+  #sq{flex:1;min-width:0;font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:9px 14px;outline:none}
+  #sq:focus{border-color:var(--accent)}
+  #sx{flex:none;border:0;background:var(--bg);color:var(--ink);font:inherit;font-weight:700;width:40px;border-radius:999px;cursor:pointer}
+  .sb-res{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 8px 10px}
+  .sb-res h5{margin:12px 6px 4px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  .sb-r{display:block;width:100%;text-align:left;border:0;background:none;font:inherit;color:var(--ink);padding:8px 8px;border-radius:12px;cursor:pointer}
+  .sb-r:active,.sb-r:hover{background:var(--bg)}
+  .sb-r b{display:block;font-size:15px}
+  .sb-r small{display:block;color:var(--muted);font-size:13px;margin-top:1px}
+  .sb-r mark{background:var(--accent-soft);color:inherit;border-radius:3px}
+  .sb-none{color:var(--muted);text-align:center;padding:22px 10px;font-size:14px}
+</style>
+<script>
+// Search: floating button, lower left. Searches the schedule, artists, venues, City and Info.
+(function(){
+  const box=document.getElementById("sbox"), q=document.getElementById("sq"), res=document.getElementById("sres");
+  const norm=s=>String(s||"").replace(/<[^>]+>/g," ").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+  const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const INFO=[
+    ["🚨 Emergency","112 police ambulance fire emergency","i-sos"],
+    ["📞 Contacts","phone whatsapp albert katie ale call","i-contacts"],
+    ["🏠 Where you stay","yugo hostel room check-in check-out reception laundry towels kitchen","i-stay"],
+    ["💬 Group WhatsApp & who's coming","group whatsapp students faculty who's coming","i-group"],
+    ["💡 Good to know","tips insurance pharmacy sunday supermarket meal times lunch dinner pickpockets water cash atm tipping","i-tips"],
+    ["📄 Info doc & files","student info doc shared folder documents","i-doc"],
+    ["📖 How to use this page","how to use updated new optional to be confirmed","i-how"],
+    ["🧳 What to bring","what to bring packing pack clothes jacket shoes adapter plug toiletries passport notebook sketchbook destroy question project","i-bring"],
+    ["📱 Put it on your phone","app home screen install iphone android","i-app"]];
+  const CITY=[
+    ["🎬 Must watch before coming","video history barcelona planned built","must-watch"],
+    ["🏛️ Who shaped the city","cerda gaudi tapies urban planner architect painter eixample","shapers"],
+    ["🚇 Getting around: T-usual","t-usual metro pass ticket transport t-mobilitat","getting-around"],
+    ["✈️ Airport ↔ Yugo","airport aerobus taxi metro l9 arrival departure","getting-around"],
+    ["🗺️ Metro map","metro map lines stations","metro-map"]];
+  let IDX=null;
+  function build(){
+    const I=[];
+    dates.forEach(d=>S[d].forEach((x,i)=>{ const vs=[...(x.vs||[]),...(x.v?[x.v]:[])].map(k=>V[k]&&V[k].n).filter(Boolean);
+      I.push({g:"Schedule",t:`${ico(x)} ${x.title}`,s:`${fmt(d,{weekday:"short",month:"short",day:"numeric"})}${x.s?" · "+t12(x.s):""}${vs.length?" · "+vs[0].split(" — ")[0]:""}`,
+        k:norm([x.title,x.who,vs.join(" "),x.ar,LABEL[x.t],fmt(d,{weekday:"long",month:"long",day:"numeric"})].join(" ")),go:()=>{location.hash=`jan-${+d.slice(8)}-${i}`;}}); }));
+    ARTISTS.forEach(a=>I.push({g:"Artists",t:a.name,s:a.role,k:norm([a.name,a.role,a.bio].join(" ")),go:()=>{location.hash="artist-"+slug(a.name);}}));
+    const used=venueDays().days; Object.keys(V).filter(k=>!V[k].g && (used[k]||V[k].show||V[k].home)).forEach(k=>{ const v=V[k];
+      I.push({g:"Venues",t:v.n.split(" — ")[0],s:street(v),k:norm([v.n,v.a,v.d].join(" ")),go:()=>{ if(v.home){ to("info","i-stay"); return; } if(typeof mapDay!=="undefined") mapDay="all"; to("venues","v-"+k); }}); });
+    CITY.forEach(([t,w,id])=>I.push({g:"City",t,s:"",k:norm(t+" "+w),go:()=>to("nearby",id)}));
+    NEARBY.forEach(A=>A.groups.forEach(G=>G.items.forEach(([n,a,d])=>I.push({g:"City",t:n,s:`${G.g} · ${a}`,k:norm([n,a,d,G.g,A.area].join(" ")),go:()=>to("nearby","nb-"+slug(n))}))));
+    PHRASES.forEach((G,gi)=>G.items.forEach(([en,es,ca],ii)=>I.push({g:"Phrases",t:en,s:`${es} · ${ca}`,k:norm([en,es,ca].join(" ")),go:()=>to("nearby",`ph-${gi}-${ii}`)})));
+    INFO.forEach(([t,w,id])=>I.push({g:"Info",t,s:"",k:norm(t+" "+w),go:()=>to("info",id)}));
+    return I;
+  }
+  // Switch tab if needed, open any folded card around the target, then scroll to it
+  function to(v,id){
+    const go=()=>{ const el=document.getElementById(id); if(!el) return;
+      for(let p=el; p; p=p.parentElement) if(p.tagName==="DETAILS") p.open=true;
+      el.classList.add("in"); jumpTo(id); el.classList.remove("hit"); void el.offsetWidth; el.classList.add("hit"); };
+    if(view===v) go(); else { location.hash = v==="nearby"?"city":v; setTimeout(go,450); }
+  }
+  function hl(s,words){ let h=esc(s); words.forEach(w=>{ if(w.length<2) return;
+    const n=norm(h), i=n.indexOf(w); if(i>=0) h=h.slice(0,i)+"<mark>"+h.slice(i,i+w.length)+"</mark>"+h.slice(i+w.length); }); return h; }
+  let hits=[];
+  function run(){
+    const words=norm(q.value).split(/\s+/).filter(Boolean);
+    if(!words.length){ res.innerHTML=`<div class="sb-none">Try “Gaudí”, “Caldera”, “pharmacy”, “metro” or “thank you”.</div>`; hits=[]; return; }
+    hits=IDX.filter(r=>words.every(w=>r.k.includes(w))).map(r=>({r,sc:words.every(w=>norm(r.t).includes(w))?0:1})).sort((a,b)=>a.sc-b.sc).map(x=>x.r).slice(0,40);
+    if(!hits.length){ res.innerHTML=`<div class="sb-none">Nothing found for “${esc(q.value)}”.</div>`; return; }
+    const order=["Schedule","Artists","Venues","Info","City","Phrases"]; let h="";
+    order.forEach(g=>{ const gs=hits.filter(r=>r.g===g); if(!gs.length) return;
+      h+=`<h5>${g}</h5>`+gs.map(r=>`<button class="sb-r" type="button" data-i="${hits.indexOf(r)}"><b>${hl(r.t,words)}</b>${r.s?`<small>${hl(r.s,words)}</small>`:""}</button>`).join(""); });
+    res.innerHTML=h;
+  }
+  function open(){ IDX=IDX||build(); box.hidden=false; document.documentElement.style.overflow="hidden"; run(); setTimeout(()=>q.focus(),60); haptic(8); }
+  function close(){ box.hidden=true; document.documentElement.style.overflow=""; q.blur(); }
+  document.getElementById("srch").onclick=open;
+  document.getElementById("sx").onclick=close;
+  box.addEventListener("click",e=>{ if(e.target===box){ close(); return; }
+    const b=e.target.closest(".sb-r"); if(!b) return; const r=hits[+b.dataset.i]; close(); if(r) r.go(); });
+  q.addEventListener("input",run);
+  q.addEventListener("keydown",e=>{ if(e.key==="Enter" && hits[0]){ e.preventDefault(); const r=hits[0]; close(); r.go(); } });
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape" && !box.hidden) close(); });
+})();
+</script>
 </body>
 </html>
