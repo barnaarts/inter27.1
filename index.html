@@ -407,7 +407,7 @@
   .gt{position:fixed;inset:0;z-index:101;display:flex;align-items:center;justify-content:center;background:rgba(21,5,5,.35);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);animation:gtIn .3s ease both;transition:opacity .6s ease,-webkit-backdrop-filter .6s,backdrop-filter .6s;pointer-events:none}
   .gt.out{opacity:0}
   @keyframes gtIn{from{opacity:0}to{opacity:1}}
-  .gt-b{display:flex;align-items:center;gap:10px;padding:16px 24px;max-width:92vw;background:#ff3438;color:#fff;border:4px solid #fff;border-radius:18px;transform:rotate(-4deg);box-shadow:0 0 0 6px #ffd84a,0 18px 50px rgba(0,0,0,.45),0 0 60px 10px rgba(255,52,56,.7);font-family:"Oswald","Arial Narrow",sans-serif;animation:gtSlam .55s cubic-bezier(.2,1.6,.4,1) both,gtFlash .3s steps(2) .55s 3}
+  .gt-b{display:flex;align-items:center;gap:10px;padding:16px 24px;max-width:92vw;background:#ff3438;color:#fff;border:4px solid #fff;border-radius:18px;transform:rotate(-4deg);box-shadow:0 0 0 6px #ffd84a,0 18px 50px rgba(0,0,0,.45),0 0 60px 10px rgba(255,52,56,.7);font-family:"Oswald","Arial Narrow",sans-serif;animation:gtSlam .55s cubic-bezier(.2,1.6,.4,1) both,gtFlash .3s steps(2) .55s 5}
   .gt-w{font-size:clamp(38px,11vw,84px);font-weight:500;letter-spacing:.04em;line-height:1;text-shadow:3px 3px 0 #150505;animation:gtPop .5s ease .15s both}
   .gt-w2{color:#ffd84a;animation-delay:.3s}
   .gt-s{font-size:22px;color:#ffd84a;animation:gtSpin 1.2s linear infinite}
@@ -2321,16 +2321,27 @@ const GAMES=[SIMON,COMPAS,MEMORY,QUIZ,TRIVIA,CATALAN,METROG,TIMELINE,GAUDIG,MANN
 function play(g){ clearAll(); cur=g; ttl.textContent=g.title; body.scrollTop=0; g.start(); }
 function nextGame(){ if(!bag.length){ bag=shuffle(GAMES); if(bag[0]===cur && bag.length>1) bag.push(bag.shift()); } play(bag.shift()); }
 function startGames(){ box.hidden=false; document.body.classList.add("g-open"); tick([10,30,10]); nextGame(); }
+// Funny deep announcer voice: "GAAAAAAME TIME!!!" (uses the phone's built-in voice)
+function gameVoice(){
+  if(!("speechSynthesis" in window)) return;
+  try{
+    speechSynthesis.cancel();
+    const vs=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));
+    const v=vs.find(v=>/daniel|fred|ralph|alex|male|david|george|arthur|aaron|gordon/i.test(v.name))||vs[0];
+    const say=(t,rate)=>{ const u=new SpeechSynthesisUtterance(t); u.lang="en-US"; if(v) u.voice=v; u.pitch=0.1; u.rate=rate; u.volume=1; speechSynthesis.speak(u); };
+    say("Gaaaaaaame",0.45); say("time!!!",0.8);
+  }catch(_){}
+}
 // GAME TIME banner: blurs the page, flashes, then fades into the game
 let gtOn=false;
 function openGames(){ if(!box.hidden || gtOn) return;
   if(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches){ startGames(); return; }
-  gtOn=true; tick([15,40,15,40,30]);
+  gtOn=true; tick([15,40,15,40,30]); gameVoice();
   const o=document.createElement("div"); o.className="gt";
   o.innerHTML=`<div class="gt-b"><span class="gt-s">✦</span><span class="gt-w">GAME</span><span class="gt-w gt-w2">TIME</span><span class="gt-s">✦</span></div>`;
   document.body.appendChild(o);
-  setTimeout(()=>{ startGames(); o.classList.add("out"); },1500);
-  setTimeout(()=>{ o.remove(); gtOn=false; },2100);
+  setTimeout(()=>{ startGames(); o.classList.add("out"); },2000);
+  setTimeout(()=>{ o.remove(); gtOn=false; },2600);
 }
 function closeGames(){ clearAll(); box.hidden=true; document.body.classList.remove("g-open"); body.innerHTML=""; }
 box.querySelector(".g-x").onclick=closeGames;
@@ -2620,7 +2631,7 @@ document.addEventListener("visibilitychange",()=>{ if(!document.hidden) setTimeo
       h+=`<h5>${g}</h5>`+gs.map(r=>`<button class="sb-r" type="button" data-i="${hits.indexOf(r)}"><b>${hl(r.t,words)}</b>${r.s?`<small>${hl(r.s,words)}</small>`:""}</button>`).join(""); });
     res.innerHTML=h;
   }
-  function open(){ IDX=IDX||build(); box.hidden=false; document.documentElement.style.overflow="hidden"; run(); setTimeout(()=>q.focus(),60); haptic(8); }
+  function open(){ box.hidden=false; q.focus(); IDX=IDX||build(); document.documentElement.style.overflow="hidden"; run(); haptic(8); }
   function close(){ box.hidden=true; document.documentElement.style.overflow=""; q.blur(); }
   document.getElementById("srch").onclick=open;
   document.getElementById("sx").onclick=close;
