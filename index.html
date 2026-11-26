@@ -421,7 +421,7 @@
   .g-top{display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;background:var(--accent);color:#fff}
   .g-top button{border:1px solid rgba(255,255,255,.6);background:none;color:#fff;font:inherit;font-size:14px;padding:6px 12px;border-radius:999px;position:relative;cursor:pointer;flex:none}
   .g-sp{width:44px;flex:none}
-  .g-t{flex:1;font-weight:700;font-size:17px;text-align:center}
+  .g-t{flex:1;font-weight:700;font-size:17px;text-align:center;text-transform:uppercase;letter-spacing:.05em}
   .g-body{flex:1;overflow:auto;padding:16px 16px calc(24px + env(safe-area-inset-bottom));max-width:520px;width:100%;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;-webkit-user-select:none;user-select:none}
   .g-msg{margin:0;font-size:15px;line-height:1.45;color:var(--muted);min-height:2.9em}
   .g-score{font-size:14px;color:var(--muted)}
@@ -2322,22 +2322,24 @@ const GAMES=[SIMON,COMPAS,MEMORY,QUIZ,TRIVIA,CATALAN,METROG,TIMELINE,GAUDIG,MANN
 function play(g){ clearAll(); cur=g; ttl.textContent=g.title; body.scrollTop=0; g.start(); }
 function nextGame(){ if(!bag.length){ bag=shuffle(GAMES); if(bag[0]===cur && bag.length>1) bag.push(bag.shift()); } play(bag.shift()); }
 function startGames(){ box.hidden=false; document.body.classList.add("g-open"); tick([10,30,10]); nextGame(); }
-// Funny deep announcer voice: "GAAAAAAME TIME!!!" (uses the phone's built-in voice)
-function gameVoice(){
-  if(!("speechSynthesis" in window)) return;
-  try{
-    speechSynthesis.cancel();
-    const vs=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));
-    const v=vs.find(v=>/daniel|fred|ralph|alex|male|david|george|arthur|aaron|gordon/i.test(v.name))||vs[0];
-    const say=(t,rate)=>{ const u=new SpeechSynthesisUtterance(t); u.lang="en-US"; if(v) u.voice=v; u.pitch=0.1; u.rate=rate; u.volume=1; speechSynthesis.speak(u); };
-    say("Gaaaaaaame",0.45); say("time!!!",0.8);
-  }catch(_){}
-}
+// Fanfare for GAME TIME: brassy "ta-ta-ta TAAA" then a bright held chord
+function fanfare(){ const a=ac(); if(!a) return; const t0=a.currentTime+.02;
+  const out=a.createGain(); out.gain.value=.5; const lp=a.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=2600; lp.connect(out); out.connect(a.destination);
+  const brass=(f,at,dur,v)=>{ [0,-6,6].forEach(cents=>{ const o=a.createOscillator(), g=a.createGain(), vib=a.createOscillator(), vg=a.createGain();
+      o.type="sawtooth"; o.frequency.value=f; o.detune.value=cents; vib.frequency.value=5.5; vg.gain.value=dur>.4?f*.012:0; vib.connect(vg); vg.connect(o.frequency);
+      g.gain.setValueAtTime(.0001,at); g.gain.exponentialRampToValueAtTime(v,at+.03); g.gain.setValueAtTime(v*.8,at+dur*.7); g.gain.exponentialRampToValueAtTime(.0001,at+dur);
+      o.connect(g); g.connect(lp); o.start(at); vib.start(at); o.stop(at+dur+.05); vib.stop(at+dur+.05); }); };
+  const G4=392,C5=523.25,E5=659.25,G5=784,C6=1046.5;
+  [[G4,0,.13],[G4,.15,.13],[G4,.30,.13],[C5,.45,.42],[G4,.90,.16],[C5,1.08,.16]].forEach(([f,d,l])=>brass(f,t0+d,l,.09));
+  [C5,E5,G5,C6].forEach(f=>brass(f,t0+1.26,.95,.06));
+  // timpani-ish thump under the final chord
+  const o=a.createOscillator(), g=a.createGain(); o.type="sine"; o.frequency.setValueAtTime(110,t0+1.26); o.frequency.exponentialRampToValueAtTime(55,t0+1.7);
+  g.gain.setValueAtTime(.5,t0+1.26); g.gain.exponentialRampToValueAtTime(.0001,t0+1.8); o.connect(g); g.connect(out); o.start(t0+1.26); o.stop(t0+1.85); }
 // GAME TIME banner: blurs the page, flashes, then fades into the game
 let gtOn=false;
 function openGames(){ if(!box.hidden || gtOn) return;
   if(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches){ startGames(); return; }
-  gtOn=true; tick([15,40,15,40,30]); gameVoice();
+  gtOn=true; tick([15,40,15,40,30]); fanfare();
   const o=document.createElement("div"); o.className="gt";
   o.innerHTML=`<div class="gt-b"><span class="gt-s">✦</span><span class="gt-w">GAME</span><span class="gt-w gt-w2">TIME</span><span class="gt-s">✦</span></div>`;
   document.body.appendChild(o);
@@ -2566,7 +2568,8 @@ document.addEventListener("visibilitychange",()=>{ if(!document.hidden) setTimeo
   .sb-top{display:flex;gap:8px;padding:12px;border-bottom:1px solid var(--line)}
   #sq{flex:1;min-width:0;font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:9px 14px;outline:none}
   #sq:focus{border-color:var(--accent)}
-  #sx{flex:none;border:0;background:var(--bg);color:var(--ink);font:inherit;font-weight:700;width:40px;border-radius:999px;cursor:pointer}
+  #sx{flex:none;border:0;background:var(--bg);color:var(--ink);font:inherit;font-size:22px;font-weight:700;width:52px;min-height:46px;border-radius:999px;cursor:pointer}
+  #sx:active{transform:scale(.92)}
   .sb-res{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 8px 10px}
   .sb-res h5{margin:12px 6px 4px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
   .sb-r{display:block;width:100%;text-align:left;border:0;background:none;font:inherit;color:var(--ink);padding:8px 8px;border-radius:12px;cursor:pointer}
@@ -2575,6 +2578,8 @@ document.addEventListener("visibilitychange",()=>{ if(!document.hidden) setTimeo
   .sb-r small{display:block;color:var(--muted);font-size:13px;margin-top:1px}
   .sb-r mark{background:var(--accent-soft);color:inherit;border-radius:3px}
   .sb-none{color:var(--muted);text-align:center;padding:22px 10px;font-size:14px}
+  /* Floating pills: pin to the small viewport so they don't jump when Safari's toolbar appears or hides */
+  @supports (height:100svh){ #srch,#help,#totop{bottom:auto;top:calc(100svh - 52px - env(safe-area-inset-bottom))} }
 </style>
 <script>
 // Search: floating button, lower left. Searches the schedule, artists, venues, City and Info.
