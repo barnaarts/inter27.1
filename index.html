@@ -406,6 +406,7 @@
   body.g-open{overflow:hidden}
   .gt{position:fixed;inset:0;z-index:101;display:flex;align-items:center;justify-content:center;background:rgba(21,5,5,.35);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);animation:gtIn .3s ease both;transition:opacity .6s ease,-webkit-backdrop-filter .6s,backdrop-filter .6s;pointer-events:none}
   .gt.out{opacity:0}
+  #game.gt-in{animation:gtIn 1.2s ease both}
   @keyframes gtIn{from{opacity:0}to{opacity:1}}
   .gt-b{display:flex;align-items:center;gap:10px;padding:16px 24px;max-width:92vw;background:#ff3438;color:#fff;border:4px solid #fff;border-radius:18px;transform:rotate(-4deg);box-shadow:0 0 0 6px #ffd84a,0 18px 50px rgba(0,0,0,.45),0 0 60px 10px rgba(255,52,56,.7);font-family:"Oswald","Arial Narrow",sans-serif;animation:gtSlam .55s cubic-bezier(.2,1.6,.4,1) both,gtFlash .3s steps(2) .55s 5}
   .gt-w{font-size:clamp(38px,11vw,84px);font-weight:500;letter-spacing:.04em;line-height:1;text-shadow:3px 3px 0 #150505;animation:gtPop .5s ease .15s both}
@@ -2340,7 +2341,8 @@ function openGames(){ if(!box.hidden || gtOn) return;
   const o=document.createElement("div"); o.className="gt";
   o.innerHTML=`<div class="gt-b"><span class="gt-s">✦</span><span class="gt-w">GAME</span><span class="gt-w gt-w2">TIME</span><span class="gt-s">✦</span></div>`;
   document.body.appendChild(o);
-  setTimeout(()=>{ startGames(); o.classList.add("out"); },2000);
+  setTimeout(()=>{ box.classList.add("gt-in"); startGames(); },600);
+  setTimeout(()=>{ o.classList.add("out"); box.classList.remove("gt-in"); },2000);
   setTimeout(()=>{ o.remove(); gtOn=false; },2600);
 }
 function closeGames(){ clearAll(); box.hidden=true; document.body.classList.remove("g-open"); body.innerHTML=""; }
