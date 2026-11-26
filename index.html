@@ -1685,6 +1685,7 @@ function renderGettingAround(){
     <p class="who" style="font-size:13px">Closest metro to Yugo: Drassanes (L3, green). Pinch or tap Zoom to read station names.</p>`;
 }
 
+function openJump(id){ const el=document.getElementById(id); if(el&&el.tagName==="DETAILS") el.open=true; jumpTo(id); }
 function jumpTo(id){ const el=document.getElementById(id); if(!el) return; const hh=document.querySelector("header").offsetHeight; window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-hh-10,behavior:"smooth"}); }
 function renderNearby(){
   return `<div class="nb"><h1>City</h1><p class="sub">Getting around, everyday essentials and the words you'll need.</p>
@@ -1739,7 +1740,7 @@ function renderInfo(){
   return `<div class="info">
     <h1>Program info</h1>
     <p class="sub">BARNA ARTS Interdisciplinary Program · Barcelona, 7–18 January 2027 · Extension 18–23 January</p>
-    <div class="links jump" style="margin:0 0 6px">${[["i-sos","🚨 Emergency"],["i-contacts","📞 Contacts"],["i-stay","🏠 Stay"],["i-group","💬 Group"],["i-tips","💡 Tips"],["i-doc","📄 Docs"]].map(([id,l])=>`<a href="#" onclick="jumpTo('${id}');return false;">${l}</a>`).join("")}</div>
+    <div class="links jump" style="margin:0 0 6px">${[["i-sos","🚨 Emergency"],["i-contacts","📞 Contacts"],["i-stay","🏠 Stay"],["i-group","💬 Group"],["i-tips","💡 Tips"],["i-doc","📄 Docs"],["i-city","🚇 Transport"],["i-how","📖 How to"],["i-bring","🧳 Bring"],["i-app","📱 App"]].map(([id,l])=>`<a href="#" onclick="openJump('${id}');return false;">${l}</a>`).join("")}</div>
     <h2 id="i-doc">📄 Info doc & files</h2>
     <div class="card">Everything to read before you travel (accommodation, food, artists, health) is in the student info doc. Upload any documents we ask for to the shared folder.
       <div class="links"><a href="https://docs.google.com/document/d/1cidZN3sWpeN-Q2N_MP-b0_8tda-y9X9g2-s0uQpeuFQ/edit" target="_blank" rel="noopener">Student info doc ↗</a><a href="https://drive.google.com/drive/folders/1fyDmH_y-SkAWy8YgRGl6vQqO_CHw8z85" target="_blank" rel="noopener">Shared folder ↗</a></div></div>
@@ -1774,15 +1775,15 @@ function renderInfo(){
    💧 <b>Water:</b> tap water is safe to drink. Bring a refillable bottle.<br><br>
    💶 <b>Cash machines:</b> use bank cash machines, and always choose to be charged in euros, not dollars.<br><br>
    🪙 <b>Tipping:</b> not expected. Rounding up is enough.</div>
-    <h2>🚇 Transport & phrases</h2>
+    <h2 id="i-city">🚇 Transport & phrases</h2>
     <div class="card">The T-usual pass, airport ↔ Yugo, the metro map and useful Spanish & Catalan phrases are on the <b>City</b> tab.<div class="links"><a href="#city">Open City ↗</a></div></div>
-    <details class="fold"><summary>📖 How to use this page</summary>
+    <details class="fold" id="i-how"><summary>📖 How to use this page</summary>
     <div class="card">Check it every morning. Plans can change, and this page always shows the latest version.<br><br>
       Tap <b>Maps</b> to get directions.<br>
       <b>Optional</b> means it's up to you.<br>
       <b>To be confirmed</b> means the time or place may still change.<br>
       <b>Updated</b> or <b>New</b> marks a session that changed since you last opened the app, and a dot on the date shows which days changed.</div></details>
-    <details class="fold"><summary>🧳 What to bring</summary>
+    <details class="fold" id="i-bring"><summary>🧳 What to bring</summary>
     <div class="card">Barcelona in January is mild but cool: about 5–15 °C (40–60 °F), colder at night, with some rainy days. Studios can be chilly.<br><br>
       🧥 Warm layers, a warm jacket and a rain jacket or umbrella<br>
       👟 Comfortable shoes for walking a lot<br>
@@ -1793,7 +1794,7 @@ function renderInfo(){
       🔌 Adapter for European plugs (type C/F, 230V)<br>
       🧴 Your own toiletries<br>
       📄 Passport and insurance documents</div></details>
-    <details class="fold"><summary>📱 Put it on your phone like an app</summary>
+    <details class="fold" id="i-app"><summary>📱 Put it on your phone like an app</summary>
     <div class="card"><b>Android (Chrome)</b><br>
       1. Open this page in <b>Chrome</b>.<br>
       2. Tap the <b>⋮</b> menu at the top right.<br>
