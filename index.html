@@ -1691,6 +1691,13 @@ function renderNearby(){
     <div class="info"><h2 id="must-watch">🎬 Must watch before coming</h2>
     <div class="card" role="link" onclick="if(!event.target.closest('a'))window.open('https://youtu.be/YfN517mqhC8','_blank','noopener')" style="cursor:pointer;background:linear-gradient(rgba(21,5,5,.25),rgba(21,5,5,.78)),url(img/bcn-1850.jpg) center/cover;color:#fff;min-height:180px;display:flex;flex-direction:column;justify-content:flex-end;text-shadow:0 1px 3px rgba(0,0,0,.6)">A 23-minute video on the history of how Barcelona was planned and built, and why the city looks the way it does today. Great context before you walk its streets.
       <div class="links"><a href="https://youtu.be/YfN517mqhC8" target="_blank" rel="noopener" style="text-shadow:none">▶ Watch on YouTube ↗</a></div></div>
+    <h2 id="shapers">🏛️ Who shaped the city</h2>
+    <div class="card"><b>Ildefons Cerdà</b> <span class="who">· Engineer, urban planner (1815–1876)</span><br>He designed the Eixample, the 1859 grid that took Barcelona beyond its medieval walls: wide streets and blocks with cut-off corners, planned for light, air and movement. You'll walk it every time you cross the city.
+      <div class="links"><a href="#" onclick="jumpTo('must-watch');return false;">🎬 The video ↑</a><a href="https://en.wikipedia.org/wiki/Ildefons_Cerd%C3%A0" target="_blank" rel="noopener">Read more ↗</a></div></div>
+    <div class="card"><b>Antoni Gaudí</b> <span class="who">· Architect (1852–1926)</span><br>The best-known name of Catalan modernisme. He built with curves, light, colour and forms taken from nature, and many of his buildings line the streets of Cerdà's Eixample.
+      <div class="links"><a href="#jan-10-0">Sun Jan 10 · La Pedrera & Casa Batlló →</a><a href="https://en.wikipedia.org/wiki/Antoni_Gaud%C3%AD" target="_blank" rel="noopener">Read more ↗</a></div></div>
+    <div class="card"><b>Antoni Tàpies</b> <span class="who">· Painter, sculptor (1923–2012)</span><br>One of the great artists of post-war Europe. He painted with matter: sand, earth, varnish, everyday objects, scratches and signs. The quiet room where we meet the Museu Tàpies team was designed with him.
+      <div class="links"><a href="#jan-12-1">Tue Jan 12 · Tàpies session →</a><a href="https://museutapies.org" target="_blank" rel="noopener">Museu Tàpies ↗</a></div></div>
     ${renderGettingAround()}</div>
     <h2 id="nearby-list" style="font-size:20px;margin-top:30px">📍 Nearby</h2><p class="sub">Essentials around where you stay and where we work. Opening hours change, so check before you go.</p>` +
   NEARBY.map((A,ai)=>`<h2 id="nb-${ai}">${A.area}</h2>`+A.groups.map(G=>`<h4>${G.g}</h4>`+G.items.map(([n,a,d,w])=>
