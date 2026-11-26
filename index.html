@@ -1532,7 +1532,7 @@ function renderVenues(){
 
 // Nearby essentials. Hours change: always check before going.
 const NEARBY = [
- {area:"Around Yugo (home)", groups:[
+ {area:"Around the hostel", groups:[
   {g:"🩺 Health", items:[
    ["Farmàcia Miramar","C/ Peracamps 13, corner of Portal de Santa Madrona","Pharmacy right next to Yugo. Mon–Fri 8 AM–8 PM, Sat–Sun mornings"],
    ["Farmàcia Clapés","La Rambla 98","Pharmacy open 24 hours"],
@@ -1687,7 +1687,7 @@ function renderGettingAround(){
 function jumpTo(id){ const el=document.getElementById(id); if(!el) return; const hh=document.querySelector("header").offsetHeight; window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-hh-10,behavior:"smooth"}); }
 function renderNearby(){
   return `<div class="nb"><h1>City</h1><p class="sub">Getting around, everyday essentials and the words you'll need.</p>
-    <div class="links" style="margin:0 0 6px;flex-wrap:nowrap;white-space:nowrap"><a href="#" onclick="jumpTo('phrases');return false;">Phrases</a><span class="nbx"><a href="#" onclick="this.parentNode.classList.toggle('open');return false;">Nearby</a><a class="nbs" href="#" onclick="jumpTo('nb-0');return false;">Yugo</a><a class="nbs" href="#" onclick="jumpTo('nb-1');return false;">La Caldera</a></span></div>
+    <div class="links" style="margin:0 0 6px;flex-wrap:nowrap;white-space:nowrap"><a href="#" onclick="jumpTo('phrases');return false;">Phrases</a><span class="nbx"><a href="#" onclick="this.parentNode.classList.toggle('open');return false;">Nearby</a><a class="nbs" href="#" onclick="jumpTo('nb-0');return false;">Hostel</a><a class="nbs" href="#" onclick="jumpTo('nb-1');return false;">La Caldera</a></span></div>
     <div class="info"><h2 id="must-watch">🎬 Must watch before coming</h2>
     <div class="card" role="link" onclick="if(!event.target.closest('a'))window.open('https://youtu.be/YfN517mqhC8','_blank','noopener')" style="cursor:pointer;background:linear-gradient(rgba(21,5,5,.25),rgba(21,5,5,.78)),url(img/bcn-1850.jpg) center/cover;color:#fff;min-height:180px;display:flex;flex-direction:column;justify-content:flex-end;text-shadow:0 1px 3px rgba(0,0,0,.6)">A 23-minute video on the history of how Barcelona was planned and built, and why the city looks the way it does today. Great context before you walk its streets.
       <div class="links"><a href="https://youtu.be/YfN517mqhC8" target="_blank" rel="noopener" style="text-shadow:none">▶ Watch on YouTube ↗</a></div></div>
