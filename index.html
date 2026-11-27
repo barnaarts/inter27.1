@@ -601,7 +601,7 @@ const UPDATED = "26 Nov 2026";
 // The Venues tab and map always list venues in order of first visit (computed from the schedule).
 const V = {
   yugo:     {n:"Yugo Barcelona Port", a:"Yugo Barcelona Port, C/ Portal de Santa Madrona 28, Barcelona", home:1,
-             d:"Your home in Barcelona: a student residence near the bottom of La Rambla, right next to Arts Santa Mònica and a short walk from the sea. Shared kitchens for cooking, plus common rooms and study spaces."},
+             d:"Your home in Barcelona: a student residence near the bottom of La Rambla, right next to Arts Santa Mònica and a short walk from the sea. Shared kitchens for cooking, plus a gym, common rooms and study spaces."},
   pedrera:  {n:"La Pedrera (Casa Milà)", w:"https://www.lapedrera.com/en", a:"La Pedrera, Pg. de Gràcia 92, Barcelona",
              d:"Gaudí's last private house, with its waving stone façade and rooftop of sculpted chimneys."},
   batllo:   {n:"Casa Batlló", w:"https://www.casabatllo.es/en/", a:"Casa Batlló, Pg. de Gràcia 43, Barcelona",
@@ -1763,6 +1763,7 @@ function renderInfo(){
       <div class="addr">📍 C/ Portal de Santa Madrona 28</div>
       <p>🔑 <b>Rooms:</b> ready from 3 PM on arrival day; check out by 10 AM on departure day.<br>
       🛏️ <b>Your room:</b> individual, with private bathroom, heating, desk and wardrobe. Bed linen and towels included, cleaned with a change of sheets every two weeks. Bring your own toiletries; laundry is self-service (paid).<br>
+      🏋️ <b>Common areas:</b> gym, rooftop terrace, games room, lounges and study rooms, free for residents. Study and meeting rooms are booked at reception.<br>
       🚭 Non-smoking residence. Please respect the house rules on quiet.<br>
       ☎️ <b>Yugo reception (24h):</b> barcelonaport@yugo.com · +34 616 553 709</p>
       <div class="links"><a class="mapl" href="${mapLink(V.yugo.a)}" target="_blank" rel="noopener">Maps ↗</a></div>
@@ -1800,6 +1801,7 @@ function renderInfo(){
       🧥 Warm layers, a warm jacket and a rain jacket or umbrella<br>
       👟 Comfortable shoes for walking a lot<br>
       🩰 Clothes to move in, plus socks and layers for the studio<br>
+      🏋️ Gym clothes and trainers if you want to use the gym at Yugo<br>
       📓 A notebook or sketchbook for your visual journal<br>
       ✂️ Something personal that you're OK to destroy: we'll use it in a workshop<br>
       💭 A question or a project you've been working on or wondering about<br>
@@ -2595,7 +2597,7 @@ document.addEventListener("visibilitychange",()=>{ if(!document.hidden) setTimeo
     ["💡 Good to know","tips insurance pharmacy sunday supermarket meal times lunch dinner pickpockets water cash atm tipping","i-tips"],
     ["📄 Info doc & files","student info doc shared folder documents","i-doc"],
     ["📖 How to use this page","how to use updated new optional to be confirmed","i-how"],
-    ["🧳 What to bring","what to bring packing pack clothes jacket shoes adapter plug toiletries passport notebook sketchbook destroy question project","i-bring"],
+    ["🧳 What to bring","what to bring packing pack clothes gym jacket shoes adapter plug toiletries passport notebook sketchbook destroy question project","i-bring"],
     ["📱 Put it on your phone","app home screen install iphone android","i-app"]];
   const CITY=[
     ["🎬 Must watch before coming","video history barcelona planned built","must-watch"],
